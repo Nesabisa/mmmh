@@ -717,9 +717,13 @@ function openFor(v,w){const ids=suggIds(w).filter(id=>scoreFor(v,w,id)==null&&!p
   const liked=id=>Object.keys(VOTES).some(o=>o!==v&&scoreFor(o,w,id)>=2)?1:0;return ids.map(R).sort((a,b)=>liked(b.id)-liked(a.id));}
 function extendSugg(w,n=BATCH){const cur=suggIds(w),add=suggestions(w).filter(r=>!cur.includes(r.id)).slice(0,n).map(r=>r.id);if(add.length)patchWeek(w,{sugg:cur.concat(add)});return add.length;}
 // Startet die gemeinsame Vorschlagsliste und holt automatisch neue, wenn alle durch sind und es nicht reicht
-let autoGuard='';
-function maintainSugg(w){const W=WEEKS[w];if(!SETUP||(W&&W.finalized))return;
-  if(!suggIds(w).length){if(autoGuard!==w+':init'){autoGuard=w+':init';extendSugg(w);}return;}
+let autoGuard='',cloudTried=false;const weekSeen={},lastInit={};
+// erst erzeugen, wenn der Cloud-Stand der Woche da ist – sonst würde der Cloud-Stand die Liste gleich wieder überschreiben
+const suggReady=w=>cloudTried&&(!db||weekSeen[w]);
+// Fokus ändern: neue gemeinsame Vorschläge passend zum Fokus (Stimmen bleiben)
+function setFocus(keys){const w=ui.week;WEEKS[w]=weekDoc(w);WEEKS[w].focus=keys;WEEKS[w].sugg=[];const add=suggestions(w).slice(0,BATCH).map(r=>r.id);lastInit[w]=Date.now();patchWeek(w,{focus:keys,sugg:add,focusBy:myId});}
+function maintainSugg(w){const W=WEEKS[w];if(!SETUP||(W&&W.finalized)||!suggReady(w))return;
+  if(!suggIds(w).length){const now=Date.now();if(!(lastInit[w]>now-3000)){lastInit[w]=now;extendSugg(w);}else setTimeout(()=>{if(!suggIds(w).length)render();},3100);return;}
   const need=Math.max(0,HH.dinners-picksOf(w).length);if(matchIds(w).length>=need)return;
   if(participants().every(v=>openFor(v,w).length===0)){const key=w+':'+suggIds(w).length;if(autoGuard!==key){autoGuard=key;if(extendSugg(w))toast('Noch nicht genug gefunden – 10 neue Vorschläge für euch beide');}}}
 function suggestions(w){const pool=dinnerPool(w),picks=new Set(picksOf(w));
@@ -856,10 +860,12 @@ function vWeek(){
     <div class="row" style="gap:16px"><button class="link" data-open="${r.id}">Rezept ansehen</button><button class="link" data-heart="${r.id}">${hearted(r.id)?'♥ Favorit':'♡ Als Favorit speichern'}</button></div>
     <div class="vbtns"><button class="no" data-vote="0" data-r="${r.id}" data-card="1"><span class="ic2">${ICON.no}</span>Nein</button><button class="yes" data-vote="2" data-r="${r.id}" data-card="1"><span class="ic2">${ICON.yes}</span>Ja</button><button class="love" data-vote="3" data-r="${r.id}" data-card="1"><span class="ic2">${ICON.love}</span>Unbedingt</button></div></article>
     ${ui.undo&&ui.undo.w===w?`<p style="margin:10px 4px 0"><button class="link" data-a="undo">Letzte Bewertung zurücknehmen</button></p>`:''}`;
+  }else if(!r&&found<need&&!sids.length){
+    h+=`<div class="empty" style="margin-top:12px">${pool.length?'Vorschläge werden geladen …':'Zu diesem Fokus passt gerade nichts. Nimm einen Fokus raus.'}</div>`;
   }else if(!r&&found<need){
     const waiting=others.map(v=>[v,openFor(v,w).length]).filter(x=>x[1]>0);
     const more=pool.filter(x=>!sids.includes(x.id)&&!picks.includes(x.id)).length;
-    h+=`<div class="empty" style="margin-top:12px">${waiting.length?`<b style="color:var(--ink)">Du bist durch.</b><br>Warte auf ${waiting.map(([v,n])=>`${esc(nameOf(v))} (noch ${n} offen)`).join(', ')}.`:more?'Ihr seid beide durch und habt noch nicht genug. Neue Vorschläge werden geholt …':'Keine weiteren passenden Gerichte. Nimm einen Fokus raus.'}
+    h+=`<div class="empty" style="margin-top:12px">${waiting.length?`<b style="color:var(--ink)">Du bist durch.</b><br>Warte auf ${waiting.map(([v,n])=>`${esc(nameOf(v))} (noch ${n} offen)`).join(', ')}.`:more?(others.length?'Ihr seid beide durch und habt noch nicht genug. Neue Vorschläge werden geholt …':'Du hast alle bewertet und noch nicht genug. Neue Vorschläge werden geholt …'):'Keine weiteren passenden Gerichte. Nimm einen Fokus raus.'}
      ${more?`<div style="margin-top:12px"><button class="btn sm" data-a="moreSugg">${waiting.length?'Trotzdem mehr Vorschläge':'10 weitere Vorschläge'}</button></div>`:''}</div>`;
   }
   if(found>=need&&need>0&&mineOpen.length&&!ui.keepVoting)h+=`<p style="margin:8px 4px 0"><button class="link" data-a="keepVoting">Trotzdem weiter bewerten</button></p>`;
@@ -999,9 +1005,9 @@ function filterSheet(mode='rez'){
   <div class="row" style="margin-top:16px;flex-wrap:nowrap"><button class="btn ghost" data-sclear style="flex:none">Zurücksetzen</button><button class="btn basil" data-close style="flex:1">${count} ${mode==='week'?'Gerichte passen':'Rezepte anzeigen'}</button></div>`);
   const sh=document.querySelector('.sheet');const top=sh.scrollTop;
   sh.addEventListener('click',e=>{const b=e.target.closest('[data-sk],[data-sx],[data-sclear]');if(!b)return;const st=document.querySelector('.sheet').scrollTop;
-    if(b.dataset.sk){if(mode==='week')patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),b.dataset.sk),sugg:[],focusBy:myId});else{ui.f.keys=toggleKey(ui.f.keys,b.dataset.sk);render();}}
+    if(b.dataset.sk){if(mode==='week')setFocus(toggleKey(focusOf(ui.week),b.dataset.sk));else{ui.f.keys=toggleKey(ui.f.keys,b.dataset.sk);render();}}
     else if(b.dataset.sx){const k=b.dataset.sx;if(k==='subs'){ME.showSubs=!ME.showSubs;saveMe();}else f[k]=!f[k];render();}
-    else{if(mode==='week')patchWeek(ui.week,{focus:[],sugg:[],focusBy:myId});else{ui.f={keys:[],fav:false,own:false,heart:false};render();}}
+    else{if(mode==='week')setFocus([]);else{ui.f={keys:[],fav:false,own:false,heart:false};render();}}
     filterSheet(mode);document.querySelector('.sheet').scrollTop=st;});
 }
 
@@ -1296,7 +1302,7 @@ const app=document.getElementById('app');
 app.addEventListener('click',e=>{
   const hb=e.target.closest('[data-heart]');if(hb){e.stopPropagation();toggleHeart(hb.dataset.heart);render();return;}
   const v=e.target.closest('[data-vote]');if(v){vote(v.dataset.r,+v.dataset.vote,!!v.dataset.card);return;}
-  const fc=e.target.closest('[data-focus]');if(fc){patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),fc.dataset.focus),sugg:[],focusBy:myId});return;}
+  const fc=e.target.closest('[data-focus]');if(fc){setFocus(toggleKey(focusOf(ui.week),fc.dataset.focus));return;}
   const ad=e.target.closest('[data-add]');if(ad){addPref(ad.dataset.add);return;}
   const fk=e.target.closest('[data-fk]');if(fk){ui.f.keys=toggleKey(ui.f.keys,fk.dataset.fk);render();return;}
   const wk=e.target.closest('[data-wk]');if(wk){const v=myVotes();v.ing=v.ing||{};const cur=wkIng(myId,ui.week);cur[wk.dataset.wk]=cur[wk.dataset.wk].filter(x=>x!==wk.dataset.v);v.ing[ui.week]=cur;saveVotes();render();return;}
@@ -1410,7 +1416,7 @@ rebuildRecipes();
 if(WEEKS[NEXT_WEEK]&&WEEKS[NEXT_WEEK].finalized&&!WEEKS[THIS_WEEK])ui.week=NEXT_WEEK;
 render();
 (async()=>{
-  if(!SETUP)return;
+  if(!SETUP){cloudTried=true;return;}
   try{
     const d=await connectCloud(SETUP.code);
     db=d;mode='db';setSync('connecting');
@@ -1423,12 +1429,13 @@ render();
     db.collection('recipes').onSnapshot(s=>{if(s.cache&&!s.docs.length)return;const c={};s.docs.forEach(x=>{if(x.exists)c[x.id]=clone(x.data());});CUSTOM=c;rebuildRecipes();persistLocal();render();},e=>console.warn(e));
     db.collection('votes').onSnapshot(s=>{if(s.cache&&!s.docs.length)return;const mine=VOTES[myId];const v={};s.docs.forEach(x=>{if(x.exists)v[x.id]=clone(x.data());});if(mine&&(vT||!v[myId])){v[myId]=mine;if(!vT)saveVotes();}VOTES=v;persistLocal();render();},e=>console.warn(e));
     let fin=false;
-    [THIS_WEEK,NEXT_WEEK].forEach(w=>db.doc('weeks/'+w).onSnapshot(s=>{if(s.exists)WEEKS[w]=deepMerge(emptyWeek(),clone(s.data()));else if(s.cache)return;else delete WEEKS[w];
+    [THIS_WEEK,NEXT_WEEK].forEach(w=>db.doc('weeks/'+w).onSnapshot(s=>{if(s.exists)WEEKS[w]=deepMerge(emptyWeek(),clone(s.data()));else if(s.cache)return;else delete WEEKS[w];if(!s.cache)weekSeen[w]=true;
       persistLocal();if(w===NEXT_WEEK&&!fin){fin=true;setTimeout(autoFinalize,1500);}render();},e=>console.warn(e)));
     [7,14,21,28,35,42].forEach(n=>{const w=addDays(THIS_WEEK,-n);db.doc('weeks/'+w).get().then(s=>{if(s.exists){WEEKS[w]=deepMerge(emptyWeek(),clone(s.data()));render();}}).catch(()=>{});});
     syncVeto();
     setTimeout(autoBackup,8000);
-  }catch(e){console.warn(e);setSync('err');toast('Keine Verbindung. Die App speichert erstmal nur auf diesem Gerät.');autoFinalize();}
+    cloudTried=true;
+  }catch(e){cloudTried=true;console.warn(e);setSync('err');toast('Keine Verbindung. Die App speichert erstmal nur auf diesem Gerät.');autoFinalize();}
   render();
 })();
 </script>
