@@ -103,7 +103,7 @@ input[type=number]{width:88px}
 .mbar i{display:block;height:100%;border-radius:2px}
 .ip{background:var(--basil)}.ic{background:var(--saffron)}.if{background:var(--plum)}
 .diet{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;margin-right:5px;vertical-align:1px}
-.d-vegan{background:var(--basil-soft);color:var(--basil)}.d-veg{background:var(--basil-soft);color:var(--basil)}.d-meat{background:var(--saffron-soft);color:var(--saffron)}.d-fish{background:var(--blue-soft);color:var(--blue)}
+.d-vegan{background:var(--basil-soft);color:var(--basil)}.d-veg{background:rgba(22,160,160,.15);color:#0E9494}.d-meat{background:var(--saffron-soft);color:var(--saffron)}.d-fish{background:var(--blue-soft);color:var(--blue)}
 .own{background:var(--plum-soft);color:var(--plum)}
 /* vote card */
 .vote{background:var(--sunset);color:#fff;border-radius:24px;padding:22px 20px 18px;position:relative;box-shadow:0 12px 30px -10px rgba(255,80,60,.5)}
@@ -193,6 +193,21 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .sync{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px;background:var(--muted)}
 .sync.on{background:var(--basil)}.sync.err{background:var(--warn)}
 .heart{color:var(--pink)}
+body{background:linear-gradient(180deg,#FFD9C2 0,#FFE9DD 160px,#FFF3EC 300px,var(--bg) 520px) no-repeat,var(--bg)}
+@media (prefers-color-scheme:dark){body{background:linear-gradient(180deg,#4A2010 0,#2A120A 180px,#120805 320px,var(--bg) 520px) no-repeat,var(--bg)}}
+.t-vegan{background:linear-gradient(140deg,#6EDB8A,#22A447)!important}.t-veg{background:linear-gradient(140deg,#6FD8C8,#16A0A0)!important}
+.t-meat{background:linear-gradient(140deg,#FFB547,#FF5E3A)!important}.t-fish{background:linear-gradient(140deg,#6DBBFF,#1C7CF5)!important}
+.lrow .min[class*="t-"]{color:#fff}
+.day .dn{width:40px;height:40px;border-radius:11px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:15px;line-height:1}
+.day .dn small{color:rgba(255,255,255,.88);font-size:10px;margin-top:2px}
+.wd0{background:linear-gradient(140deg,#FFC14D,#FF9500)}.wd1{background:linear-gradient(140deg,#FF9A5C,#FF5E3A)}.wd2{background:linear-gradient(140deg,#FF7A93,#FF2D55)}
+.wd3{background:linear-gradient(140deg,#D58BF5,#AF52DE)}.wd4{background:linear-gradient(140deg,#8C8AF7,#5856D6)}.wd5{background:linear-gradient(140deg,#6DBBFF,#1C7CF5)}.wd6{background:linear-gradient(140deg,#6FD8C8,#16A0A0)}
+.day.skip .dn{background:var(--fill2);color:var(--muted)}.day.skip .dn small{color:var(--muted)}
+.facts4 div:nth-child(1){background:var(--accent-soft)}.facts4 div:nth-child(1) b{color:var(--accent)}
+.facts4 div:nth-child(2){background:var(--basil-soft)}.facts4 div:nth-child(3){background:var(--saffron-soft)}.facts4 div:nth-child(4){background:var(--plum-soft)}
+.facts4 small{color:var(--ink);opacity:.6}
+.seg{background:rgba(255,255,255,.55)}
+@media (prefers-color-scheme:dark){.seg{background:var(--fill)}}
 h2+p{margin-left:16px;margin-right:16px}
 @media (hover:hover){.lrow:hover,.btn:hover{filter:brightness(.97)}}
 @media (max-width:520px){.facts4 b{font-size:19px}}
@@ -576,7 +591,7 @@ function vWeek(){
   }else h+=`<div class="empty">Alles bewertet. ${others.length?'':'Sobald die andere Person abstimmt, seht ihr eure Übereinstimmungen.'}</div>`;
   const rank=ranking(w),N=HH.dinners;
   const top=rank.filter(x=>x.voted).slice(0,Math.max(N,5));
-  h+=`<h2>Aktueller Stand</h2>${top.length?`<div class="ledger">${top.map((x,i)=>`<button class="lrow" data-open="${x.r.id}"><div class="min">${i<N?i+1:'–'}<small>${i<N?'drin':'knapp'}</small></div><div><div class="t">${esc(x.r.n)}</div><div class="who" style="margin-top:4px">${x.sc.map(s=>`<span class="s${s.s??''}">${esc(nameOf(s.v))}: ${s.s==null?'offen':s.s===3?'Unbedingt':s.s===2?'Ja':'Nein'}</span>`).join('')}</div></div><div class="k">${x.match?'<b>Match</b>':''}</div></button>`).join('')}</div>`:'<p class="muted">Noch keine Ja-Stimmen.</p>'}
+  h+=`<h2>Aktueller Stand</h2>${top.length?`<div class="ledger">${top.map((x,i)=>`<button class="lrow" data-open="${x.r.id}"><div class="min t-${x.r.diet}">${i<N?i+1:'–'}<small>${i<N?'drin':'knapp'}</small></div><div><div class="t">${esc(x.r.n)}</div><div class="who" style="margin-top:4px">${x.sc.map(s=>`<span class="s${s.s??''}">${esc(nameOf(s.v))}: ${s.s==null?'offen':s.s===3?'Unbedingt':s.s===2?'Ja':'Nein'}</span>`).join('')}</div></div><div class="k">${x.match?'<b>Match</b>':''}</div></button>`).join('')}</div>`:'<p class="muted">Noch keine Ja-Stimmen.</p>'}
   <div class="panel"><div class="spread"><span>Gerichte pro Woche</span><span class="stepper"><button data-a="din-">−</button><span>${HH.dinners}</span><button data-a="din+">+</button></span></div>
   <div class="spread" style="margin-top:10px"><span>Portionen pro Gericht</span><span class="stepper"><button data-a="srv-">−</button><span>${HH.serv}</span><button data-a="srv+">+</button></span></div><div class="spread" style="margin-top:10px"><span>Gekochtes pausiert für<br><span class="small muted">Wochen, bevor es wieder vorkommt</span></span><span class="stepper"><button data-a="pz-">−</button><span>${HH.pause}</span><button data-a="pz+">+</button></span></div></div>
   <button class="btn basil" data-a="final" style="width:100%">Plan jetzt festlegen</button>
@@ -586,7 +601,7 @@ function vWeek(){
 function dayList(w){
   const W=weekDoc(w);
   return`<div class="group">${weekDates(w).map((d,i)=>{const x=W.days[d]||{};const r=x.rid&&R(x.rid);
-   return`<div class="day ${x.skip?'skip':''}"><div class="dn">${WD[i]}<small>${fmtD(d,{day:'numeric',month:'numeric'})}</small></div><div>
+   return`<div class="day ${x.skip?'skip':''}"><div class="dn wd${i}">${WD[i]}<small>${fmtD(d,{day:'numeric',month:'numeric'})}</small></div><div>
     ${r?`<div class="t"><button class="link" style="color:var(--ink);font-size:16px;font-weight:600;text-align:left" data-open="${r.id}">${esc(r.n)}</button></div><div class="small muted">${x.serv||HH.serv} Portionen · ${r.min} Min.</div>`:`<div class="t muted">${x.skip?'Nicht geplant':'Noch offen'}</div>`}
     <div class="acts">${r||!x.skip?`<button class="link" data-a="swap" data-d="${d}">${r?'Austauschen':'Rezept vorschlagen'}</button>`:''}${r?`<button class="link" data-a="skip" data-d="${d}">${x.skip?'Doch kochen':'Doch nicht'}</button>`:x.skip?`<button class="link" data-a="unskip" data-d="${d}">Einplanen</button>`:''}</div></div></div>`;}).join('')}</div>`;
 }
@@ -638,7 +653,7 @@ function filtered(){
     return true;}).sort((a,b)=>(hearted(b.id)-hearted(a.id))||likeScore(b)-likeScore(a)||a.n.localeCompare(b.n,'de'));
 }
 function lrow(r){const ls=likeScore(r),av=recipeAvoid(r);
-  return`<button class="lrow" data-open="${r.id}"><div class="min">${r.min}<small>Min.</small></div><div><div class="t">${hearted(r.id)?'<span class="heart">♥</span> ':''}${esc(r.n)}</div><div class="s">${dietTag(r)}${r.meals.map(m=>MEALS[m]).join(', ')}${ls?` · ♥ ${ls}`:''}${!av.ok?' · <span class="warn">mit Ersatz</span>':''}</div>${mbar(r)}</div><div class="k"><b>${r0(r.per.k)}</b><br><span class="small muted">kcal</span><br><span class="small">${r0(r.per.p)} g P</span></div></button>`;}
+  return`<button class="lrow" data-open="${r.id}"><div class="min t-${r.diet}">${r.min}<small>Min.</small></div><div><div class="t">${hearted(r.id)?'<span class="heart">♥</span> ':''}${esc(r.n)}</div><div class="s">${dietTag(r)}${r.meals.map(m=>MEALS[m]).join(', ')}${ls?` · ♥ ${ls}`:''}${!av.ok?' · <span class="warn">mit Ersatz</span>':''}</div>${mbar(r)}</div><div class="k"><b>${r0(r.per.k)}</b><br><span class="small muted">kcal</span><br><span class="small">${r0(r.per.p)} g P</span></div></button>`;}
 function vRecipes(){
   const list=filtered(),af=activeFilters();
   return mast('Rezepte',`<b>${list.length}</b>von ${RECIPES.length}`)+
