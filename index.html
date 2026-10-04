@@ -199,6 +199,7 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .rcard .rn{font-weight:700;font-size:17px;line-height:1.2;margin:8px 0 6px;padding-right:30px}
 .rcard .s{font-size:13px;color:var(--muted)}
 .hbtn{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--fill);color:var(--pink);font-size:17px;line-height:1}
+.netb{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:60;background:var(--saffron);color:#000;font-size:13px;font-weight:600;padding:8px 12px;border-radius:12px;text-align:center}
 .vrow{display:flex;gap:12px;align-items:center;padding:12px 14px;position:relative}
 .vrow+.vrow::before{content:"";position:absolute;top:0;left:14px;right:0;border-top:.5px solid var(--line)}
 .vtop{flex:1;min-width:0;cursor:pointer}
@@ -527,10 +528,13 @@ const FB_V='11.8.0';
 async function connectCloud(code){
   const A=await import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-app.js`);
   const F=await import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-firestore.js`);
-  const fs=F.getFirestore(A.initializeApp(FB_CFG));
+  const app=A.initializeApp(FB_CFG);let fs;
+  // Offline-Speicher: Änderungen ohne Internet bleiben auch nach dem Schließen erhalten und werden später hochgeladen
+  try{fs=F.initializeFirestore(app,{localCache:F.persistentLocalCache({tabManager:F.persistentMultipleTabManager()})});}catch(e){console.warn(e);fs=F.getFirestore(app);}
+  CLOUD={F,fs};
   const root=['familienkueche',code];
   const ref=p=>{const s=p.split('/');return s.length===2?F.doc(fs,...root,s[0],s[1]):F.doc(fs,...root,'misc',s.join('~'));};
-  const snap=s=>({exists:s.exists(),id:s.id,data:()=>s.data()});
+  const snap=s=>({exists:s.exists(),id:s.id,data:()=>s.data(),cache:!!(s.metadata&&s.metadata.fromCache),pending:!!(s.metadata&&s.metadata.hasPendingWrites)});
   const ok=()=>setSync('on'),bad=e=>{console.warn(e);setSync('err');};
   return{
     doc:p=>{const r=ref(p);return{
@@ -539,10 +543,10 @@ async function connectCloud(code){
       update:d=>F.setDoc(r,d,{merge:true}),
       delete:()=>F.deleteDoc(r),
       onSnapshot:(cb,err)=>F.onSnapshot(r,s=>{ok();cb(snap(s));},e=>{bad(e);err&&err(e);})};},
-    collection:n=>({onSnapshot:(cb,err)=>F.onSnapshot(F.collection(fs,...root,n),s=>{ok();cb({docs:s.docs.map(snap)});},e=>{bad(e);err&&err(e);})})
+    collection:n=>({onSnapshot:(cb,err)=>F.onSnapshot(F.collection(fs,...root,n),{includeMetadataChanges:false},s=>{ok();cb({docs:s.docs.map(snap),cache:!!s.metadata.fromCache});},e=>{bad(e);err&&err(e);})})
   };
 }
-let SYNC='off';
+let SYNC='off',CLOUD=null;
 function setSync(s){if(SYNC===s)return;SYNC=s;if(ui.tab==='ich')render();}
 
 // ================= recipes =================
@@ -596,7 +600,8 @@ function persistLocal(){lsSet('fk2',{ME,HH,WEEKS,VOTES,CUSTOM});}
 
 // private settings
 let meT=null;
-function saveMe(){persistLocal();clearTimeout(meT);meT=setTimeout(()=>{if(db)write('me',()=>db.doc(`data/users/${myId}/p/settings`).set(clone(ME)));},600);syncVeto();}
+function pushMe(){clearTimeout(meT);meT=null;if(db)write('me',()=>db.doc(`data/users/${myId}/p/settings`).set(clone(ME)));}
+function saveMe(){persistLocal();clearTimeout(meT);meT=setTimeout(pushMe,600);syncVeto();}
 // household
 function saveHH(){persistLocal();if(db)write('hh',()=>db.doc('household/main').set(clone(HH)));}
 // weeks
@@ -612,14 +617,24 @@ function deepMerge(t,s){for(const k in s){if(s[k]&&typeof s[k]==='object'&&!Arra
 // votes
 function myVotes(){if(!VOTES[myId])VOTES[myId]={w:{},veto:[]};return VOTES[myId];}
 let vT=null;
-function saveVotes(){persistLocal();clearTimeout(vT);vT=setTimeout(()=>{if(db)write('votes',()=>db.doc('votes/'+myId).set(clone(myVotes())));},400);}
+function pushVotes(){clearTimeout(vT);vT=null;if(db)write('votes',()=>db.doc('votes/'+myId).set(clone(myVotes())));}
+function saveVotes(){persistLocal();clearTimeout(vT);vT=setTimeout(pushVotes,400);}
+// Beim Verlassen/Schließen der App alles sofort speichern
+function flushSaves(){if(meT)pushMe();if(vT)pushVotes();}
+addEventListener('pagehide',flushSaves);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushSaves();});
 function syncVeto(){const v=myVotes();const veto=RECIPES.filter(r=>{const a=recipeAvoid(r);return!a.ok&&!a.fixable;}).map(r=>r.id).sort();if(JSON.stringify(veto)!==JSON.stringify(v.veto||[])){v.veto=veto;saveVotes();}}
 // logs (private)
+const logSubs={};
+function logFromDoc(d){const m=d.e||{};const arr=Object.values(m).filter(Boolean);(d.entries||[]).forEach(x=>{if(x&&!(x.id in m))arr.push(x);});return arr.sort((x,y)=>(x.t||0)-(y.t||0));}
 async function loadLog(k){
   if(LOGS[k])return LOGS[k];LOGS[k]=lsGet('fk-log-'+k)||[];
-  if(db){try{const s=await db.doc(`data/users/${myId}/p/log-${k}`).get();if(s.exists)LOGS[k]=clone(s.data().entries||[]);}catch(e){console.warn(e)}}
+  if(db){const ref=db.doc(`data/users/${myId}/p/log-${k}`);
+    try{const s=await ref.get();if(s.exists)LOGS[k]=logFromDoc(s.data());}catch(e){console.warn(e)}
+    if(!logSubs[k])logSubs[k]=ref.onSnapshot(s=>{if(!s.exists){return;}LOGS[k]=logFromDoc(s.data());lsSet('fk-log-'+k,LOGS[k]);if(ui.tab==='tracker')render();},e=>console.warn(e));}
   return LOGS[k];}
-function saveLog(k){lsSet('fk-log-'+k,LOGS[k]);if(db)write('log'+k,()=>db.doc(`data/users/${myId}/p/log-${k}`).set({entries:clone(LOGS[k])}));}
+// del: id eines gelöschten Eintrags; sonst werden alle Einträge zusammengeführt (nichts wird überschrieben)
+function saveLog(k,del){lsSet('fk-log-'+k,LOGS[k]);if(!db)return;const e={};(LOGS[k]||[]).forEach(x=>e[x.id]=x);if(del)e[del]=null;
+  write('log'+k,()=>db.doc(`data/users/${myId}/p/log-${k}`).update(clone({e})));}
 
 // ================= domain helpers =================
 function isAvoidedIng(id){const i=ING[id];return ME.avoid.includes('ing:'+id)||i.tags.some(t=>ME.avoid.includes('cat:'+t));}
@@ -1158,8 +1173,37 @@ function vMe(){
    <p>Küchen-Code: <b>${esc(SETUP.code)}</b></p>
    <p class="small muted">Wer denselben Code eingibt, sieht Woche, Einkauf und eigene Rezepte mit. Tracker und diese Seite bleiben für jede:n privat.</p>
    <div class="row"><button class="btn sm" data-a="share">Einladung teilen</button><button class="btn ghost sm" data-a="reset">Code oder Namen ändern</button></div></div>
+  <h2>Sicherheit</h2><div class="panel" style="margin-top:0"><p class="small">Alles wird sofort in der Cloud gespeichert, auch ohne Internet (wird dann nachgeholt). Einmal pro Woche legt die App zusätzlich automatisch eine Sicherung eurer gemeinsamen Daten an.</p>
+   <p class="small muted">Wichtig: Merk dir deinen Küchen-Code <b>${esc(SETUP.code)}</b> und gib deinen Namen immer gleich ein. Damit kommst du auf jedem Gerät wieder an alles ran.</p>
+   <button class="btn sm" data-a="backup">Backup herunterladen</button></div>
   <h2>Als App installieren</h2><p class="small muted">iPhone: in Safari unten auf „Teilen“ tippen, dann „Zum Home-Bildschirm“. Android: im Chrome-Menü „App installieren“.</p>`;
 }
+
+// ================= Sicherungen =================
+// Einmal pro Woche eine Kopie der gemeinsamen Daten in der Cloud ablegen (backups/{datum})
+async function autoBackup(){
+  if(!db)return;try{
+    const m=await db.doc('household/meta').get(),last=m.exists?m.data().lastBackup||'':'';
+    if(last&&last>addDays(dkey(),-7))return;
+    const weeks={};Object.keys(WEEKS).forEach(w=>{if(w>=addDays(THIS_WEEK,-42))weeks[w]=WEEKS[w];});
+    await db.doc('backups/'+dkey()).set(clone({t:Date.now(),by:myId,hh:HH,weeks,votes:VOTES,recipes:CUSTOM}));
+    await db.doc('household/meta').update({lastBackup:dkey()});
+  }catch(e){console.warn('backup',e);}
+}
+// Alles (gemeinsam + privat, inkl. Tracker der letzten 90 Tage) als Datei herunterladen
+async function downloadBackup(){
+  toast('Backup wird erstellt …');
+  const logs={};for(let i=0;i<90;i++){const k=addDays(dkey(),-i);const l=await loadLog(k);if(l&&l.length)logs[k]=l;}
+  const data={app:'Mmmh',version:1,created:new Date().toISOString(),code:SETUP&&SETUP.code,user:SETUP&&SETUP.name,me:ME,household:HH,weeks:WEEKS,votes:VOTES,recipes:CUSTOM,tracker:logs};
+  const blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});const name=`mmmh-backup-${dkey()}.json`;
+  try{const f=new File([blob],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Mmmh Backup'});return;}}catch(e){if(e&&e.name==='AbortError')return;}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+}
+// Hinweis, wenn kein Internet da ist
+function netBanner(){let b=document.getElementById('netb');const off=!navigator.onLine;
+  if(off&&!b){b=document.createElement('div');b.id='netb';b.className='netb';b.textContent='Offline – alles wird gespeichert und synchronisiert, sobald wieder Internet da ist';document.body.appendChild(b);}
+  if(!off&&b)b.remove();}
+addEventListener('online',()=>{netBanner();toast('Wieder online – wird synchronisiert');});addEventListener('offline',netBanner);netBanner();
 
 // ================= events =================
 const app=document.getElementById('app');
@@ -1206,10 +1250,11 @@ app.addEventListener('click',e=>{
   else if(a==='addRecipe')recipePicker();
   else if(a==='addFood')foodForm();
   else if(a==='fav'){const f=ME.favFoods[+t.dataset.i];if(f.basis==='100')foodForm({...f});else{addEntry({slot:slotNow(),name:f.name,portions:1,k:f.k,p:f.p,c:f.c,f:f.f});toast('Eingetragen');}}
-  else if(a==='delE'){LOGS[ui.date]=(LOGS[ui.date]||[]).filter(x=>x.id!==t.dataset.id);saveLog(ui.date);render();}
+  else if(a==='delE'){LOGS[ui.date]=(LOGS[ui.date]||[]).filter(x=>x.id!==t.dataset.id);saveLog(ui.date,t.dataset.id);render();}
   else if(a==='rmAv'){ME.avoid=ME.avoid.filter(x=>x!==t.dataset.v);saveMe();render();}
   else if(a==='rmLk'){ME.likes=ME.likes.filter(x=>x!==t.dataset.v);saveMe();render();}
   else if(a==='rmFav'){ME.favFoods.splice(+t.dataset.i,1);saveMe();render();}
+  else if(a==='backup'){downloadBackup();}
   else if(a==='share'){const url=shareLink(),text=`Lass uns zusammen planen, was wir kochen. Öffne den Link, gib deinen Namen ein, der Küchen-Code „${SETUP.code}“ ist schon drin:`;
     if(navigator.share)navigator.share({title:'Mmmh',text,url}).catch(()=>{});
     else if(navigator.clipboard)navigator.clipboard.writeText(text+' '+url).then(()=>toast('Link kopiert'),()=>prompt('Link kopieren:',url));
@@ -1260,17 +1305,19 @@ render();
     const d=await connectCloud(SETUP.code);
     db=d;mode='db';setSync('connecting');
     write('member',()=>db.doc('members/'+myId).set({name:SETUP.name,seen:Date.now()}));
-    try{const s=await db.doc(`data/users/${myId}/p/settings`).get();if(s.exists)ME=Object.assign(clone(P_DEF),clone(s.data()));else saveMe();}catch(e){console.warn(e)}
+    // Einstellungen live halten (zweites Gerät), aber lokale, noch nicht gespeicherte Änderungen nicht überschreiben
+    db.doc(`data/users/${myId}/p/settings`).onSnapshot(s=>{if(s.pending||meT)return;if(s.exists){ME=Object.assign(clone(P_DEF),clone(s.data()));persistLocal();render();}else if(!s.cache)saveMe();},e=>console.warn(e));
     LOGS={};
     db.collection('members').onSnapshot(s=>{s.docs.forEach(x=>{if(x.exists&&x.data().name)names[x.id]=x.data().name;});render();},e=>console.warn(e));
-    db.doc('household/main').onSnapshot(s=>{if(s.exists)HH=Object.assign({dinners:7,serv:4,pause:2},clone(s.data()));else saveHH();render();},e=>console.warn(e));
-    db.collection('recipes').onSnapshot(s=>{const c={};s.docs.forEach(x=>{if(x.exists)c[x.id]=clone(x.data());});CUSTOM=c;rebuildRecipes();persistLocal();render();},e=>console.warn(e));
-    db.collection('votes').onSnapshot(s=>{const mine=VOTES[myId];const v={};s.docs.forEach(x=>{if(x.exists)v[x.id]=clone(x.data());});if(!v[myId]&&mine){v[myId]=mine;saveVotes();}VOTES=v;persistLocal();render();},e=>console.warn(e));
+    db.doc('household/main').onSnapshot(s=>{if(s.exists)HH=Object.assign({dinners:7,serv:4,pause:2},clone(s.data()));else if(!s.cache)saveHH();render();},e=>console.warn(e));
+    db.collection('recipes').onSnapshot(s=>{if(s.cache&&!s.docs.length)return;const c={};s.docs.forEach(x=>{if(x.exists)c[x.id]=clone(x.data());});CUSTOM=c;rebuildRecipes();persistLocal();render();},e=>console.warn(e));
+    db.collection('votes').onSnapshot(s=>{if(s.cache&&!s.docs.length)return;const mine=VOTES[myId];const v={};s.docs.forEach(x=>{if(x.exists)v[x.id]=clone(x.data());});if(mine&&(vT||!v[myId])){v[myId]=mine;if(!vT)saveVotes();}VOTES=v;persistLocal();render();},e=>console.warn(e));
     let fin=false;
-    [THIS_WEEK,NEXT_WEEK].forEach(w=>db.doc('weeks/'+w).onSnapshot(s=>{if(s.exists)WEEKS[w]=deepMerge(emptyWeek(),clone(s.data()));else delete WEEKS[w];
+    [THIS_WEEK,NEXT_WEEK].forEach(w=>db.doc('weeks/'+w).onSnapshot(s=>{if(s.exists)WEEKS[w]=deepMerge(emptyWeek(),clone(s.data()));else if(s.cache)return;else delete WEEKS[w];
       persistLocal();if(w===NEXT_WEEK&&!fin){fin=true;setTimeout(autoFinalize,1500);}render();},e=>console.warn(e)));
     [7,14,21,28,35,42].forEach(n=>{const w=addDays(THIS_WEEK,-n);db.doc('weeks/'+w).get().then(s=>{if(s.exists){WEEKS[w]=deepMerge(emptyWeek(),clone(s.data()));render();}}).catch(()=>{});});
     syncVeto();
+    setTimeout(autoBackup,8000);
   }catch(e){console.warn(e);setSync('err');toast('Keine Verbindung. Die App speichert erstmal nur auf diesem Gerät.');autoFinalize();}
   render();
 })();
