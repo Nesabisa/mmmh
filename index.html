@@ -624,7 +624,7 @@ function saveVotes(){persistLocal();clearTimeout(vT);vT=setTimeout(pushVotes,400
 // Beim Verlassen/Schließen der App alles sofort speichern
 function flushSaves(){if(meT)pushMe();if(vT)pushVotes();}
 addEventListener('pagehide',flushSaves);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushSaves();});
-function syncVeto(){const v=myVotes();const veto=RECIPES.filter(r=>{const a=recipeAvoid(r);return!a.ok&&!a.fixable;}).map(r=>r.id).sort();if(JSON.stringify(veto)!==JSON.stringify(v.veto||[])){v.veto=veto;saveVotes();}}
+function syncVeto(){const v=myVotes();if(JSON.stringify(v.avoid||[])!==JSON.stringify(ME.avoid)){v.avoid=ME.avoid.slice();saveVotes();}const veto=RECIPES.filter(r=>{const a=recipeAvoid(r);return!a.ok&&!a.fixable;}).map(r=>r.id).sort();if(JSON.stringify(veto)!==JSON.stringify(v.veto||[])){v.veto=veto;saveVotes();}}
 // logs (private)
 const logSubs={};
 function logFromDoc(d){const m=d.e||{};const arr=Object.values(m).filter(Boolean);(d.entries||[]).forEach(x=>{if(x&&!(x.id in m))arr.push(x);});return arr.sort((x,y)=>(x.t||0)-(y.t||0));}
@@ -639,9 +639,21 @@ function saveLog(k,del){lsSet('fk-log-'+k,LOGS[k]);if(!db)return;const e={};(LOG
   write('log'+k,()=>db.doc(`data/users/${myId}/p/log-${k}`).update(clone({e})));}
 
 // ================= domain helpers =================
-function isAvoidedIng(id){const i=ING[id];return ME.avoid.includes('ing:'+id)||i.tags.some(t=>ME.avoid.includes('cat:'+t));}
+// "Esse ich nicht" pro Person (die eigene Liste privat, für den Einkauf steht sie zusätzlich im Votes-Dokument)
+const avoidOf=v=>v===myId?ME.avoid:((VOTES[v]&&VOTES[v].avoid)||[]);
+function avoidsIng(list,id){const i=ING[id];return!!i&&(list.includes('ing:'+id)||i.tags.some(t=>list.includes('cat:'+t)));}
+function isAvoidedIng(id){return avoidsIng(ME.avoid,id);}
 const subOk=s=>!s.t.some(t=>ME.avoid.includes('cat:'+t));
-function recipeAvoid(r){const bad=r.ings.filter(([id])=>isAvoidedIng(id)).map(([id])=>id);if(!bad.length)return{ok:true,swaps:[]};const swaps=bad.map(id=>({id,sub:ING[id].subs.find(subOk)}));return{ok:false,swaps,fixable:swaps.every(s=>s.sub)};}
+// Ersatz für eine Zutat; Fleisch und Fisch lassen sich immer ersetzen (Tofu bzw. Kichererbsen)
+function subFor(id,list){const i=ING[id];if(!i)return null;
+  const s=i.subs.find(x=>!x.t.some(t=>list.includes('cat:'+t))&&!(m=>m&&avoidsIng(list,m))(matchIng(x.n)));if(s)return s;
+  if(i.tags.some(t=>t==='meat'||t==='fish'))return list.includes('cat:soy')?SB('Kichererbsen'):SB('Tofu (fest)',['soy']);return null;}
+function subIng(sub){const id=matchIng(sub.n);return{id:id&&ING[id]?id:null,f:/1\/3/.test(sub.n)?1/3:1};}
+const convU=(a,from,to)=>from===to||(from!=='Stk'&&to!=='Stk')?a:from==='Stk'?a*60:a/100;
+// Wer ersetzt in diesem Rezept was? → [{v,swaps:[{id,sub}]}]
+function personSwaps(r){return participants().map(v=>{const L=avoidOf(v);const sw=r.ings.filter(([id])=>avoidsIng(L,id)).map(([id])=>({id,sub:subFor(id,L)}));return{v,swaps:sw};}).filter(x=>x.swaps.length);}
+function swapText(r){return personSwaps(r).map(({v,swaps})=>`${esc(v===myId?'Du':nameOf(v))}: ${swaps.map(x=>x.sub?`${esc(x.sub.n.replace(/\s*\(.*\)/,''))} statt ${esc(ING[x.id].n)}`:`ohne ${esc(ING[x.id].n)}`).join(', ')}`).join(' · ');}
+function recipeAvoid(r){const bad=r.ings.filter(([id])=>isAvoidedIng(id)).map(([id])=>id);if(!bad.length)return{ok:true,swaps:[]};const swaps=bad.map(id=>({id,sub:subFor(id,ME.avoid)}));return{ok:false,swaps,fixable:swaps.every(s=>s.sub)};}
 const hearted=id=>(ME.hearts||[]).includes(id);
 function toggleHeart(id){ME.hearts=ME.hearts||[];const i=ME.hearts.indexOf(id);if(i>=0)ME.hearts.splice(i,1);else ME.hearts.push(id);saveMe();toast(i>=0?'Aus deinen Herz-Rezepten entfernt':'Als Herz-Rezept gespeichert');}
 const likeScore=r=>r.ings.filter(([id])=>ME.likes.includes('ing:'+id)).length;
@@ -840,7 +852,7 @@ function vWeek(){
   const qk=QUICK.filter(k=>k!=='F'),extra=fo.filter(k=>!qk.includes(k));
   h+=`<h2>Fokus der Woche</h2><div class="chips">${qk.map(k=>`<button class="pill" data-focus="${k}" aria-pressed="${fo.includes(k)}">${FKEY[k].l}</button>`).join('')}</div>
   ${extra.length?`<div class="row" style="margin:0 2px 8px">${extra.map(k=>`<button class="pill x" data-focus="${k}">${FKEY[k].l}</button>`).join('')}</div>`:''}
-  <div class="spread" style="margin:0 4px"><span class="small muted">${fo.length?`Gilt für euch beide. ${pool.length} Gerichte passen.`:'Optional. Nur passende Gerichte werden vorgeschlagen.'}</span><button class="link" data-a="focusAll" style="flex:none">Alle Kategorien${fo.length?` (${fo.length})`:''}</button></div>`;
+  <div class="spread" style="margin:0 4px"><span class="small muted">${fo.length?`Gilt für euch beide. ${pool.length} Gerichte passen.`:'Optional, gilt für euch beide. Nur passende Gerichte werden vorgeschlagen.'}${W&&W.focusBy&&W.focusBy!==myId?` Zuletzt geändert von ${esc(nameOf(W.focusBy))}.`:''}</span><button class="link" data-a="focusAll" style="flex:none">Alle Kategorien${fo.length?` (${fo.length})`:''}</button></div>`;
   const mi=wkIng(myId,w),others0=Object.keys(VOTES).filter(v=>v!==myId);
   const ingSel=(id,ex)=>`<select id="${id}" style="margin-top:6px"><option value="">Zutat hinzufügen …</option>${Object.values(ING).filter(i=>!i.custom&&!ex.includes(i.id)).sort((a,b)=>a.n.localeCompare(b.n,'de')).map(i=>`<option value="${i.id}">${esc(i.n)}</option>`).join('')}</select>`;
   const otherTxt=k=>others0.map(v=>{const l=wkIng(v,w)[k];return l.length?`${esc(nameOf(v))}: ${l.map(i=>esc(ING[i]?ING[i].n:i)).join(', ')}`:'';}).filter(Boolean).join(' · ');
@@ -889,16 +901,24 @@ function dayList(w){
   const W=weekDoc(w);
   return`<div class="group">${weekDates(w).map((d,i)=>{const x=W.days[d]||{};const r=x.rid&&R(x.rid);
    return`<div class="day ${x.skip?'skip':''}"><div class="dn">${WD[i]}<small>${fmtD(d,{day:'numeric',month:'numeric'})}</small></div><div>
-    ${r?`<div class="t"><button class="link" style="color:var(--ink);font-size:16px;font-weight:600;text-align:left" data-open="${r.id}">${esc(r.n)}</button></div><div class="small muted">${x.serv||HH.serv} Portionen · ${r.min} Min.${x.cooked?' · <span style="color:var(--basil)">✓ gekocht</span>':''}</div>`:`<div class="t muted">${x.skip?'Nicht geplant':'Noch offen'}</div>`}
+    ${r?`<div class="t"><button class="link" style="color:var(--ink);font-size:16px;font-weight:600;text-align:left" data-open="${r.id}">${esc(r.n)}</button></div><div class="small muted">${x.serv||HH.serv} Portionen · ${r.min} Min.${swapText(r)?` · <span style="color:var(--accent)">${swapText(r)}</span>`:''}${x.cooked?' · <span style="color:var(--basil)">✓ gekocht</span>':''}</div>`:`<div class="t muted">${x.skip?'Nicht geplant':'Noch offen'}</div>`}
     <div class="acts">${r&&!x.skip?(x.ate&&x.ate[myId]?'<span class="small muted">✓ in deinem Tracker</span>':`<button class="link" data-a="ate" data-d="${d}" style="font-weight:600">In meinen Tracker</button>`):''}${x.cooked&&r?`<button class="link" data-a="uncook" data-d="${d}">Doch nicht gekocht</button>`:`${r||!x.skip?`<button class="link" data-a="swap" data-d="${d}">${r?'Austauschen':'Rezept vorschlagen'}</button>`:''}${r?`<button class="link" data-a="skip" data-d="${d}">${x.skip?'Doch kochen':'Doch nicht'}</button>`:x.skip?`<button class="link" data-a="unskip" data-d="${d}">Einplanen</button>`:''}`}</div></div></div>`;}).join('')}</div>`;
 }
 
 // ---------- Einkauf ----------
-function shopNeeds(w){const W=weekDoc(w),need={};Object.values(W.days||{}).forEach(x=>{if(!x||!x.rid||x.skip||x.cooked)return;const r=R(x.rid);if(!r)return;r.ings.forEach(([id,a])=>{need[id]=(need[id]||0)+a*(x.serv||HH.serv)/BASE;});});return need;}
+// Einkaufsmengen: wer eine Zutat nicht isst, bekommt seinen Anteil als Ersatz (z. B. Tofu statt Hähnchen)
+function shopNeeds(w){const W=weekDoc(w),need={},P=participants(),add=(k,a)=>{need[k]=(need[k]||0)+a;};
+  Object.values(W.days||{}).forEach(x=>{if(!x||!x.rid||x.skip||x.cooked)return;const r=R(x.rid);if(!r)return;const serv=x.serv||HH.serv;
+    r.ings.forEach(([id,a])=>{const amt=a*serv/BASE,share=amt/P.length;let keep=0;
+      P.forEach(v=>{const L=avoidOf(v);if(!avoidsIng(L,id)){keep+=share;return;}const sub=subFor(id,L);if(!sub)return;const m=subIng(sub);
+        if(m.id)add(m.id,convU(share*m.f,ING[id].u,ING[m.id].u));else add('~'+sub.n.replace(/\s*\(.*\)/,'')+'|'+ING[id].u,share*m.f);});
+      if(keep>0)add(id,keep);});});return need;}
+const needName=id=>id[0]==='~'?id.slice(1).split('|')[0]:ING[id].n;
+const needAmt=(id,a)=>id[0]==='~'?(id.split('|')[1]==='Stk'?Math.max(.5,Math.round(a*2)/2).toLocaleString('de-DE')+' Stk':r0(a)+' '+id.split('|')[1]):fmtAmt(id,a);
 function vShop(){
   const w=ui.week,W=weekDoc(w),need=shopNeeds(w);
-  const ids=Object.keys(need).sort((a,b)=>ING[a].n.localeCompare(ING[b].n,'de'));
-  const fresh=ids.filter(id=>!ING[id].pantry),pantry=ids.filter(id=>ING[id].pantry);
+  const ids=Object.keys(need).sort((a,b)=>needName(a).localeCompare(needName(b),'de'));
+  const fresh=ids.filter(id=>!(ING[id]&&ING[id].pantry)),pantry=ids.filter(id=>ING[id]&&ING[id].pantry);
   const doneN=ids.filter(id=>W.bought&&W.bought[id]).length;
   let h=mast('Einkauf',ids.length?`<b>${doneN}/${ids.length}</b>abgehakt`:'')+weekSeg();
   const planned=Object.values(W.days||{}).some(x=>x&&x.rid);
@@ -906,8 +926,8 @@ function vShop(){
   else{
     h+=`<details ${ui.daysOpen?'open':''} data-a="daysToggle" style="border-top:0;margin-top:0"><summary>Gerichte</summary>${dayList(w)}</details>`;
     h+=`<h2>Liste</h2>`;
-    const line=id=>{const i=ING[id],by=W.bought&&W.bought[id];
-      return`<label class="item ${by?'done':''}"><input type="checkbox" data-buy="${id}" ${by?'checked':''}><div class="body"><div class="nm"><b>${esc(i.n)}</b></div>${by?`<div class="by">✓ ${esc(nameOf(by))}</div>`:''}</div><div class="amt">${fmtAmt(id,need[id])}</div></label>`;};
+    const line=id=>{const by=W.bought&&W.bought[id];
+      return`<label class="item ${by?'done':''}"><input type="checkbox" data-buy="${esc(id)}" ${by?'checked':''}><div class="body"><div class="nm"><b>${esc(needName(id))}</b>${id[0]==='~'?' <span class="small muted">(Ersatz)</span>':''}</div>${by?`<div class="by">✓ ${esc(nameOf(by))}</div>`:''}</div><div class="amt">${needAmt(id,need[id])}</div></label>`;};
     h+=`<div class="group">${fresh.map(line).join('')}</div>`;
     if(pantry.length)h+=`<h2>Vorrat prüfen</h2><p class="small muted">Meist noch da, kurz nachschauen.</p><div class="group">${pantry.map(line).join('')}</div>`;
   }
@@ -964,9 +984,9 @@ function filterSheet(mode='rez'){
   <div class="row" style="margin-top:16px;flex-wrap:nowrap"><button class="btn ghost" data-sclear style="flex:none">Zurücksetzen</button><button class="btn basil" data-close style="flex:1">${count} ${mode==='week'?'Gerichte passen':'Rezepte anzeigen'}</button></div>`);
   const sh=document.querySelector('.sheet');const top=sh.scrollTop;
   sh.addEventListener('click',e=>{const b=e.target.closest('[data-sk],[data-sx],[data-sclear]');if(!b)return;const st=document.querySelector('.sheet').scrollTop;
-    if(b.dataset.sk){if(mode==='week')patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),b.dataset.sk),sugg:[]});else{ui.f.keys=toggleKey(ui.f.keys,b.dataset.sk);render();}}
+    if(b.dataset.sk){if(mode==='week')patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),b.dataset.sk),sugg:[],focusBy:myId});else{ui.f.keys=toggleKey(ui.f.keys,b.dataset.sk);render();}}
     else if(b.dataset.sx){const k=b.dataset.sx;if(k==='subs'){ME.showSubs=!ME.showSubs;saveMe();}else f[k]=!f[k];render();}
-    else{if(mode==='week')patchWeek(ui.week,{focus:[],sugg:[]});else{ui.f={keys:[],fav:false,own:false,heart:false};render();}}
+    else{if(mode==='week')patchWeek(ui.week,{focus:[],sugg:[],focusBy:myId});else{ui.f={keys:[],fav:false,own:false,heart:false};render();}}
     filterSheet(mode);document.querySelector('.sheet').scrollTop=st;});
 }
 
@@ -983,7 +1003,7 @@ function drawRecipe(){
   <div class="panel"><div class="spread"><h3>Zutaten</h3><span class="stepper"><button data-r="s-">−</button><span>${cur.serv}</span><button data-r="s+">+</button></span></div>
    <p class="small muted" style="margin:4px 0 6px">für ${cur.serv} Portionen</p>
    <ul class="ing">${r.ings.map(([id,a])=>{const i=ING[id],bad=isAvoidedIng(id);return`<li><div class="l"><span>${bad?'<span class="warn">✕ </span>':''}${esc(i.n)}${ME.likes.includes('ing:'+id)?' ♥':''}</span><b>${fmtAmt(id,a*f)}</b></div>${i.subs.length?`<button class="link" data-r="sub" data-id="${id}">${cur.open[id]?'Ersatz ausblenden':'Ersetzen'}</button>`:''}${cur.open[id]?`<div class="subs">${i.subs.map(s=>`<div>${subOk(s)?'✓':'✕'} ${esc(s.n)}${s.t.length?` (${s.t.map(t=>CATS[t]).join(', ')})`:''}</div>`).join('')}</div>`:''}</li>`}).join('')}</ul>
-   ${!av.ok?`<p class="small warn" style="margin-top:8px">Vorschlag: ${av.swaps.map(s=>esc(ING[s.id].n)+' → '+(s.sub?esc(s.sub.n):'kein Ersatz hinterlegt')).join('; ')}</p>`:''}</div>
+   ${swapText(r)?`<p class="small" style="margin-top:8px;color:var(--accent)">Ersatz: ${swapText(r)}. Im Einkauf wird das pro Person eingerechnet.</p>`:''}</div>
   ${r.steps.length?`<div class="panel"><h3 style="margin-bottom:8px">Zubereitung</h3><ol class="steps">${r.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div>`:''}
   <div class="panel"><h3>Einplanen</h3><p class="small muted">Ersetzt das Gericht an diesem Tag (${ui.week===THIS_WEEK?'diese':'nächste'} Woche).${recentRids(wk).has(r.id)?' Gab es in den letzten Wochen schon, pausiert eigentlich.':''}</p>
    <div class="row" style="flex-wrap:nowrap"><select id="planDay">${weekDates(wk).map((d,i)=>{const x=W.days[d];const rr=x&&x.rid&&R(x.rid);return`<option value="${d}">${WD[i]} ${fmtD(d,{day:'numeric',month:'numeric'})}${rr?' – statt '+esc(rr.n):''}</option>`}).join('')}</select><button class="btn sm" data-r="plan">Einplanen</button></div></div>
@@ -1205,7 +1225,7 @@ function vMe(){
   const ingOpts=Object.values(ING).filter(i=>!i.custom).sort((a,b)=>a.n.localeCompare(b.n,'de'));
   const st=mode!=='db'?['','Nicht verbunden – Daten liegen nur auf diesem Gerät']:SYNC==='on'?['on','Verbunden']:SYNC==='err'?['err','Verbindungsproblem – Änderungen werden nachgeholt']:['','Verbinde …'];
   return mast('Ich',`<b>${esc(SETUP.name)}</b>deine Einstellungen`)+
-  `<h2>Das esse ich nicht</h2><p class="small muted">Rezepte damit werden ausgeblendet oder mit Ersatz gezeigt. Bei der Abstimmung zählen sie als dein „Nein“, wenn es keinen Ersatz gibt.</p>
+  `<h2>Das esse ich nicht</h2><p class="small muted">Gerichte damit bekommen für dich einen Ersatz (z. B. Tofu statt Fleisch), im Einkauf wird deine Portion entsprechend eingerechnet. Nur wenn es gar keinen Ersatz gibt (z. B. bei Nüssen), zählt das Gericht als dein „Nein“.</p>
   <div class="row" style="margin:8px 0">${ME.avoid.map(v=>`<button class="pill x" data-a="rmAv" data-v="${v}">${esc(labelPref(v))}</button>`).join('')||'<span class="muted small">Noch nichts.</span>'}</div>
   <select id="addAvoid"><option value="">Hinzufügen …</option><optgroup label="Gruppen">${Object.entries(CATS).filter(([k])=>!ME.avoid.includes('cat:'+k)).map(([k,l])=>`<option value="cat:${k}">${l}</option>`).join('')}</optgroup><optgroup label="Zutaten">${ingOpts.filter(i=>!ME.avoid.includes('ing:'+i.id)).map(i=>`<option value="ing:${i.id}">${esc(i.n)}</option>`).join('')}</optgroup></select>
   <h2>Mag ich besonders</h2><p class="small muted">Rezepte damit stehen weiter oben.</p>
@@ -1259,7 +1279,7 @@ const app=document.getElementById('app');
 app.addEventListener('click',e=>{
   const hb=e.target.closest('[data-heart]');if(hb){e.stopPropagation();toggleHeart(hb.dataset.heart);render();return;}
   const v=e.target.closest('[data-vote]');if(v){vote(v.dataset.r,+v.dataset.vote,!!v.dataset.card);return;}
-  const fc=e.target.closest('[data-focus]');if(fc){patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),fc.dataset.focus),sugg:[]});return;}
+  const fc=e.target.closest('[data-focus]');if(fc){patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),fc.dataset.focus),sugg:[],focusBy:myId});return;}
   const fk=e.target.closest('[data-fk]');if(fk){ui.f.keys=toggleKey(ui.f.keys,fk.dataset.fk);render();return;}
   const wk=e.target.closest('[data-wk]');if(wk){const v=myVotes();v.ing=v.ing||{};const cur=wkIng(myId,ui.week);cur[wk.dataset.wk]=cur[wk.dataset.wk].filter(x=>x!==wk.dataset.v);v.ing[ui.week]=cur;saveVotes();render();return;}
   const pk=e.target.closest('[data-pick]');if(pk){pickFavorite(ui.week,pk.dataset.pick);return;}
