@@ -587,12 +587,12 @@ function dayList(w){
   const W=weekDoc(w);
   return`<div class="group">${weekDates(w).map((d,i)=>{const x=W.days[d]||{};const r=x.rid&&R(x.rid);
    return`<div class="day ${x.skip?'skip':''}"><div class="dn">${WD[i]}<small>${fmtD(d,{day:'numeric',month:'numeric'})}</small></div><div>
-    ${r?`<div class="t"><button class="link" style="color:var(--ink);font-size:16px;font-weight:600;text-align:left" data-open="${r.id}">${esc(r.n)}</button></div><div class="small muted">${x.serv||HH.serv} Portionen · ${r.min} Min.</div>`:`<div class="t muted">${x.skip?'Nicht geplant':'Noch offen'}</div>`}
-    <div class="acts">${r||!x.skip?`<button class="link" data-a="swap" data-d="${d}">${r?'Austauschen':'Rezept vorschlagen'}</button>`:''}${r?`<button class="link" data-a="skip" data-d="${d}">${x.skip?'Doch kochen':'Doch nicht'}</button>`:x.skip?`<button class="link" data-a="unskip" data-d="${d}">Einplanen</button>`:''}</div></div></div>`;}).join('')}</div>`;
+    ${r?`<div class="t"><button class="link" style="color:var(--ink);font-size:16px;font-weight:600;text-align:left" data-open="${r.id}">${esc(r.n)}</button></div><div class="small muted">${x.serv||HH.serv} Portionen · ${r.min} Min.${x.cooked?' · <span style="color:var(--basil)">✓ gekocht</span>':''}</div>`:`<div class="t muted">${x.skip?'Nicht geplant':'Noch offen'}</div>`}
+    <div class="acts">${r&&!x.skip?(x.ate&&x.ate[myId]?'<span class="small muted">✓ in deinem Tracker</span>':`<button class="link" data-a="ate" data-d="${d}" style="font-weight:600">In meinen Tracker</button>`):''}${x.cooked&&r?`<button class="link" data-a="uncook" data-d="${d}">Doch nicht gekocht</button>`:`${r||!x.skip?`<button class="link" data-a="swap" data-d="${d}">${r?'Austauschen':'Rezept vorschlagen'}</button>`:''}${r?`<button class="link" data-a="skip" data-d="${d}">${x.skip?'Doch kochen':'Doch nicht'}</button>`:x.skip?`<button class="link" data-a="unskip" data-d="${d}">Einplanen</button>`:''}`}</div></div></div>`;}).join('')}</div>`;
 }
 
 // ---------- Einkauf ----------
-function shopNeeds(w){const W=weekDoc(w),need={};Object.values(W.days||{}).forEach(x=>{if(!x||!x.rid||x.skip)return;const r=R(x.rid);if(!r)return;r.ings.forEach(([id,a])=>{need[id]=(need[id]||0)+a*(x.serv||HH.serv)/BASE;});});return need;}
+function shopNeeds(w){const W=weekDoc(w),need={};Object.values(W.days||{}).forEach(x=>{if(!x||!x.rid||x.skip||x.cooked)return;const r=R(x.rid);if(!r)return;r.ings.forEach(([id,a])=>{need[id]=(need[id]||0)+a*(x.serv||HH.serv)/BASE;});});return need;}
 function vShop(){
   const w=ui.week,W=weekDoc(w),need=shopNeeds(w);
   const ids=Object.keys(need).sort((a,b)=>ING[a].n.localeCompare(ING[b].n,'de'));
@@ -699,7 +699,7 @@ async function onRecipeClick(e){
   if(a==='heart'){toggleHeart(r.id);drawRecipe();render();}
   if(a==='sub'){cur.open[b.dataset.id]=!cur.open[b.dataset.id];drawRecipe();}
   if(a==='plan'){const d=document.getElementById('planDay').value;patchWeek(ui.week,{days:{[d]:{rid:r.id,serv:cur.serv,skip:false}}});toast(`Eingeplant für ${fmtD(d,{weekday:'long'})}`);drawRecipe();}
-  if(a==='eat'){const k=dkey();await loadLog(k);LOGS[k].push({id:uid(),t:Date.now(),slot:cur.slot,name:r.n,portions:cur.eat,k:r.per.k*cur.eat,p:r.per.p*cur.eat,c:r.per.c*cur.eat,f:r.per.f*cur.eat});saveLog(k);toast('Eingetragen');}
+  if(a==='eat'){const pd=plannedDay(r.id);if(pd){await eatPlanned(pd.w,pd.d,cur.eat);toast('Eingetragen, Gericht ist als gekocht markiert');return;}const k=dkey();await loadLog(k);LOGS[k].push({id:uid(),t:Date.now(),slot:cur.slot,name:r.n,portions:cur.eat,k:r.per.k*cur.eat,p:r.per.p*cur.eat,c:r.per.c*cur.eat,f:r.per.f*cur.eat});saveLog(k);toast('Eingetragen');}
   if(a==='del'){if(!confirm('Dieses Rezept für euch beide löschen?'))return;delete CUSTOM[r.id];persistLocal();if(db)write('rec'+r.id,()=>db.doc('recipes/'+r.id).delete());rebuildRecipes();closeSheet();render();}
 }
 
@@ -709,7 +709,7 @@ const TAG_OPTS=[['','–'],['meat','Fleisch'],['fish','Fisch'],['dairy','Milchpr
 function newRecipeSheet(){nr={n:'',serv:4,min:'',meals:['A'],flags:'',steps:'',rows:[{id:'',amt:''},{id:'',amt:''},{id:'',amt:''}]};drawNew();}
 function readNew(){
   const g=id=>document.getElementById(id);if(!g('nrName'))return;
-  nr.n=g('nrName').value;nr.serv=g('nrServ').value;nr.min=g('nrMin').value;nr.steps=g('nrSteps').value;
+  nr.n=g('nrName').value;if(g('impText'))nr.pasteText=g('impText').value;if(g('impMsg'))nr.msg=g('impMsg').innerHTML;nr.serv=g('nrServ').value;nr.min=g('nrMin').value;nr.steps=g('nrSteps').value;
   nr.meals=[...document.querySelectorAll('[data-nrm]')].filter(c=>c.checked).map(c=>c.dataset.nrm);
   nr.flags=[...document.querySelectorAll('[data-nrf]')].filter(c=>c.checked).map(c=>c.dataset.nrf).join('');
   nr.rows.forEach((x,i)=>{const el=s=>document.querySelector(`[data-nr${s}="${i}"]`);x.id=el('i').value;x.amt=el('a').value;
@@ -726,6 +726,12 @@ function drawNew(){
       <div class="small muted" style="grid-column:1/-1">Nährwerte optional, pro 100 g/ml bzw. pro Stück (steht auf der Packung).</div></div>`:''}</div>`;};
   const html=`<div class="sheet-head"><h2>Eigenes Rezept</h2><button class="x-btn" data-close aria-label="Schließen">×</button></div>
   <p class="small muted">Eigene Rezepte seht ihr beide und könnt darüber abstimmen. Nährwerte werden aus den Zutaten berechnet.</p>
+  <div class="panel"><h3>Aus Screenshots übernehmen</h3><p class="small muted" style="margin:4px 0 10px">Ein oder mehrere Screenshots (z. B. Zutaten und Zubereitung). Die App liest den Text und trägt die Zutaten unten ein.</p>
+   <label class="btn" style="display:block;text-align:center;cursor:pointer">Screenshots auswählen<input type="file" id="impFiles" accept="image/*" multiple style="display:none"></label>
+   <details style="margin-top:10px"><summary style="padding:4px 0;text-transform:none;font-size:15px;color:var(--accent)">Oder Text einfügen</summary>
+    <textarea id="impText" placeholder="Rezepttext hier einfügen, z. B. aus der Insta-Beschreibung" style="min-height:110px;margin-top:6px">${esc(nr.pasteText||'')}</textarea>
+    <button class="btn sm" data-n="parse" style="margin-top:8px">Zutaten erkennen</button></details>
+   <p class="small" id="impMsg" style="margin:10px 0 0">${nr.msg||''}</p></div>
   <div class="formg"><label style="grid-column:1/-1">Name<input type="text" id="nrName" value="${esc(nr.n)}" placeholder="z. B. Omas Linsensuppe"></label>
    <label>Portionen<input type="number" inputmode="numeric" id="nrServ" value="${esc(nr.serv)}" min="1"></label><label>Minuten<input type="number" inputmode="numeric" id="nrMin" value="${esc(nr.min)}" min="1" placeholder="30"></label></div>
   <div class="row" style="margin:12px 0 4px">${Object.entries(MEALS).map(([k,l])=>`<label class="row" style="gap:4px"><input type="checkbox" data-nrm="${k}" ${nr.meals.includes(k)?'checked':''}> ${l}</label>`).join('')}</div>
@@ -740,8 +746,100 @@ function drawNew(){
   s2.onclick=e=>{const b=e.target.closest('[data-n]');if(!b)return;readNew();const a=b.dataset.n;
     if(a==='add'){nr.rows.push({id:'',amt:''});drawNew();}
     if(a==='rm'){nr.rows.splice(+b.dataset.i,1);if(!nr.rows.length)nr.rows.push({id:'',amt:''});drawNew();}
-    if(a==='save')saveNew();};
-  s2.onchange=e=>{if(e.target.matches('[data-nri]')){readNew();drawNew();}};
+    if(a==='save')saveNew();
+    if(a==='parse'){const t=(nr.pasteText||'').trim();if(t)applyParsed(parseRecipeText(t));}};
+  s2.onchange=e=>{if(e.target.matches('[data-nri]')){readNew();drawNew();}if(e.target.id==='impFiles'&&e.target.files.length)runOCR(Array.from(e.target.files).slice(0,6));};
+}
+// ---------- Rezept aus Screenshot / Text erkennen (läuft komplett auf dem Gerät) ----------
+const OCR_SRC='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+let ocrLib=null;
+function loadOCR(){if(ocrLib)return ocrLib;ocrLib=new Promise((res,rej)=>{const s=document.createElement('script');s.src=OCR_SRC;s.onload=()=>res(window.Tesseract);s.onerror=()=>{ocrLib=null;rej(new Error('ocr'));};document.head.appendChild(s);});return ocrLib;}
+async function ocrImages(files,onStatus){
+  const T=await loadOCR();const worker=await T.createWorker('deu',1,{logger:m=>{if(m.status==='recognizing text')onStatus(Math.round(m.progress*100));}});
+  let out=[];try{for(let i=0;i<files.length;i++){onStatus(0,i+1,files.length);const {data}=await worker.recognize(files[i]);out.push(data.text);}}finally{worker.terminate();}
+  return out.join('\n');
+}
+const SYN={haehnchen:['hähnchen','huhn','hühnchen','chicken'],hack_rind:['hackfleisch','rinderhack','gemischtes hack','hack'],putenhack:['putenhack'],lachs:['lachs'],thunfisch:['thunfisch'],garnelen:['garnele','shrimp','scampi'],
+  tofu:['tofu'],raeuchertofu:['räuchertofu'],eier:['eier','ei '],skyr:['skyr'],magerquark:['quark'],huettenkaese:['hüttenkäse','körniger frischkäse'],feta:['feta','hirtenkäse','schafskäse'],parmesan:['parmesan','grana'],reibekaese:['gouda','geriebener käse','reibekäse','käse'],
+  milch:['milch'],joghurt:['joghurt','jogurt'],sahne:['sahne','cuisine','schmand'],butter:['butter'],kichererbsen:['kichererbse'],linsen:['linsen'],kidneybohnen:['kidney'],schwarzebohnen:['schwarze bohnen','black beans'],weissebohnen:['weiße bohnen','weisse bohnen','cannellini'],
+  haferflocken:['haferflocken','hafer'],reis:['reis','basmati','jasmin'],nudeln:['nudeln','pasta','spaghetti','penne','fusilli','tagliatelle','linguine','rigatoni','farfalle'],vollkornbrot:['brot','toast'],tortilla:['tortilla','wrap'],
+  suesskartoffel:['süßkartoffel','süsskartoffel'],kartoffeln:['kartoffel'],couscous:['couscous','bulgur'],gnocchi:['gnocchi'],zwiebel:['zwiebel','schalotte'],fruehlingszwiebeln:['frühlingszwiebel','lauchzwiebel'],knoblauch:['knoblauch'],paprika:['paprikaschote','paprika'],
+  tomatenmark:['tomatenmark'],tomaten_dose:['gehackte tomaten','passierte tomaten','passata','dosentomaten','stückige tomaten','tomaten aus der dose'],tomaten:['tomate','cherrytomate','kirschtomate'],brokkoli:['brokkoli','broccoli'],spinat:['spinat','babyspinat'],zucchini:['zucchini','zucchino'],
+  karotten:['karotte','möhre','möhren'],gurke:['gurke'],salat:['salat','rucola','rauke','feldsalat'],avocado:['avocado'],banane:['banane'],beeren:['beeren','himbeere','heidelbeere','blaubeere','erdbeere'],apfel:['apfel','äpfel'],zitrone:['zitrone'],limette:['limette'],
+  erbsen:['erbsen'],mais:['mais'],pilze:['champignon','pilze'],olivenoel:['olivenöl','öl','rapsöl','sesamöl'],erdnussmus:['erdnussmus','erdnussbutter'],nuesse:['nüsse','mandeln','walnüsse','cashew'],honig:['honig','ahornsirup','agavendicksaft'],
+  sojasauce:['sojasauce','sojasoße','soja sauce','tamari'],kokosmilch:['kokosmilch'],pesto:['pesto'],gemuesebruehe:['brühe','fond','bouillon'],quinoa:['quinoa'],aubergine:['aubergine'],blumenkohl:['blumenkohl'],edamame:['edamame'],
+  sojajoghurt:['sojajoghurt'],haferdrink:['haferdrink','hafermilch'],tahin:['tahin','tahini','sesammus'],sesam:['sesam'],chiasamen:['chia'],mango:['mango'],ingwer:['ingwer'],rotkohl:['rotkohl','blaukraut']};
+const SYN_LIST=Object.entries(SYN).flatMap(([id,ks])=>ks.map(k=>[k,id])).sort((a,b)=>b[0].length-a[0].length);
+const PIECE_G={tomaten:80,karotten:80,kartoffeln:120,suesskartoffel:300,zucchini:250,aubergine:300,gurke:400,brokkoli:400,blumenkohl:800,pilze:20,apfel:150,banane:120};
+const SKIP=/^(salz|pfeffer|wasser|gewürz|chili|zimt|kreuzkümmel|kurkuma|paprikapulver|oregano|basilikum|petersilie|koriander|schnittlauch|thymian|rosmarin|muskat|curry|garam|zucker|prise)/i;
+const NUM='(\\d+(?:[.,]\\d+)?(?:\\s*-\\s*\\d+(?:[.,]\\d+)?)?|\\d+\\s*\\/\\s*\\d+|½|¼|¾|⅓|eine?n?|zwei|drei|vier|halbe?)';
+const UNIT='(kg|g|gr|gramm|ml|l|liter|el|tl|esslöffel|teelöffel|stk|stück|dosen?|bund|pck|päckchen|packung(?:en)?|zehen?|becher|tassen?|cups?|handvoll|scheiben?|prisen?)\\.?';
+const ING_RE=new RegExp('^'+NUM+'\\s*(?:'+UNIT+')?\\s+(.+)$','i');
+function numOf(s){s=s.toLowerCase().replace(',','.');if(s==='½'||/^halbe?$/.test(s))return .5;if(s==='¼')return .25;if(s==='¾')return .75;if(s==='⅓')return 1/3;if(/^eine?n?$/.test(s))return 1;const w={zwei:2,drei:3,vier:4}[s];if(w)return w;
+  if(s.includes('/')){const [a,b]=s.split('/');return +a/+b;}if(s.includes('-')){const [a,b]=s.split('-');return(+a + +b)/2;}return +s;}
+function matchIng(text){const t=' '+text.toLowerCase()+' ';for(const [k,id] of SYN_LIST)if(t.includes(k))return id;return null;}
+function toUnit(id,amt,unit){
+  const u=(unit||'').toLowerCase().replace(/\.$/,''),target=id?ING[id].u:null;
+  let base=null,val=amt;
+  if(/^(kg)$/.test(u)){base='g';val=amt*1000;}else if(/^(g|gr|gramm)$/.test(u))base='g';
+  else if(/^(l|liter)$/.test(u)){base='ml';val=amt*1000;}else if(u==='ml')base='ml';
+  else if(/^(el|esslöffel)$/.test(u)){base=target==='ml'?'ml':'g';val=amt*15;}else if(/^(tl|teelöffel)$/.test(u)){base=target==='ml'?'ml':'g';val=amt*5;}
+  else if(/^(tasse|tassen|cup|cups)$/.test(u)){base=target==='ml'?'ml':'g';val=amt*(target==='ml'?240:150);}
+  else if(/^becher$/.test(u)){base='g';val=amt*200;}
+  else if(/^dosen?$/.test(u)){base=target==='Stk'?'Stk':'g';val=id&&target!=='Stk'?amt*ING[id].pack:amt*400;}
+  else if(/^(packung|packungen|pck|päckchen)$/.test(u)){base=target==='Stk'?'Stk':target||'g';val=id&&target!=='Stk'?amt*ING[id].pack:amt*(target==='Stk'?1:250);}
+  else{base='Stk';}
+  if(!target)return{amt:Math.round(val),unit:base};
+  if(base===target||(base==='g'&&target==='ml')||(base==='ml'&&target==='g'))return{amt:Math.round(val*10)/10,unit:target};
+  if(base==='Stk'&&target!=='Stk')return{amt:Math.round(val*(PIECE_G[id]||100)),unit:target};
+  if(base!=='Stk'&&target==='Stk')return{amt:Math.max(.5,Math.round(val/150*2)/2),unit:'Stk'};
+  return{amt:val,unit:target};
+}
+function parseRecipeText(raw){
+  const lines=raw.replace(/\r/g,'').split('\n').filter(l=>!/^\s*[#@]/.test(l)).map(l=>l.replace(/\s+/g,' ').trim().replace(/^[^\p{L}\p{N}½¼¾⅓]+/u,'').trim()).filter(Boolean);
+  const rows=[],steps=[];let name='',serv=null,min=null,inSteps=false;
+  for(const l of lines){
+    const sv=l.match(/(\d+)\s*(portionen|personen|pers\.|servings)/i);if(sv&&!serv)serv=+sv[1];
+    const mn=l.match(/(\d+)\s*(min\.?|minuten)\b/i);if(mn&&!min&&!inSteps)min=+mn[1];
+    if(/^(zubereitung|anleitung|so geht'?s|so wird'?s gemacht|schritte|instructions)/i.test(l)){inSteps=true;continue;}
+    if(/^(zutaten|ingredients|du brauchst|für \d)/i.test(l)){inSteps=false;continue;}
+    const st=l.match(/^(\d+)[.)]\s+(.{12,})$/);
+    if(st&&!ING_RE.test(l.replace(/^\d+[.)]\s+/,''))){steps.push(st[2]);continue;}
+    const m=!inSteps&&l.match(ING_RE);
+    if(m){const what=m[3].replace(/^(von|vom|der|die|das)\s+/i,'').replace(/[,(].*$/,'').trim();
+      if(!what||SKIP.test(what))continue;
+      const id=matchIng(what),cv=toUnit(id,numOf(m[1]),m[2]);
+      if(!(cv.amt>0))continue;
+      if(id){const ex=rows.find(r=>r.id===id);if(ex){ex.amt=+(+ex.amt+cv.amt).toFixed(1);continue;}rows.push({id,amt:cv.amt});}
+      else rows.push({id:'_other',name:what.charAt(0).toUpperCase()+what.slice(1),unit:cv.unit,amt:cv.amt,tag:''});
+      continue;}
+    if(inSteps&&l.length>12){steps.push(l);continue;}
+    if(!name&&l.length>=4&&l.length<=70&&/[a-zäöü]{3}/i.test(l)&&!/^[#@]|http|www\.|follow|folg|like|link in bio/i.test(l))name=l.replace(/[#@].*$/,'').replace(/[^\p{L}\p{N}\s&,'’-]/gu,'').trim();
+  }
+  return{name,serv,min,rows,steps};
+}
+function applyParsed(p){
+  readNew();
+  if(p.name&&!nr.n.trim())nr.n=p.name;
+  if(p.serv)nr.serv=p.serv;if(p.min&&!nr.min)nr.min=p.min;
+  const kept=nr.rows.filter(x=>x.id&&x.amt);
+  nr.rows=kept.concat(p.rows.map(x=>Object.assign({},x,{amt:String(x.amt)})));if(!nr.rows.length)nr.rows=[{id:'',amt:''}];
+  if(p.steps.length&&!nr.steps.trim())nr.steps=p.steps.join('\n');
+  drawNew();
+  const el=document.getElementById('impMsg');
+  if(el)el.innerHTML=p.rows.length?`<span style="color:var(--basil)">${p.rows.length} Zutaten erkannt${p.steps.length?` und ${p.steps.length} Schritte`:''}.</span> Bitte kurz prüfen, besonders die Mengen.`:'<span class="warn">Keine Zutaten mit Mengen gefunden. Versuch einen schärferen Screenshot oder füg den Text ein.</span>';
+}
+async function runOCR(files){
+  const el=document.getElementById('impMsg'),btn=document.getElementById('impFiles');
+  readNew();btn.disabled=true;
+  const set=t=>{const e=document.getElementById('impMsg');if(e)e.textContent=t;};
+  set('Texterkennung wird geladen … (beim ersten Mal ca. 10 Sekunden)');
+  try{
+    let cur=1,tot=files.length;
+    const text=await ocrImages(files,(pct,i,n)=>{if(i){cur=i;tot=n;}set(`Lese Screenshot ${cur} von ${tot} … ${pct||0} %`);});
+    nr.lastText=text;applyParsed(parseRecipeText(text));
+  }catch(e){console.warn(e);set('Das hat nicht geklappt. Prüf die Internetverbindung oder füg den Text ein.');}
+  finally{const b=document.getElementById('impFiles');if(b)b.disabled=false;}
 }
 function saveNew(){
   const err=t=>{document.getElementById('nrErr').textContent=t;};
@@ -837,6 +935,8 @@ app.addEventListener('click',e=>{
   else if(a==='srv-'||a==='srv+'){HH.serv=Math.max(1,Math.min(12,HH.serv+(a==='srv+'?1:-1)));saveHH();render();}
   else if(a==='undo'&&ui.undo){const v=myVotes();if(v.w[ui.undo.w])delete v.w[ui.undo.w][ui.undo.r];ui.undo=null;saveVotes();render();}
   else if(a==='swap'){replaceDay(w,t.dataset.d);}
+  else if(a==='ate'){eatPlanned(w,t.dataset.d).then(()=>toast('In deinen Tracker eingetragen und als gekocht markiert'));}
+  else if(a==='uncook'){patchWeek(w,{days:{[t.dataset.d]:{cooked:false}}});}
   else if(a==='skip'){const x=weekDoc(w).days[t.dataset.d]||{};patchWeek(w,{days:{[t.dataset.d]:{skip:!x.skip}}});}
   else if(a==='unskip'){patchWeek(w,{days:{[t.dataset.d]:{skip:false}}});replaceDay(w,t.dataset.d);}
   else if(a==='exadd'){const inp=document.getElementById('exIn');const val=inp.value.trim();if(!val)return;inp.value='';inp.blur();patchWeek(w,{extras:{[uid()]:{t:val,done:false}}});}
@@ -875,6 +975,14 @@ app.addEventListener('change',e=>{
   else if(t.id==='addAvoid'&&t.value){ME.avoid.push(t.value);saveMe();render(true);}
   else if(t.id==='addLike'&&t.value){ME.likes.push(t.value);saveMe();render(true);}
 });
+// Gericht aus dem Plan gegessen: in den eigenen Tracker, Tag für beide als gekocht markieren
+async function eatPlanned(w,d,portions=1){
+  const x=weekDoc(w).days[d]||{},r=x.rid&&R(x.rid);if(!r)return;
+  const today=dkey(),k=d<today?d:today,slot=k===today&&slotNow()!=='Snack'?slotNow():'Abendessen';
+  await loadLog(k);LOGS[k].push({id:uid(),t:Date.now(),slot,name:r.n,portions,k:r.per.k*portions,p:r.per.p*portions,c:r.per.c*portions,f:r.per.f*portions});saveLog(k);
+  patchWeek(w,{days:{[d]:{cooked:x.cooked||myId,ate:{[myId]:true}}}});
+}
+function plannedDay(rid){for(const w of [THIS_WEEK,NEXT_WEEK]){const W=WEEKS[w];if(!W||!W.days)continue;const d=Object.keys(W.days).sort().find(d=>W.days[d]&&W.days[d].rid===rid&&!W.days[d].skip&&!(W.days[d].ate&&W.days[d].ate[myId])&&d<=dkey());if(d)return{w,d};}return null;}
 function vote(rid,s){const w=ui.week;const v=myVotes();v.w[w]=v.w[w]||{};v.w[w][rid]=s;ui.undo={w,r:rid};saveVotes();render();}
 
 function openSheet(html){const root=document.getElementById('sheet-root');root.innerHTML=`<div class="sheet-bg" id="sbg"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`;
