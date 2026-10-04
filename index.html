@@ -193,8 +193,15 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .sync{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px;background:var(--muted)}
 .sync.on{background:var(--basil)}.sync.err{background:var(--warn)}
 .heart{color:var(--pink)}
-body{background:linear-gradient(180deg,#FFD9C2 0,#FFE9DD 160px,#FFF3EC 300px,var(--bg) 520px) no-repeat,var(--bg)}
-@media (prefers-color-scheme:dark){body{background:linear-gradient(180deg,#4A2010 0,#2A120A 180px,#120805 320px,var(--bg) 520px) no-repeat,var(--bg)}}
+body{background:#FFE3D3}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(120% 60% at 0% 0%,#FFC9A3 0%,transparent 60%),radial-gradient(100% 60% at 100% 30%,#FFB3C7 0%,transparent 60%),radial-gradient(120% 70% at 20% 100%,#D9C4FF 0%,transparent 65%),linear-gradient(170deg,#FFE6D6 0%,#FFD6DE 50%,#EADCFF 100%)}
+@media (prefers-color-scheme:dark){body{background:#1A0E14}
+  body::before{background:radial-gradient(120% 60% at 0% 0%,#5A2614 0%,transparent 60%),radial-gradient(100% 60% at 100% 30%,#5A1A33 0%,transparent 60%),radial-gradient(120% 70% at 20% 100%,#2E1F5C 0%,transparent 65%),linear-gradient(170deg,#2A140E 0%,#2A1020 50%,#1B1433 100%)}}
+.sheet{background:#FFF4EE}@media (prefers-color-scheme:dark){.sheet{background:#1C1416}}
+input[type=search]{background:rgba(255,255,255,.7)}@media (prefers-color-scheme:dark){input[type=search]{background:rgba(255,255,255,.1)}}
+h2{color:rgba(60,30,40,.62)}@media (prefers-color-scheme:dark){h2{color:rgba(255,235,240,.6)}}
+.mast .aside{color:rgba(60,30,40,.65)}@media (prefers-color-scheme:dark){.mast .aside{color:rgba(255,235,240,.65)}}
 .t-vegan{background:linear-gradient(140deg,#6EDB8A,#22A447)!important}.t-veg{background:linear-gradient(140deg,#6FD8C8,#16A0A0)!important}
 .t-meat{background:linear-gradient(140deg,#FFB547,#FF5E3A)!important}.t-fish{background:linear-gradient(140deg,#6DBBFF,#1C7CF5)!important}
 .lrow .min[class*="t-"]{color:#fff}
