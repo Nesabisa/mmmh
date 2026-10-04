@@ -200,6 +200,8 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .rcard .s{font-size:13px;color:var(--muted)}
 .hbtn{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--fill);color:var(--pink);font-size:17px;line-height:1}
 .netb{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:60;background:var(--saffron);color:#000;font-size:13px;font-weight:600;padding:8px 12px;border-radius:12px;text-align:center}
+.prog{background:var(--card);border-radius:14px;padding:14px 16px}
+.fold{margin-top:18px}.fold summary{padding:8px 4px;font-size:13px}
 .vrow{display:flex;gap:12px;align-items:center;padding:12px 14px;position:relative}
 .vrow+.vrow::before{content:"";position:absolute;top:0;left:14px;right:0;border-top:.5px solid var(--line)}
 .vtop{flex:1;min-width:0;cursor:pointer}
@@ -678,6 +680,21 @@ function ingScore(r,w){let sc=0;const ids=r.ings.map(([id])=>id);
 const dinnerPool=(w=ui.week)=>{const rec=recentRids(w),fo=focusOf(w);return RECIPES.filter(r=>(r.meals.includes('A')||r.meals.includes('M'))&&!rec.has(r.id)&&passes(r,fo));};
 const SUGG_N=12;
 // Wöchentlich wechselnde Vorschläge: eigene Rezepte und Gerichte, die schon jemand gut fand, zuerst
+const BATCH=10;
+const suggIds=w=>((WEEKS[w]&&WEEKS[w].sugg)||[]).filter(id=>R(id));
+function participants(){const s=new Set([myId,...Object.keys(names),...voters()]);return[...s];}
+// Gericht ist "gefunden", wenn alle Mitmachenden mindestens Ja gesagt haben
+function matchIds(w){const P=participants(),picks=picksOf(w);return dinnerPool(w).filter(r=>!picks.includes(r.id)&&P.every(v=>scoreFor(v,w,r.id)>=2)).map(r=>r.id);}
+// Offene Vorschläge einer Person: zuerst, was die anderen gut fanden
+function openFor(v,w){const ids=suggIds(w).filter(id=>scoreFor(v,w,id)==null&&!picksOf(w).includes(id)&&dinnerPool(w).some(r=>r.id===id));
+  const liked=id=>Object.keys(VOTES).some(o=>o!==v&&scoreFor(o,w,id)>=2)?1:0;return ids.map(R).sort((a,b)=>liked(b.id)-liked(a.id));}
+function extendSugg(w,n=BATCH){const cur=suggIds(w),add=suggestions(w).filter(r=>!cur.includes(r.id)).slice(0,n).map(r=>r.id);if(add.length)patchWeek(w,{sugg:cur.concat(add)});return add.length;}
+// Startet die gemeinsame Vorschlagsliste und holt automatisch neue, wenn alle durch sind und es nicht reicht
+let autoGuard='';
+function maintainSugg(w){const W=WEEKS[w];if(!SETUP||(W&&W.finalized))return;
+  if(!suggIds(w).length){if(autoGuard!==w+':init'){autoGuard=w+':init';extendSugg(w);}return;}
+  const need=Math.max(0,HH.dinners-picksOf(w).length);if(matchIds(w).length>=need)return;
+  if(participants().every(v=>openFor(v,w).length===0)){const key=w+':'+suggIds(w).length;if(autoGuard!==key){autoGuard=key;if(extendSugg(w))toast('Noch nicht genug gefunden – 10 neue Vorschläge für euch beide');}}}
 function suggestions(w){const pool=dinnerPool(w),picks=new Set(picksOf(w));
   const pri=r=>(Object.keys(VOTES).some(v=>scoreFor(v,w,r.id)>=2)?2:0)+(r.own?1:0);
   return pool.filter(r=>!picks.has(r.id)).sort((a,b)=>pri(b)-pri(a)||ingScore(b,w)-ingScore(a,w)||hash(w+a.id)-hash(w+b.id));}
@@ -733,7 +750,7 @@ const TABS=[['woche','Woche'],['favoriten','Favoriten'],['einkauf','Einkauf'],['
 function renderTabs(){
   const tabs=document.getElementById('tabs');if(!SETUP){tabs.innerHTML='';return;}
   const fin=WEEKS[NEXT_WEEK]&&WEEKS[NEXT_WEEK].finalized;
-  const open=fin?0:suggestions(NEXT_WEEK).slice(0,SUGG_N).filter(r=>scoreFor(myId,NEXT_WEEK,r.id)==null).length;
+  const open=fin?0:openFor(myId,NEXT_WEEK).length;
   tabs.innerHTML=TABS.map(([k,l])=>`<button data-tab="${k}" ${ui.tab===k?'aria-current="page"':''}>${ICON[k]}${l}${k==='woche'&&open?`<span class="badge">${open}</span>`:''}</button>`).join('');}
 document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;ui.tab=b.dataset.tab;render();window.scrollTo(0,0);});
 let pending=false;
@@ -742,6 +759,7 @@ function render(force){
   if(!force&&ae&&document.getElementById('app').contains(ae)&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)&&ae.type!=='checkbox'){pending=true;return;}
   pending=false;renderTabs();const m=document.getElementById('app');
   if(!SETUP){m.innerHTML=vSetup();return;}
+  if(ui.tab==='woche'||ui.tab==='favoriten')maintainSugg(ui.week);
   m.innerHTML=({woche:vWeek,favoriten:vFav,einkauf:vShop,rezepte:vRecipes,tracker:vTracker,ich:vMe})[ui.tab]();
   if(ui.tab==='tracker'&&!LOGS[ui.date])loadLog(ui.date).then(()=>render());
 }
@@ -782,31 +800,62 @@ function vWeek(){
     h+=favBtn+`<h2>Euer Plan</h2>${dayList(w)}<div class="row" style="margin-top:14px"><button class="btn ghost sm" data-a="unfinal">Nochmal abstimmen</button></div>`;
     return h;
   }
-  const fo=focusOf(w),picks=picksOf(w),sug=suggestions(w),shown=ui.showAll?sug:sug.slice(0,SUGG_N);
-  const others=voters().filter(v=>v!==myId),paused=recentRids(w).size;
+  const fo=focusOf(w),picks=picksOf(w),pool=dinnerPool(w),sids=suggIds(w),need=Math.max(0,HH.dinners-picks.length);
+  const parts=participants(),others=parts.filter(v=>v!==myId),paused=recentRids(w).size;
+  const found=matchIds(w).length,mineOpen=openFor(myId,w);
+  const vbtn=(r,v,cls,ic,lab)=>{const s=scoreFor(myId,w,r.id);return`<button class="${cls}" data-vote="${v}" data-r="${r.id}" aria-pressed="${s===v}" aria-label="${lab}">${ic}</button>`;};
+  const oth=r=>others.map(v=>{const x=scoreFor(v,w,r.id);return x==null?'':`<span class="s${x}">${esc(nameOf(v))}: ${x===3?'Unbedingt':x===2?'Ja':'Nein'}</span>`;}).join('');
+  const row=r=>{const s=scoreFor(myId,w,r.id),av=recipeAvoid(r),o=oth(r);
+    return`<div class="vrow ${s===0?'voted0':''}"><div class="vtop" data-open="${r.id}"><div class="vt">${hearted(r.id)?'<span class="heart">♥</span> ':''}${esc(r.n)}</div>
+     <div class="s">${dietTag(r)}${r.min} Min. · ${r0(r.per.k)} kcal · ${r0(r.per.p)} g Protein${!av.ok?' · <span class="warn">mit Ersatz</span>':''}${ingHint(r,w)}</div>${mbar(r)}${o?`<div class="who" style="margin-top:6px">${o}</div>`:''}</div>
+     <div class="vmini">${vbtn(r,0,'v0',ICON.no,'Nein')}${vbtn(r,2,'v2',ICON.yes,'Ja')}${vbtn(r,3,'v3',ICON.love,'Unbedingt')}</div></div>`;};
+  // Fortschritt
+  const pct=need?Math.min(100,found/need*100):100;
+  h+=`<div class="prog"><div class="spread"><b>${Math.min(found,need)} von ${need} Gerichten gefunden</b><span class="small muted">${picks.length?`+ ${picks.length} Favorit${picks.length>1?'en':''}`:''}</span></div><div class="bar" style="height:6px;margin-top:8px"><i style="width:${pct}%;background:var(--sunset)"></i></div>
+   <p class="small muted" style="margin:8px 0 0">${others.length?`Gefunden sind Gerichte, die ihr beide mit Ja oder Unbedingt bewertet habt.`:'Sobald die andere Person mitmacht, zählen nur Gerichte, die ihr beide gut findet.'}</p></div>`;
+  // Große Karte
+  const r=mineOpen[0];
+  if(found>=need&&need>0){
+    h+=`<div class="empty" style="margin-top:12px"><b style="color:var(--ink)">Ihr habt genug Gerichte!</b><br>Unten kannst du den Plan festlegen.${mineOpen.length?` Du kannst auch noch ${mineOpen.length} weitere bewerten.`:''}</div>`;
+  }
+  if(r&&!(found>=need&&need>0&&!ui.keepVoting)){const av=recipeAvoid(r),o=oth(r);
+    h+=`<article class="vote" aria-live="polite" style="margin-top:12px"><div class="spread"><div>${dietTag(r)}${r.hp?'<span class="diet">High Protein</span>':''}</div><span class="small" style="opacity:.85">noch ${mineOpen.length}</span></div>
+    <div class="name">${esc(r.n)}</div>
+    <div class="facts"><div><b>${r.min}</b><span>Minuten</span></div><div><b>${r0(r.per.k)}</b><span>kcal</span></div><div><b>${r0(r.per.p)} g</b><span>Protein</span></div></div>
+    ${mbar(r)}
+    <p class="small muted" style="margin-top:10px">${r.ings.slice(0,6).map(([id])=>esc(ING[id].n)).join(', ')}${r.ings.length>6?' …':''}</p>
+    ${o?`<p class="small" style="margin:0 0 6px;font-weight:600">${others.filter(v=>scoreFor(v,w,r.id)>=2).map(v=>esc(nameOf(v))).join(', ')?others.filter(v=>scoreFor(v,w,r.id)>=2).map(v=>esc(nameOf(v))).join(', ')+' findet das gut ♥':''}</p>`:''}
+    ${!av.ok?`<p class="small warn">Mit Ersatz: ${av.swaps.map(s=>esc(ING[s.id].n)+' → '+(s.sub?esc(s.sub.n):'?')).join('; ')}</p>`:''}
+    <div class="row" style="gap:16px"><button class="link" data-open="${r.id}">Rezept ansehen</button><button class="link" data-heart="${r.id}">${hearted(r.id)?'♥ Favorit':'♡ Als Favorit speichern'}</button></div>
+    <div class="vbtns"><button class="no" data-vote="0" data-r="${r.id}" data-card="1"><span class="ic2">${ICON.no}</span>Nein</button><button class="yes" data-vote="2" data-r="${r.id}" data-card="1"><span class="ic2">${ICON.yes}</span>Ja</button><button class="love" data-vote="3" data-r="${r.id}" data-card="1"><span class="ic2">${ICON.love}</span>Unbedingt</button></div></article>
+    ${ui.undo&&ui.undo.w===w?`<p style="margin:10px 4px 0"><button class="link" data-a="undo">Letzte Bewertung zurücknehmen</button></p>`:''}`;
+  }else if(!r&&found<need){
+    const waiting=others.map(v=>[v,openFor(v,w).length]).filter(x=>x[1]>0);
+    const more=pool.filter(x=>!sids.includes(x.id)&&!picks.includes(x.id)).length;
+    h+=`<div class="empty" style="margin-top:12px">${waiting.length?`<b style="color:var(--ink)">Du bist durch.</b><br>Warte auf ${waiting.map(([v,n])=>`${esc(nameOf(v))} (noch ${n} offen)`).join(', ')}.`:more?'Ihr seid beide durch und habt noch nicht genug. Neue Vorschläge werden geholt …':'Keine weiteren passenden Gerichte. Nimm einen Fokus raus.'}
+     ${more?`<div style="margin-top:12px"><button class="btn sm" data-a="moreSugg">${waiting.length?'Trotzdem mehr Vorschläge':'10 weitere Vorschläge'}</button></div>`:''}</div>`;
+  }
+  if(found>=need&&need>0&&mineOpen.length&&!ui.keepVoting)h+=`<p style="margin:8px 4px 0"><button class="link" data-a="keepVoting">Trotzdem weiter bewerten</button></p>`;
+  // Fokus, Zutaten (eingeklappt), Favorit
   const qk=QUICK.filter(k=>k!=='F'),extra=fo.filter(k=>!qk.includes(k));
   h+=`<h2>Fokus der Woche</h2><div class="chips">${qk.map(k=>`<button class="pill" data-focus="${k}" aria-pressed="${fo.includes(k)}">${FKEY[k].l}</button>`).join('')}</div>
   ${extra.length?`<div class="row" style="margin:0 2px 8px">${extra.map(k=>`<button class="pill x" data-focus="${k}">${FKEY[k].l}</button>`).join('')}</div>`:''}
-  <div class="spread" style="margin:0 4px"><span class="small muted">${fo.length?`Gilt für euch beide. ${dinnerPool(w).length} Gerichte passen.`:'Optional. Nur passende Gerichte werden vorgeschlagen.'}</span><button class="link" data-a="focusAll" style="flex:none">Alle Kategorien${fo.length?` (${fo.length})`:''}</button></div>`;
+  <div class="spread" style="margin:0 4px"><span class="small muted">${fo.length?`Gilt für euch beide. ${pool.length} Gerichte passen.`:'Optional. Nur passende Gerichte werden vorgeschlagen.'}</span><button class="link" data-a="focusAll" style="flex:none">Alle Kategorien${fo.length?` (${fo.length})`:''}</button></div>`;
   const mi=wkIng(myId,w),others0=Object.keys(VOTES).filter(v=>v!==myId);
   const ingSel=(id,ex)=>`<select id="${id}" style="margin-top:6px"><option value="">Zutat hinzufügen …</option>${Object.values(ING).filter(i=>!i.custom&&!ex.includes(i.id)).sort((a,b)=>a.n.localeCompare(b.n,'de')).map(i=>`<option value="${i.id}">${esc(i.n)}</option>`).join('')}</select>`;
   const otherTxt=k=>others0.map(v=>{const l=wkIng(v,w)[k];return l.length?`${esc(nameOf(v))}: ${l.map(i=>esc(ING[i]?ING[i].n:i)).join(', ')}`:'';}).filter(Boolean).join(' · ');
-  h+=`<h2>Zutaten diese Woche</h2><div class="panel" style="margin-top:0">
+  const ingN=mi.like.length+mi.dis.length;
+  h+=`<details class="fold" ${ui.ingOpen?'open':''} data-a="ingToggle"><summary>Zutaten diese Woche${ingN?` (${ingN})`:''}</summary><div class="panel" style="margin-top:4px">
    <h3>Lust auf</h3><div class="row" style="margin-top:6px">${mi.like.map(i=>`<button class="pill x" data-wk="like" data-v="${i}">${esc(ING[i]?ING[i].n:i)}</button>`).join('')||'<span class="small muted">Noch nichts</span>'}</div>${otherTxt('like')?`<p class="small muted" style="margin:6px 0 0">${otherTxt('like')}</p>`:''}${ingSel('wkLike',mi.like)}
    <h3 style="margin-top:14px">Diese Woche lieber nicht</h3><div class="row" style="margin-top:6px">${mi.dis.map(i=>`<button class="pill x" data-wk="dis" data-v="${i}">${esc(ING[i]?ING[i].n:i)}</button>`).join('')||'<span class="small muted">Noch nichts</span>'}</div>${otherTxt('dis')?`<p class="small muted" style="margin:6px 0 0">${otherTxt('dis')}</p>`:''}${ingSel('wkDis',mi.dis)}
-   <p class="small muted" style="margin:10px 0 0">Gerichte mit diesen Zutaten rücken in den Vorschlägen nach oben bzw. unten.</p></div>`;
+   <p class="small muted" style="margin:10px 0 0">Gerichte mit diesen Zutaten rücken in neuen Vorschlägen nach oben bzw. unten.</p></div></details>`;
   h+=`<div style="margin-top:16px">${favBtn}</div>`;
   if(picks.length)h+=`<h2>Fest eingeplant</h2><div class="group">${picks.map(id=>{const r=R(id),by=W.picks[id].by;return`<div class="vrow"><div class="vtop" data-open="${id}"><div class="vt"><span class="heart">♥</span> ${esc(r.n)}</div><div class="s">${by===myId?'Dein Favorit':'Favorit von '+esc(nameOf(by))} · kommt sicher in den Plan</div></div><button class="link" data-unpick="${id}">Entfernen</button></div>`;}).join('')}</div>`;
-  const vbtn=(r,v,cls,ic,lab)=>{const s=scoreFor(myId,w,r.id);return`<button class="${cls}" data-vote="${v}" data-r="${r.id}" aria-pressed="${s===v}" aria-label="${lab}">${ic}</button>`;};
-  const row=r=>{const s=scoreFor(myId,w,r.id),av=recipeAvoid(r);
-    const oth=others.map(v=>{const x=scoreFor(v,w,r.id);return x==null?'':`<span class="s${x}">${esc(nameOf(v))}: ${x===3?'Unbedingt':x===2?'Ja':'Nein'}</span>`;}).join('');
-    return`<div class="vrow ${s===0?'voted0':''}"><div class="vtop" data-open="${r.id}"><div class="vt">${hearted(r.id)?'<span class="heart">♥</span> ':''}${esc(r.n)}</div>
-     <div class="s">${dietTag(r)}${r.min} Min. · ${r0(r.per.k)} kcal · ${r0(r.per.p)} g Protein${!av.ok?' · <span class="warn">mit Ersatz</span>':''}${ingHint(r,w)}</div>${mbar(r)}${oth?`<div class="who" style="margin-top:6px">${oth}</div>`:''}</div>
-     <div class="vmini">${vbtn(r,0,'v0',ICON.no,'Nein')}${vbtn(r,2,'v2',ICON.yes,'Ja')}${vbtn(r,3,'v3',ICON.love,'Unbedingt')}</div></div>`;};
-  const mine=shown.filter(r=>scoreFor(myId,w,r.id)!=null).length;
-  h+=`<h2>${ui.showAll?'Alle passenden Gerichte':'Vorschläge dieser Woche'}</h2><p class="small muted" style="margin:0 4px 8px">Du hast ${mine} von ${shown.length} bewertet. Ein „Nein“ von einer Person reicht, dann fliegt das Gericht raus.${paused?` ${paused} Gerichte der letzten ${HH.pause===1?'Woche':HH.pause+' Wochen'} pausieren.`:''}</p>
-  ${shown.length?`<div class="group">${shown.map(row).join('')}</div>`:'<div class="empty">Zu diesem Fokus passt gerade nichts. Nimm einen Fokus raus.</div>'}
-  ${sug.length>SUGG_N?`<button class="btn ghost" data-a="showAll" style="width:100%;margin-top:10px">${ui.showAll?'Nur die Vorschläge zeigen':`Alle ${sug.length} Gerichte anzeigen`}</button>`:''}`;
+  // Ausklappbare Listen
+  const sugR=sids.map(R).filter(Boolean);
+  h+=`<details class="fold" ${ui.suggOpen?'open':''} data-a="suggToggle"><summary>Vorschläge dieser Woche (${sugR.length})</summary><p class="small muted" style="margin:0 4px 8px">Hier kannst du deine Bewertungen ändern. Ein „Nein“ von einer Person reicht, dann fliegt das Gericht raus.${paused?` ${paused} Gerichte der letzten ${HH.pause===1?'Woche':HH.pause+' Wochen'} pausieren.`:''}</p>${sugR.length?`<div class="group">${sugR.map(row).join('')}</div>`:''}</details>`;
+  const allList=pool.filter(x=>!sids.includes(x.id)&&!picks.includes(x.id));
+  h+=`<details class="fold" ${ui.allOpen?'open':''} data-a="allToggle"><summary>Alle passenden Gerichte (${allList.length})</summary><p class="small muted" style="margin:0 4px 8px">Was du hier mit Ja oder Unbedingt wählst, landet auch bei ${others.length?others.map(v=>esc(nameOf(v))).join(', '):'der anderen Person'} zum Abstimmen.</p>${ui.allOpen&&allList.length?`<div class="group">${allList.slice(0,ui.allLim||40).map(row).join('')}</div>${allList.length>(ui.allLim||40)?`<button class="btn ghost" data-a="allMore" style="width:100%;margin-top:10px">Weitere anzeigen</button>`:''}`:''}</details>`;
   const rank=ranking(w).filter(x=>!picks.includes(x.r.id)),N=HH.dinners,free=Math.max(0,N-picks.length);
   const top=rank.filter(x=>x.voted).slice(0,Math.max(free,5));
   h+=`<h2>Aktueller Stand</h2>${picks.length||top.length?`<div class="ledger">${picks.map((id,i)=>`<button class="lrow" data-open="${id}"><div class="min t-${R(id).diet}">${i+1}<small>fix</small></div><div><div class="t">${esc(R(id).n)}</div><div class="s">♥ Favorit, eingeplant</div></div><div class="k"></div></button>`).join('')}${top.map((x,i)=>`<button class="lrow" data-open="${x.r.id}"><div class="min">${i<free?picks.length+i+1:'–'}<small>${i<free?'drin':'knapp'}</small></div><div><div class="t">${esc(x.r.n)}</div><div class="who" style="margin-top:4px">${x.sc.map(s=>`<span class="s${s.s??''}">${esc(nameOf(s.v))}: ${s.s==null?'offen':s.s===3?'Unbedingt':s.s===2?'Ja':'Nein'}</span>`).join('')}</div></div><div class="k">${x.match?'<b>Match</b>':''}</div></button>`).join('')}</div>`:'<p class="muted">Noch keine Ja-Stimmen.</p>'}
@@ -915,9 +964,9 @@ function filterSheet(mode='rez'){
   <div class="row" style="margin-top:16px;flex-wrap:nowrap"><button class="btn ghost" data-sclear style="flex:none">Zurücksetzen</button><button class="btn basil" data-close style="flex:1">${count} ${mode==='week'?'Gerichte passen':'Rezepte anzeigen'}</button></div>`);
   const sh=document.querySelector('.sheet');const top=sh.scrollTop;
   sh.addEventListener('click',e=>{const b=e.target.closest('[data-sk],[data-sx],[data-sclear]');if(!b)return;const st=document.querySelector('.sheet').scrollTop;
-    if(b.dataset.sk){if(mode==='week')patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),b.dataset.sk)});else{ui.f.keys=toggleKey(ui.f.keys,b.dataset.sk);render();}}
+    if(b.dataset.sk){if(mode==='week')patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),b.dataset.sk),sugg:[]});else{ui.f.keys=toggleKey(ui.f.keys,b.dataset.sk);render();}}
     else if(b.dataset.sx){const k=b.dataset.sx;if(k==='subs'){ME.showSubs=!ME.showSubs;saveMe();}else f[k]=!f[k];render();}
-    else{if(mode==='week')patchWeek(ui.week,{focus:[]});else{ui.f={keys:[],fav:false,own:false,heart:false};render();}}
+    else{if(mode==='week')patchWeek(ui.week,{focus:[],sugg:[]});else{ui.f={keys:[],fav:false,own:false,heart:false};render();}}
     filterSheet(mode);document.querySelector('.sheet').scrollTop=st;});
 }
 
@@ -1209,8 +1258,8 @@ addEventListener('online',()=>{netBanner();toast('Wieder online – wird synchro
 const app=document.getElementById('app');
 app.addEventListener('click',e=>{
   const hb=e.target.closest('[data-heart]');if(hb){e.stopPropagation();toggleHeart(hb.dataset.heart);render();return;}
-  const v=e.target.closest('[data-vote]');if(v){vote(v.dataset.r,+v.dataset.vote);return;}
-  const fc=e.target.closest('[data-focus]');if(fc){patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),fc.dataset.focus)});return;}
+  const v=e.target.closest('[data-vote]');if(v){vote(v.dataset.r,+v.dataset.vote,!!v.dataset.card);return;}
+  const fc=e.target.closest('[data-focus]');if(fc){patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),fc.dataset.focus),sugg:[]});return;}
   const fk=e.target.closest('[data-fk]');if(fk){ui.f.keys=toggleKey(ui.f.keys,fk.dataset.fk);render();return;}
   const wk=e.target.closest('[data-wk]');if(wk){const v=myVotes();v.ing=v.ing||{};const cur=wkIng(myId,ui.week);cur[wk.dataset.wk]=cur[wk.dataset.wk].filter(x=>x!==wk.dataset.v);v.ing[ui.week]=cur;saveVotes();render();return;}
   const pk=e.target.closest('[data-pick]');if(pk){pickFavorite(ui.week,pk.dataset.pick);return;}
@@ -1228,7 +1277,9 @@ app.addEventListener('click',e=>{
   else if(a==='undo'&&ui.undo){const v=myVotes();if(v.w[ui.undo.w])delete v.w[ui.undo.w][ui.undo.r];ui.undo=null;saveVotes();render();}
   else if(a==='swap'){replaceDay(w,t.dataset.d);}
   else if(a==='favpick'){favPicker();}
-  else if(a==='showAll'){ui.showAll=!ui.showAll;render();}
+  else if(a==='moreSugg'){if(extendSugg(w))toast('10 neue Vorschläge – auch für die andere Person');}
+  else if(a==='keepVoting'){ui.keepVoting=true;render();}
+  else if(a==='allMore'){ui.allLim=(ui.allLim||40)+40;render();}
   else if(a==='ate'){eatPlanned(w,t.dataset.d).then(()=>toast('In deinen Tracker eingetragen und als gekocht markiert'));}
   else if(a==='uncook'){patchWeek(w,{days:{[t.dataset.d]:{cooked:false}}});}
   else if(a==='skip'){const x=weekDoc(w).days[t.dataset.d]||{};patchWeek(w,{days:{[t.dataset.d]:{skip:!x.skip}}});}
@@ -1261,7 +1312,7 @@ app.addEventListener('click',e=>{
     else prompt('Link kopieren:',url);}
   else if(a==='reset'){if(confirm('Code oder Namen neu eingeben? Eure gemeinsamen Daten bleiben unter dem alten Code gespeichert.')){try{localStorage.removeItem('fk-setup');}catch(e){}location.href=location.pathname;}}
 });
-app.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.a==='daysToggle')ui.daysOpen=d.open;},true);
+app.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.a==='ingToggle')ui.ingOpen=d.open;if(d.dataset&&d.dataset.a==='suggToggle')ui.suggOpen=d.open;if(d.dataset&&d.dataset.a==='allToggle'){const was=ui.allOpen;ui.allOpen=d.open;if(d.open&&!was)render();}if(d.dataset&&d.dataset.a==='daysToggle')ui.daysOpen=d.open;},true);
 app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='exIn'){e.preventDefault();document.querySelector('[data-a="exadd"]').click();}if(e.key==='Enter'&&(e.target.id==='suName'||e.target.id==='suCode')){e.preventDefault();doSetup();}});
 app.addEventListener('input',e=>{
   if(e.target.id==='q'){ui.q=e.target.value;const pos=e.target.selectionStart;render(true);const el=document.getElementById('q');if(el){el.focus();el.setSelectionRange(pos,pos);}}
@@ -1284,7 +1335,8 @@ async function eatPlanned(w,d,portions=1){
   patchWeek(w,{days:{[d]:{cooked:x.cooked||myId,ate:{[myId]:true}}}});
 }
 function plannedDay(rid){for(const w of [THIS_WEEK,NEXT_WEEK]){const W=WEEKS[w];if(!W||!W.days)continue;const d=Object.keys(W.days).sort().find(d=>W.days[d]&&W.days[d].rid===rid&&!W.days[d].skip&&!(W.days[d].ate&&W.days[d].ate[myId])&&d<=dkey());if(d)return{w,d};}return null;}
-function vote(rid,s){const w=ui.week;const v=myVotes();v.w[w]=v.w[w]||{};if(v.w[w][rid]===s)delete v.w[w][rid];else v.w[w][rid]=s;saveVotes();render();}
+function vote(rid,s,card){const w=ui.week;const v=myVotes();v.w[w]=v.w[w]||{};if(!card&&v.w[w][rid]===s)delete v.w[w][rid];else v.w[w][rid]=s;
+  ui.undo=card?{w,r:rid}:null;if(s>=2&&!suggIds(w).includes(rid))patchWeek(w,{sugg:suggIds(w).concat(rid)});saveVotes();render();}
 
 function openSheet(html){const root=document.getElementById('sheet-root');root.innerHTML=`<div class="sheet-bg" id="sbg"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`;
   document.getElementById('sbg').addEventListener('click',e=>{if(e.target.id==='sbg'||e.target.closest('[data-close]'))closeSheet();});}
