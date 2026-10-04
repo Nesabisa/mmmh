@@ -193,6 +193,12 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .sync{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px;background:var(--muted)}
 .sync.on{background:var(--basil)}.sync.err{background:var(--warn)}
 .heart{color:var(--pink)}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -16px 12px;padding:0 16px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.chips::-webkit-scrollbar,.hscroll::-webkit-scrollbar{display:none}.chips .pill{flex:none}
+.hscroll{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.rcard{flex:0 0 70%;max-width:260px;scroll-snap-align:start;background:var(--card);border-radius:16px;padding:14px;position:relative;cursor:pointer}
+.rcard .rn{font-weight:700;font-size:17px;line-height:1.2;margin:8px 0 6px;padding-right:30px}
+.rcard .s{font-size:13px;color:var(--muted)}
+.hbtn{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--fill);color:var(--pink);font-size:17px;line-height:1}
 .vrow{display:flex;gap:12px;align-items:center;padding:12px 14px;position:relative}
 .vrow+.vrow::before{content:"";position:absolute;top:0;left:14px;right:0;border-top:.5px solid var(--line)}
 .vtop{flex:1;min-width:0;cursor:pointer}
@@ -343,7 +349,153 @@ const REC_RAW=[
 ['ofengemuese','Ofengemüse mit Feta und Kichererbsen','MA',40,[['paprika',3],['zucchini',500],['aubergine',300],['kichererbsen',480],['feta',200],['olivenoel',40],['vollkornbrot',200]],['Ofen auf 200 °C vorheizen. Gemüse in Stücke schneiden, mit Kichererbsen, Öl und Kräutern mischen.','30 Minuten backen, nach der Hälfte wenden.','Feta darüber bröseln und 5 Minuten weiter backen. Mit Brot servieren.'],'o'],
 ['paprikagefuellt','Gefüllte Paprika mit Quinoa und Bohnen','MA',50,[['paprika',4],['quinoa',150],['kidneybohnen',250],['mais',140],['tomaten_dose',400],['zwiebel',1]],['Ofen auf 200 °C vorheizen. Quinoa kochen.','Zwiebel würfeln und mit Bohnen, Mais, Quinoa und der Hälfte der Tomaten mischen, würzen.','Paprika halbieren, füllen und in eine Form mit den restlichen Tomaten setzen.','30 Minuten backen.'],'om'],
 ['proteinoats','Vegane Protein-Oats','F',5,[['haferflocken',240],['sojajoghurt',500],['haferdrink',400],['chiasamen',40],['beeren',300],['erdnussmus',40]],['Haferflocken, Sojajoghurt, Haferdrink und Chiasamen verrühren.','Über Nacht kalt stellen.','Mit Beeren und einem Klecks Erdnussmus servieren.'],'km'],
+['skyrbowl','Skyr-Bowl mit Mango und Chia','F',5,[['skyr',600],['mango',1],['chiasamen',30],['nuesse',40],['honig',20]],['Skyr glatt rühren und auf Schalen verteilen.','Mango würfeln und darauf geben.','Mit Chiasamen, gehackten Nüssen und Honig toppen.'],'k'],
+['avotoast','Avocado-Toast mit Ei','F',10,[['vollkornbrot',400],['avocado',2],['eier',4],['tomaten',200],['zitrone',1]],['Eier 7 Minuten kochen, abschrecken und pellen.','Avocado mit Zitronensaft, Salz und Pfeffer zerdrücken.','Brot toasten, mit Avocado bestreichen, Tomaten und halbierte Eier darauf legen.'],''],
+['quarkpancakes','Quark-Protein-Pancakes mit Beeren','F',20,[['magerquark',500],['eier',4],['haferflocken',160],['banane',2],['beeren',300],['butter',10]],['Quark, Eier, Haferflocken und Banane zu einem dicken Teig pürieren.','Kleine Pancakes in wenig Butter von beiden Seiten je 2–3 Minuten backen.','Mit warmen Beeren servieren.'],''],
+['bircher','Bircher-Müsli mit Apfel','F',10,[['haferflocken',240],['joghurt',400],['milch',200],['apfel',2],['nuesse',40],['honig',30]],['Haferflocken mit Milch und Joghurt verrühren.','Äpfel grob reiben und unterheben.','Über Nacht kalt stellen, mit Nüssen und Honig servieren.'],'km'],
+['eiermuffins','Eier-Muffins mit Paprika und Spinat','FM',30,[['eier',10],['paprika',2],['spinat',150],['reibekaese',80],['fruehlingszwiebeln',1]],['Ofen auf 180 °C vorheizen, ein Muffinblech einfetten.','Paprika und Frühlingszwiebeln klein schneiden, mit Spinat auf die Mulden verteilen.','Eier mit Salz und Pfeffer verquirlen, darüber gießen, Käse darüber streuen.','20 Minuten backen.'],'om'],
+['gruenshakshuka','Grüne Shakshuka mit Feta','FMA',25,[['eier',8],['spinat',450],['zucchini',300],['feta',100],['knoblauch',2],['olivenoel',20],['vollkornbrot',300]],['Zucchini würfeln und mit Knoblauch in Öl 5 Minuten braten.','Spinat dazu, bis er zusammenfällt, würzen.','Mulden formen, Eier hineingeben, zugedeckt 6–8 Minuten stocken lassen.','Feta darüber bröseln, mit Brot servieren.'],'p'],
+['frittata','Spinat-Feta-Frittata','FMA',25,[['eier',10],['spinat',300],['feta',150],['zwiebel',1],['olivenoel',15]],['Zwiebel in einer ofenfesten Pfanne in Öl anschwitzen, Spinat dazu.','Eier verquirlen, würzen und darüber gießen, Feta darauf bröseln.','Bei mittlerer Hitze 5 Minuten stocken lassen, dann 10 Minuten bei 200 °C im Ofen fertig backen.'],'po'],
+['eiersalat','Eiersalat-Sandwich mit Skyr','FM',15,[['eier',8],['skyr',200],['vollkornbrot',400],['gurke',200],['salat',100]],['Eier 10 Minuten hart kochen, abschrecken, pellen und hacken.','Mit Skyr, Salz, Pfeffer und etwas Senf verrühren.','Brote mit Salat, Gurke und Eiersalat belegen.'],'m'],
+['lachsbowl','Lachs-Reis-Bowl mit Avocado','MA',25,[['lachs',500],['reis',250],['avocado',2],['gurke',400],['edamame',200],['sojasauce',40],['sesam',15]],['Reis kochen.','Lachs würfeln und in einer Pfanne kurz rundum anbraten, mit etwas Sojasauce ablöschen.','Edamame kurz garen, Gurke und Avocado schneiden.','Bowls anrichten, mit Sojasauce und Sesam toppen.'],'m'],
+['thaicurry','Rotes Thai-Curry mit Tofu','MA',30,[['tofu',400],['kokosmilch',400],['paprika',2],['brokkoli',300],['reis',250],['limette',1],['ingwer',15],['olivenoel',15]],['Reis kochen. Tofu würfeln und in Öl goldbraun braten.','Ingwer und 1–2 EL rote Currypaste kurz anrösten, Kokosmilch angießen.','Paprika und Brokkoli dazu, 8 Minuten köcheln.','Tofu dazugeben, mit Limettensaft abschmecken.'],'p'],
+['teriyaki','Teriyaki-Hähnchen mit Reis und Brokkoli','MA',30,[['haehnchen',600],['reis',250],['brokkoli',400],['sojasauce',60],['honig',30],['ingwer',15],['sesam',15],['olivenoel',15]],['Reis kochen, Brokkoli die letzten 5 Minuten mitdämpfen.','Hähnchen würfeln und in Öl braten.','Sojasauce, Honig, geriebenen Ingwer und 3 EL Wasser dazugeben und einkochen lassen, bis es glänzt.','Mit Reis, Brokkoli und Sesam servieren.'],'m'],
+['gyrosbowl','Hähnchen-Gyros-Bowl mit Tzatziki','MA',30,[['haehnchen',600],['reis',250],['gurke',400],['joghurt',300],['tomaten',300],['zwiebel',1],['knoblauch',2],['olivenoel',20]],['Reis kochen.','Hähnchen in Streifen schneiden, mit Gyrosgewürz und Zwiebel in Öl kräftig braten.','Für das Tzatziki die halbe Gurke reiben, mit Joghurt, Knoblauch und Salz verrühren.','Mit Reis, Tomaten und restlicher Gurke anrichten.'],'m'],
+['tikka','Hähnchen-Tikka-Masala','MA',40,[['haehnchen',600],['joghurt',200],['tomaten_dose',400],['sahne',100],['zwiebel',1],['knoblauch',3],['ingwer',15],['reis',250]],['Hähnchen würfeln und mit der Hälfte des Joghurts und 2 TL Garam Masala marinieren.','Reis kochen. Zwiebel, Knoblauch und Ingwer anschwitzen, Gewürze kurz mitrösten.','Hähnchen dazu und anbraten, Tomaten und Sahne dazu, 15 Minuten köcheln.','Mit restlichem Joghurt und Reis servieren.'],'m'],
+['gemueselasagne','Gemüse-Lasagne mit Spinat','MA',60,[['nudeln',250],['zucchini',400],['tomaten_dose',800],['spinat',300],['reibekaese',150],['magerquark',250],['zwiebel',1],['knoblauch',2]],['Ofen auf 190 °C vorheizen. Zwiebel, Knoblauch und gewürfelte Zucchini anbraten, Tomaten dazu, würzen.','Quark mit Spinat, Salz und Muskat verrühren.','Abwechselnd Soße, Lasagneplatten und Spinatquark schichten, mit Käse abschließen.','35 Minuten backen.'],'om'],
+['kartoffelsuppe','Kartoffelsuppe mit Karotten','MA',35,[['kartoffeln',1000],['karotten',300],['zwiebel',1],['gemuesebruehe',1200],['sahne',100],['olivenoel',15]],['Zwiebel, Kartoffeln und Karotten würfeln und in Öl anschwitzen.','Brühe dazu, 20 Minuten köcheln.','Die Hälfte pürieren, Sahne dazu und mit Majoran, Salz und Pfeffer abschmecken.'],'pm'],
+['tomatensuppe','Tomatensuppe mit Kichererbsen','MA',25,[['tomaten_dose',800],['kichererbsen',480],['zwiebel',1],['knoblauch',2],['gemuesebruehe',500],['sahne',100],['olivenoel',15],['vollkornbrot',200]],['Zwiebel und Knoblauch in Öl anschwitzen.','Tomaten und Brühe dazu, 10 Minuten köcheln, dann fein pürieren.','Kichererbsen und Sahne dazu, kurz erhitzen, mit Basilikum abschmecken. Mit Brot servieren.'],'pm'],
+['burrito','Burrito-Bowl mit Hähnchen','MA',30,[['haehnchen',500],['reis',250],['schwarzebohnen',250],['mais',285],['avocado',1],['tomaten',300],['limette',1],['joghurt',150]],['Reis kochen und mit etwas Limettensaft würzen.','Hähnchen mit Paprikapulver und Kreuzkümmel braten.','Bohnen und Mais erwärmen, Avocado und Tomaten würfeln.','Alles in Schalen anrichten, mit Joghurt toppen.'],'m'],
+['zoodles','Zucchini-Nudeln mit Garnelen','MA',20,[['zucchini',1000],['garnelen',400],['tomaten',300],['knoblauch',3],['olivenoel',25],['parmesan',30],['zitrone',1]],['Zucchini mit dem Spiralschneider in Nudeln schneiden.','Garnelen mit Knoblauch in Öl braten, halbierte Tomaten kurz mitbraten.','Zucchini-Nudeln 2 Minuten mitschwenken, mit Zitrone und Parmesan servieren.'],'p'],
+['ofenhuhn','Ofen-Hähnchen mit Süßkartoffeln','MA',45,[['haehnchen',600],['suesskartoffel',1000],['paprika',2],['zwiebel',1],['olivenoel',30],['joghurt',200]],['Ofen auf 200 °C vorheizen. Süßkartoffeln, Paprika und Zwiebel in Stücke schneiden, mit Öl und Gewürzen mischen.','20 Minuten backen.','Hähnchen gewürzt dazulegen und weitere 20 Minuten backen.','Mit Kräuterjoghurt servieren.'],'o'],
+['lachspasta','Lachs-Spinat-Pasta','MA',25,[['nudeln',400],['lachs',400],['spinat',300],['sahne',200],['zitrone',1],['knoblauch',2]],['Nudeln kochen.','Lachs würfeln und mit Knoblauch kurz anbraten.','Sahne und Spinat dazu, 3 Minuten köcheln, mit Zitronenabrieb würzen.','Mit den Nudeln mischen.'],''],
+['falafel','Ofen-Falafel-Wraps mit Joghurt','MA',40,[['kichererbsen',480],['zwiebel',1],['knoblauch',2],['haferflocken',40],['olivenoel',30],['joghurt',200],['tortilla',8],['salat',150],['tomaten',300]],['Ofen auf 200 °C vorheizen. Kichererbsen, Zwiebel, Knoblauch, Haferflocken und Kreuzkümmel grob pürieren.','Kleine Bällchen formen, mit Öl bepinseln und 25 Minuten backen, einmal wenden.','Joghurt mit Salz und Zitrone verrühren.','Wraps mit Salat, Tomaten, Falafel und Soße füllen.'],'o'],
+['buddhabowl','Süßkartoffel-Buddha-Bowl mit Tahin','MA',40,[['suesskartoffel',800],['quinoa',200],['kichererbsen',240],['avocado',1],['salat',100],['tahin',40],['zitrone',1],['olivenoel',20]],['Ofen auf 200 °C vorheizen. Süßkartoffeln würfeln und mit Kichererbsen und Öl 25 Minuten rösten.','Quinoa kochen.','Tahin mit Zitronensaft und Wasser zu einer Soße rühren.','Bowls mit Salat, Avocado und allem anderen anrichten.'],'om'],
+['erdnusssuppe','Erdnuss-Süßkartoffel-Suppe','MA',35,[['suesskartoffel',800],['erdnussmus',80],['kokosmilch',400],['gemuesebruehe',800],['zwiebel',1],['ingwer',15],['limette',1]],['Zwiebel und Ingwer anschwitzen, Süßkartoffelwürfel dazu.','Brühe dazu, 20 Minuten köcheln.','Kokosmilch und Erdnussmus dazu, fein pürieren, mit Limette abschmecken.'],'pm'],
+['hackpfanne','Hack-Reis-Pfanne mit Paprika','MA',30,[['hack_rind',400],['reis',250],['paprika',2],['mais',285],['tomaten_dose',400],['zwiebel',1],['olivenoel',10]],['Hack mit Zwiebel in Öl krümelig braten.','Paprika würfeln und mitbraten.','Reis, Tomaten und 500 ml Wasser dazu, zugedeckt 18 Minuten garen.','Mais unterheben und würzen.'],'pm'],
+['garnelentacos','Garnelen-Tacos mit Rotkohl','MA',20,[['tortilla',8],['garnelen',400],['rotkohl',200],['avocado',1],['limette',2],['joghurt',150]],['Rotkohl fein hobeln und mit Limettensaft und Salz verkneten.','Garnelen mit Paprikapulver und Knoblauch braten.','Joghurt mit Limette verrühren, Avocado in Scheiben schneiden.','Tortillas erwärmen und füllen.'],''],
+['pellkartoffeln','Pellkartoffeln mit Kräuterquark','MA',30,[['kartoffeln',1200],['magerquark',750],['gurke',400],['olivenoel',20],['fruehlingszwiebeln',1]],['Kartoffeln in Salzwasser 20–25 Minuten kochen.','Quark mit Öl, etwas Wasser, Frühlingszwiebeln, Kräutern, Salz und Pfeffer cremig rühren.','Mit Gurkenscheiben servieren.'],'p'],
+['griechsalat','Griechischer Salat mit Hähnchen','MA',20,[['haehnchen',400],['gurke',400],['tomaten',400],['feta',200],['paprika',1],['zwiebel',1],['olivenoel',30],['vollkornbrot',200]],['Hähnchen würzen und braten, in Streifen schneiden.','Gurke, Tomaten, Paprika und Zwiebel schneiden, mit Öl, Oregano und Salz mischen.','Feta und Hähnchen darauf geben, mit Brot servieren.'],'m'],
+['linsensalat','Linsensalat mit Feta','MA',25,[['linsen',250],['paprika',2],['gurke',400],['feta',150],['zitrone',1],['olivenoel',30],['fruehlingszwiebeln',1]],['Linsen in 10 Minuten bissfest kochen und abschrecken.','Gemüse würfeln.','Alles mit Zitronensaft, Öl, Salz und Pfeffer mischen, Feta darüber bröseln.'],'m'],
+['risotto','Pilzrisotto mit Spinat','MA',40,[['reis',300],['pilze',500],['zwiebel',1],['gemuesebruehe',1000],['parmesan',60],['butter',20],['spinat',150]],['Pilze in einer Pfanne kräftig anbraten und beiseite stellen.','Zwiebel in Butter anschwitzen, Reis kurz mitrösten.','Nach und nach heiße Brühe angießen und 20 Minuten unter Rühren garen.','Pilze, Spinat und Parmesan unterrühren.'],'p'],
+['ofengnocchi','Ofen-Gnocchi mit Tomaten und Käse','MA',30,[['gnocchi',800],['tomaten_dose',400],['tomaten',300],['zucchini',300],['reibekaese',125],['olivenoel',15]],['Ofen auf 200 °C vorheizen.','Gnocchi, Tomaten aus der Dose, halbierte Tomaten und Zucchiniwürfel in einer Form mischen und würzen.','Käse darüber streuen und 25 Minuten backen.'],'o'],
+['thunwrap','Thunfisch-Wraps','M',10,[['tortilla',8],['thunfisch',300],['mais',140],['joghurt',200],['salat',150],['tomaten',300]],['Thunfisch mit Joghurt, Mais, Salz und Pfeffer verrühren.','Tortillas mit Salat, Tomaten und Thunfischcreme füllen und einrollen.'],'k'],
+['tofuwok','Tofu-Gemüse-Wok mit Nudeln','MA',25,[['tofu',400],['nudeln',300],['paprika',2],['karotten',200],['brokkoli',300],['sojasauce',60],['ingwer',15],['olivenoel',20]],['Nudeln kochen.','Tofu würfeln und in Öl knusprig braten, herausnehmen.','Gemüse mit Ingwer im Wok 5 Minuten braten.','Nudeln, Tofu und Sojasauce dazu und durchschwenken.'],'p'],
+['chilibohnen','Mexikanische Bohnenpfanne mit Ei','FMA',20,[['kidneybohnen',250],['schwarzebohnen',250],['tomaten_dose',400],['paprika',1],['eier',4],['avocado',1],['tortilla',4]],['Paprika würfeln und anbraten, Bohnen und Tomaten dazu, mit Kreuzkümmel und Chili würzen.','Vier Mulden formen, Eier hineingeben und zugedeckt stocken lassen.','Mit Avocado und warmen Tortillas servieren.'],'p'],
 ];
+
+// ================= Rezept-Baukasten: Grundrezept × Eiweiß × Gemüse =================
+(function(){
+const P={
+  haehnchen:{n:'Hähnchen',a:500,prep:'Hähnchen in mundgerechte Stücke schneiden und in etwas Öl rundum goldbraun braten, herausnehmen.'},
+  putenhack:{n:'Putenhack',a:450,prep:'Putenhack in etwas Öl krümelig braten, herausnehmen.'},
+  hack_rind:{n:'Hackfleisch',a:400,prep:'Hackfleisch in etwas Öl krümelig braten, herausnehmen.'},
+  lachs:{n:'Lachs',a:400,prep:'Lachs würfeln, salzen und 2–3 Minuten vorsichtig anbraten, herausnehmen.'},
+  garnelen:{n:'Garnelen',a:400,prep:'Garnelen auftauen lassen und 2–3 Minuten braten, bis sie rosa sind, herausnehmen.'},
+  thunfisch:{n:'Thunfisch',a:300,prep:'Thunfisch abtropfen lassen und grob zerpflücken.'},
+  tofu:{n:'Tofu',a:400,prep:'Tofu trocken tupfen, würfeln und in Öl rundum knusprig braten, herausnehmen.'},
+  raeuchertofu:{n:'Räuchertofu',a:400,prep:'Räuchertofu würfeln und in Öl knusprig braten, herausnehmen.'},
+  kichererbsen:{n:'Kichererbsen',a:480,prep:'Kichererbsen abgießen, abspülen und gut abtropfen lassen.'},
+  weissebohnen:{n:'weißen Bohnen',a:500,prep:'Weiße Bohnen abgießen und abspülen.'},
+  linsen:{n:'roten Linsen',a:200,prep:'Rote Linsen in Wasser 10–12 Minuten bissfest kochen und abgießen.'},
+  edamame:{n:'Edamame',a:400,prep:'Edamame 3 Minuten in kochendem Wasser garen.'},
+};
+const V={
+  brokkoli:{n:'Brokkoli',i:[['brokkoli',400]],prep:'Brokkoli in kleine Röschen teilen.'},
+  paprika:{n:'Paprika',i:[['paprika',2]],prep:'Paprika in Streifen schneiden.'},
+  zucchini:{n:'Zucchini',i:[['zucchini',400]],prep:'Zucchini würfeln.'},
+  spinat:{n:'Spinat',i:[['spinat',300]],prep:'Spinat bereitstellen (TK kurz antauen lassen).'},
+  pilze:{n:'Pilzen',i:[['pilze',400]],prep:'Pilze in Scheiben schneiden.'},
+  erbsen:{n:'Erbsen',i:[['erbsen',300]],prep:'Erbsen bereitstellen.'},
+  karotten:{n:'Karotten',i:[['karotten',300]],prep:'Karotten schälen und in dünne Scheiben schneiden.'},
+  aubergine:{n:'Aubergine',i:[['aubergine',400]],prep:'Aubergine würfeln.'},
+  blumenkohl:{n:'Blumenkohl',i:[['blumenkohl',500]],prep:'Blumenkohl in kleine Röschen teilen.'},
+  suesskartoffel:{n:'Süßkartoffel',i:[['suesskartoffel',500]],prep:'Süßkartoffel schälen und klein würfeln.'},
+  tomaten:{n:'Tomaten',i:[['tomaten',400]],prep:'Tomaten halbieren oder würfeln.'},
+  mais:{n:'Mais',i:[['mais',285]],prep:'Mais abtropfen lassen.'},
+};
+const ALLP=Object.keys(P),FISHMEAT=['haehnchen','putenhack','hack_rind','lachs','garnelen'];
+// [key, Name, Mahlzeiten, Minuten, Flags, Grundzutaten, erlaubte Eiweiße, erlaubte Gemüse, Schritte(p,v)]
+const T=[
+ ['curry','Kokos-Curry','MA',30,'pm',[['kokosmilch',400],['zwiebel',1],['knoblauch',2],['ingwer',15],['reis',250],['olivenoel',15],['limette',1]],ALLP.filter(x=>x!=='thunfisch'),['brokkoli','spinat','paprika','blumenkohl','suesskartoffel','erbsen','zucchini'],
+   (p,v)=>['Reis nach Packung kochen.',p.prep,v.prep,'Zwiebel, Knoblauch und Ingwer in Öl anschwitzen, 1–2 EL Currypulver oder -paste kurz mitrösten.',`Kokosmilch und ${v.n} dazu, 10 Minuten köcheln.`,`${p.n} unterheben, kurz erhitzen und mit Limettensaft und Salz abschmecken.`]],
+ ['tompasta','Tomaten-Pasta','MA',30,'',[['nudeln',400],['tomaten_dose',800],['zwiebel',1],['knoblauch',2],['olivenoel',20],['parmesan',30]],['haehnchen','putenhack','hack_rind','thunfisch','garnelen','kichererbsen','weissebohnen','linsen','raeuchertofu'],['zucchini','aubergine','paprika','spinat','pilze','karotten'],
+   (p,v)=>['Nudeln in Salzwasser kochen.',p.prep,v.prep,`Zwiebel und Knoblauch in Öl anschwitzen, ${v.n} 5 Minuten mitbraten.`,'Tomaten dazu, mit Salz, Pfeffer und Oregano würzen und 10 Minuten köcheln.',`${p.n} unterheben, mit den Nudeln mischen und mit Parmesan servieren.`]],
+ ['creampasta','Cremige Pasta','MA',25,'',[['nudeln',400],['sahne',200],['knoblauch',2],['parmesan',40],['olivenoel',15],['zitrone',1]],['haehnchen','lachs','garnelen','raeuchertofu','weissebohnen','kichererbsen'],['spinat','pilze','brokkoli','erbsen','zucchini'],
+   (p,v)=>['Nudeln in Salzwasser kochen.',p.prep,v.prep,`Knoblauch in Öl anschwitzen, ${v.n} 4 Minuten mitgaren.`,'Sahne und Parmesan dazu, kurz köcheln lassen, mit Zitronenabrieb, Salz und Pfeffer würzen.',`${p.n} und Nudeln unterheben.`]],
+ ['pestopasta','Pesto-Pasta','MA',20,'',[['nudeln',400],['pesto',150],['tomaten',250],['olivenoel',10]],['haehnchen','lachs','garnelen','thunfisch','weissebohnen','kichererbsen','tofu'],['zucchini','brokkoli','spinat','erbsen','paprika'],
+   (p,v)=>['Nudeln in Salzwasser kochen, '+v.n+' die letzten 3 Minuten mitgaren.',p.prep,'Tomaten halbieren.',`Nudeln und ${v.n} abgießen, mit Pesto, Tomaten und ${p.n} mischen.`]],
+ ['bowl','Teriyaki-Reis-Bowl','MA',30,'m',[['reis',250],['sojasauce',50],['honig',20],['sesam',15],['gurke',300],['olivenoel',15]],['haehnchen','lachs','garnelen','tofu','raeuchertofu','edamame','putenhack'],['brokkoli','paprika','karotten','suesskartoffel','mais','zucchini'],
+   (p,v)=>['Reis nach Packung kochen.',p.prep,v.prep+` ${v.n} in einer Pfanne 5–6 Minuten braten.`,`Sojasauce, Honig und 2 EL Wasser aufkochen, ${p.n} darin schwenken, bis es glänzt.`,'Gurke in Scheiben schneiden.','Bowls mit Reis, Gemüse, Gurke und Teriyaki anrichten, mit Sesam bestreuen.']],
+ ['wok','Asia-Nudelpfanne','MA',25,'p',[['nudeln',300],['sojasauce',60],['ingwer',15],['knoblauch',2],['fruehlingszwiebeln',1],['olivenoel',20]],['haehnchen','garnelen','tofu','raeuchertofu','edamame','putenhack'],['brokkoli','paprika','karotten','pilze','zucchini','erbsen'],
+   (p,v)=>['Nudeln kochen und abgießen.',p.prep,v.prep,`Ingwer, Knoblauch und ${v.n} im Wok 4–5 Minuten scharf braten.`,`Nudeln, ${p.n} und Sojasauce dazu und gut durchschwenken.`,'Mit Frühlingszwiebeln bestreuen.']],
+ ['blech','Ofenblech','MA',45,'o',[['kartoffeln',900],['zwiebel',1],['olivenoel',30],['joghurt',200]],['haehnchen','lachs','kichererbsen','raeuchertofu','tofu','weissebohnen'],['brokkoli','paprika','zucchini','karotten','blumenkohl','aubergine'],
+   (p,v)=>['Ofen auf 200 °C vorheizen. Kartoffeln vierteln, mit Zwiebelspalten, Öl, Salz und Paprikapulver aufs Blech geben, 20 Minuten backen.',v.prep,`${v.n} und ${p.n} (roh, gewürzt) dazulegen und weitere 20 Minuten backen.`,'Joghurt mit Salz, Knoblauch und Kräutern verrühren und dazu servieren.']],
+ ['wraps','Wraps','MA',20,'',[['tortilla',8],['joghurt',200],['salat',100],['tomaten',250],['olivenoel',15]],['haehnchen','putenhack','hack_rind','garnelen','thunfisch','kichererbsen','tofu','weissebohnen'],['paprika','mais','zucchini','pilze'],
+   (p,v)=>[p.prep,v.prep+` ${v.n} kurz in der Pfanne braten und würzen.`,'Joghurt mit Salz, Knoblauch und Zitrone verrühren.',`Tortillas erwärmen, mit Salat, Tomaten, ${v.n}, ${p.n} und Soße füllen und einrollen.`]],
+ ['quinoa','Quinoa-Bowl','MA',30,'m',[['quinoa',250],['zitrone',1],['olivenoel',30],['gurke',300],['salat',100]],['haehnchen','lachs','kichererbsen','raeuchertofu','edamame','weissebohnen','garnelen'],['suesskartoffel','brokkoli','paprika','tomaten','mais'],
+   (p,v)=>['Quinoa nach Packung kochen.',p.prep,v.prep+` ${v.n} in Öl braten oder im Ofen rösten.`,'Zitronensaft, Öl, Salz und Pfeffer zu einem Dressing verrühren.',`Bowls mit Quinoa, Salat, Gurke, ${v.n} und ${p.n} anrichten, Dressing darüber.`]],
+ ['eintopf','Tomaten-Eintopf','MA',40,'pm',[['tomaten_dose',800],['kartoffeln',500],['gemuesebruehe',500],['zwiebel',1],['knoblauch',2],['olivenoel',15],['vollkornbrot',200]],['haehnchen','putenhack','hack_rind','kichererbsen','weissebohnen','linsen'],['zucchini','paprika','karotten','spinat','aubergine'],
+   (p,v)=>['Zwiebel, Knoblauch und gewürfelte Kartoffeln in Öl anschwitzen.',v.prep,`Tomaten, Brühe und ${v.n} dazu, 20 Minuten köcheln.`,p.prep,`${p.n} dazu, 5 Minuten ziehen lassen, kräftig abschmecken. Mit Brot servieren.`]],
+ ['erdnuss','Erdnuss-Pfanne','MA',30,'p',[['erdnussmus',60],['sojasauce',40],['reis',250],['limette',1],['olivenoel',15]],['haehnchen','tofu','raeuchertofu','garnelen','edamame','kichererbsen'],['brokkoli','paprika','karotten','zucchini','suesskartoffel'],
+   (p,v)=>['Reis kochen.',p.prep,v.prep+` ${v.n} in Öl 6 Minuten braten.`,'Erdnussmus mit Sojasauce, Limettensaft und 100 ml warmem Wasser glatt rühren.',`Soße und ${p.n} in die Pfanne geben, kurz köcheln. Mit Reis servieren.`]],
+ ['gnocchi','Gnocchi-Pfanne','MA',20,'p',[['gnocchi',800],['tomaten',300],['knoblauch',2],['olivenoel',20],['parmesan',30]],['haehnchen','garnelen','weissebohnen','raeuchertofu','kichererbsen'],['spinat','zucchini','pilze','paprika','erbsen'],
+   (p,v)=>[p.prep,'Gnocchi in Öl goldbraun braten.',v.prep+` ${v.n}, Knoblauch und Tomaten 4 Minuten mitbraten.`,`${p.n} unterheben, mit Parmesan servieren.`]],
+ ['burrito','Burrito-Bowl','MA',30,'m',[['reis',250],['tomaten',300],['avocado',1],['limette',1],['joghurt',150]],['haehnchen','hack_rind','putenhack','garnelen','tofu','kichererbsen'],['mais','paprika','zucchini','suesskartoffel'],
+   (p,v)=>['Reis kochen, mit Limettensaft und Salz würzen.',p.prep+' Mit Kreuzkümmel und Paprikapulver würzen.',v.prep+` ${v.n} kurz braten.`,'Tomaten und Avocado würfeln.',`Bowls mit Reis, ${v.n}, ${p.n}, Tomaten, Avocado und Joghurt anrichten.`]],
+ ['risotto','Risotto','MA',40,'p',[['reis',300],['gemuesebruehe',1000],['zwiebel',1],['parmesan',50],['butter',20]],['haehnchen','garnelen','lachs','weissebohnen','raeuchertofu'],['pilze','spinat','erbsen','zucchini','karotten'],
+   (p,v)=>[p.prep,'Zwiebel in Butter anschwitzen, Reis kurz mitrösten.',v.prep,`Nach und nach heiße Brühe angießen und 20 Minuten unter Rühren garen, ${v.n} nach 10 Minuten dazugeben.`,`Parmesan und ${p.n} unterrühren, abschmecken.`]],
+ ['auflauf','Nudelauflauf','MA',45,'o',[['nudeln',300],['tomaten_dose',400],['sahne',100],['reibekaese',125],['zwiebel',1]],['haehnchen','putenhack','hack_rind','thunfisch','weissebohnen','linsen'],['brokkoli','zucchini','spinat','paprika','blumenkohl'],
+   (p,v)=>['Ofen auf 200 °C vorheizen. Nudeln 3 Minuten kürzer als angegeben kochen.',p.prep,v.prep,`Zwiebel anschwitzen, Tomaten und Sahne dazu, würzen. Mit Nudeln, ${v.n} und ${p.n} mischen.`,'In eine Form geben, mit Käse bestreuen und 20 Minuten überbacken.']],
+ ['friedrice','Gebratener Reis','MA',25,'m',[['reis',250],['eier',3],['sojasauce',50],['fruehlingszwiebeln',1],['olivenoel',20]],['haehnchen','garnelen','tofu','raeuchertofu','edamame','putenhack'],['erbsen','karotten','paprika','brokkoli','mais'],
+   (p,v)=>['Reis kochen und abkühlen lassen (am besten vom Vortag).',p.prep,v.prep+` ${v.n} in Öl 4 Minuten braten.`,'Reis dazu und anbraten, Eier hineinschlagen und unterrühren.',`${p.n} und Sojasauce dazu, mit Frühlingszwiebeln servieren.`]],
+ ['masala','Joghurt-Masala','MA',35,'',[['joghurt',200],['tomaten_dose',400],['zwiebel',1],['knoblauch',2],['ingwer',15],['reis',250],['olivenoel',15]],['haehnchen','kichererbsen','linsen','tofu','garnelen','weissebohnen'],['spinat','blumenkohl','erbsen','suesskartoffel','paprika'],
+   (p,v)=>['Reis kochen.',p.prep,v.prep,'Zwiebel, Knoblauch und Ingwer anschwitzen, 2 TL Garam Masala und Kurkuma kurz mitrösten.',`Tomaten und ${v.n} dazu, 12 Minuten köcheln.`,`${p.n} dazu, vom Herd nehmen und Joghurt einrühren.`]],
+ ['suppe','Nudelsuppe','MA',30,'pm',[['nudeln',150],['gemuesebruehe',1500],['zwiebel',1],['ingwer',10],['fruehlingszwiebeln',1]],['haehnchen','tofu','garnelen','kichererbsen','weissebohnen'],['karotten','brokkoli','pilze','erbsen','spinat'],
+   (p,v)=>['Brühe mit Zwiebel und Ingwer aufkochen.',v.prep+` ${v.n} 8 Minuten darin garen.`,'Nudeln dazu und weich kochen.',p.prep,`${p.n} hineingeben, mit Frühlingszwiebeln servieren.`]],
+ ['salat','Warmer Salat','MA',20,'',[['salat',150],['tomaten',300],['gurke',300],['olivenoel',30],['zitrone',1],['vollkornbrot',200]],['haehnchen','lachs','garnelen','raeuchertofu','kichererbsen','thunfisch','weissebohnen'],['zucchini','paprika','pilze','suesskartoffel','mais'],
+   (p,v)=>[p.prep,v.prep+` ${v.n} in Öl braten, bis es Farbe hat.`,'Salat, Tomaten und Gurke schneiden, mit Zitronensaft, Öl, Salz und Pfeffer anmachen.',`Warme ${v.n} und ${p.n} darauf verteilen, mit Brot servieren.`]],
+ ['couscous','Orientalische Couscous-Pfanne','MA',25,'pm',[['couscous',250],['zitrone',1],['olivenoel',25],['tahin',40],['gurke',300],['zwiebel',1]],['haehnchen','putenhack','kichererbsen','lachs','garnelen','tofu','weissebohnen'],['zucchini','aubergine','paprika','blumenkohl','suesskartoffel','tomaten'],
+   (p,v)=>['Couscous mit gleicher Menge kochendem Salzwasser übergießen und 5 Minuten quellen lassen.',p.prep+' Mit Kreuzkümmel und Paprikapulver würzen.',v.prep+` ${v.n} mit Zwiebel in Öl 6–8 Minuten braten.`,'Tahin mit Zitronensaft, Salz und Wasser zu einer Soße rühren.',`Couscous mit ${v.n}, ${p.n} und Gurke mischen, Tahinsoße darüber.`]],
+ ['griech','Griechischer Teller','MA',30,'m',[['reis',250],['joghurt',250],['gurke',300],['feta',120],['zwiebel',1],['knoblauch',2],['olivenoel',20]],['haehnchen','putenhack','hack_rind','lachs','garnelen','kichererbsen','weissebohnen'],['zucchini','paprika','aubergine','tomaten','spinat'],
+   (p,v)=>['Reis kochen.',p.prep+' Mit Oregano und Knoblauch würzen.',v.prep+` ${v.n} mit Zwiebel in Öl braten.`,'Für das Tzatziki Gurke reiben und mit Joghurt, Knoblauch und Salz verrühren.',`Reis, ${v.n} und ${p.n} anrichten, Feta darüber bröseln, Tzatziki dazu.`]],
+ ['cremesuppe','Cremesuppe','MA',30,'pm',[['gemuesebruehe',1000],['zwiebel',1],['kartoffeln',300],['sahne',100],['olivenoel',15],['vollkornbrot',200]],['kichererbsen','weissebohnen','linsen','haehnchen','garnelen','raeuchertofu'],['brokkoli','blumenkohl','karotten','suesskartoffel','zucchini','erbsen'],
+   (p,v)=>['Zwiebel und gewürfelte Kartoffeln in Öl anschwitzen.',v.prep,`${v.n} und Brühe dazu, 15–20 Minuten köcheln, dann fein pürieren und Sahne einrühren.`,p.prep,`${p.n} als Einlage dazu, abschmecken und mit Brot servieren.`]],
+ ['lcpfanne','Gemüsepfanne','MA',20,'p',[['olivenoel',20],['zwiebel',1],['knoblauch',2],['tomaten',200],['feta',80]],['haehnchen','putenhack','hack_rind','lachs','garnelen','tofu','raeuchertofu'],['brokkoli','zucchini','paprika','pilze','spinat','blumenkohl','aubergine'],
+   (p,v)=>[p.prep,v.prep,`Zwiebel und Knoblauch in Öl anschwitzen, ${v.n} 6–8 Minuten braten.`,`Tomaten und ${p.n} dazu, kräftig würzen, Feta darüber bröseln. Ohne Beilage, schön leicht.`]],
+];
+const F=[];
+let n=0;
+T.forEach(([k,name,meals,min,flags,base,ps,vs,steps])=>ps.forEach(pk=>vs.forEach(vk=>{
+  const p=P[pk],v=V[vk];if(!p||!v)return;
+  const ings=base.filter(([id])=>!v.i.some(([x])=>x===id)&&id!==pk).concat([[pk,p.a]],v.i);
+  REC_RAW.push(['g_'+k+'_'+pk+'_'+vk,`${name} mit ${p.n.replace(/^weißen Bohnen$/,'weißen Bohnen')} und ${v.n}`.replace('mit roten Linsen','mit roten Linsen'),meals,min,ings,steps(p,v),flags]);n++;})));
+// Frühstück
+const DAIRY={skyr:['Skyr',450],joghurt:['Joghurt',450],sojajoghurt:['Sojajoghurt',450],magerquark:['Quark',450]};
+const FRUIT={beeren:['Beeren',[['beeren',300]]],banane:['Banane',[['banane',3]]],apfel:['Apfel',[['apfel',2]]],mango:['Mango',[['mango',1]]]};
+const TOP={nuesse:['Nüssen',[['nuesse',40]]],chiasamen:['Chia',[['chiasamen',30]]],erdnussmus:['Erdnussmus',[['erdnussmus',40]]]};
+Object.entries(DAIRY).forEach(([dk,[dn,da]])=>Object.entries(FRUIT).forEach(([fk,[fn,fi]])=>Object.entries(TOP).forEach(([tk,[tn,ti]])=>{
+  REC_RAW.push(['g_oats_'+dk+'_'+fk+'_'+tk,`Overnight Oats mit ${dn}, ${fn} und ${tn}`,'F',5,[['haferflocken',200],[dk,da],[dk==='sojajoghurt'?'haferdrink':'milch',300]].concat(fi,ti),
+   [`Haferflocken mit ${dn} und ${dk==='sojajoghurt'?'Haferdrink':'Milch'} verrühren.`,`${fn} klein schneiden und darauf geben.`,`Mit ${tn} toppen und über Nacht kalt stellen.`],'km']);
+  REC_RAW.push(['g_qbowl_'+dk+'_'+fk+'_'+tk,`${dn}-Bowl mit ${fn} und ${tn}`,'F',5,[[dk,700]].concat(fi,ti,[['haferflocken',80]]),
+   [`${dn} cremig rühren und auf Schalen verteilen.`,`${fn} klein schneiden und darauf geben.`,`Mit Haferflocken und ${tn} toppen.`],'k']);})));
+const MILK={milch:['Milch'],haferdrink:['Haferdrink']};
+Object.entries(MILK).forEach(([mk,[mn]])=>Object.entries(FRUIT).forEach(([fk,[fn,fi]])=>Object.entries(TOP).forEach(([tk,[tn,ti]])=>{
+  REC_RAW.push(['g_porr_'+mk+'_'+fk+'_'+tk,`Porridge mit ${fn} und ${tn}${mk==='haferdrink'?' (mit Haferdrink)':''}`,'F',10,[['haferflocken',240],[mk,900]].concat(fi,ti),
+   [`Haferflocken mit ${mn} aufkochen und 5 Minuten unter Rühren köcheln.`,`${fn} klein schneiden und unterheben oder darauf geben.`,`Mit ${tn} toppen.`],'p']);})));
+const SV={spinat:['Spinat',[['spinat',200]]],tomaten:['Tomaten',[['tomaten',300]]],pilze:['Pilzen',[['pilze',250]]],paprika:['Paprika',[['paprika',1]]],zucchini:['Zucchini',[['zucchini',300]]]};
+const ST={avocado:['Avocado',[['avocado',1]]],fruehlingszwiebeln:['Frühlingszwiebeln',[['fruehlingszwiebeln',1]]],edamame:['Edamame',[['edamame',150]]]};
+Object.entries(SV).forEach(([vk,[vn,vi]])=>Object.entries(ST).forEach(([tk,[tn,ti]])=>{
+  REC_RAW.push(['g_scr_'+vk+'_'+tk,`Tofu-Scramble mit ${vn} und ${tn}`,'FM',15,[['tofu',400],['olivenoel',15],['vollkornbrot',300]].concat(vi,ti),
+   ['Tofu mit den Händen in die Pfanne zerbröseln und in Öl anbraten, mit Kurkuma, Salz und Pfeffer würzen.',`${vn} klein schneiden und 3 Minuten mitbraten.`,`Mit ${tn} toppen und mit Brot servieren.`],'p']);}));
+const EV={spinat:['Spinat',[['spinat',200]]],tomaten:['Tomaten',[['tomaten',300]]],pilze:['Pilzen',[['pilze',250]]],paprika:['Paprika',[['paprika',1]]],zucchini:['Zucchini',[['zucchini',300]]]};
+const EC={feta:['Feta',[['feta',100]]],reibekaese:['Käse',[['reibekaese',80]]],huettenkaese:['Hüttenkäse',[['huettenkaese',200]]]};
+Object.entries(EV).forEach(([vk,[vn,vi]])=>Object.entries(EC).forEach(([ck,[cn,ci]])=>{
+  REC_RAW.push(['g_ruehrei_'+vk+'_'+ck,`Rührei mit ${vn} und ${cn}`,'FM',15,[['eier',8],['butter',10],['vollkornbrot',300]].concat(vi,ci),
+   [`${vn} klein schneiden und in Butter 3 Minuten anbraten.`,'Eier verquirlen, salzen, pfeffern und bei mittlerer Hitze unter Rühren stocken lassen.',`${cn} darüber geben, mit Brot servieren.`],'p']);
+  REC_RAW.push(['g_omelett_'+vk+'_'+ck,`Omelett mit ${vn} und ${cn}`,'FMA',15,[['eier',8],['olivenoel',10],['salat',100]].concat(vi,ci),
+   [`${vn} klein schneiden und in Öl anbraten.`,'Eier verquirlen, würzen und darüber gießen, zugedeckt stocken lassen.',`${cn} darauf verteilen, zusammenklappen und mit Salat servieren.`],'p']);}));
+})();
 
 </script>
 <script>
@@ -422,7 +574,7 @@ function rebuildRecipes(){
 const R=id=>RECIPES.find(r=>r.id===id);
 
 // ================= state =================
-const P_DEF={avoid:[],likes:[],goals:{k:'',p:'',c:'',f:''},favFoods:[],showSubs:true,hearts:[]};
+const P_DEF={avoid:[],likes:[],meh:[],goals:{k:'',p:'',c:'',f:''},favFoods:[],showSubs:true,hearts:[]};
 let ME=clone(P_DEF);                 // private settings
 let HH={dinners:7,serv:4,pause:2};   // household
 let WEEKS={};                         // weekKey -> doc
@@ -430,7 +582,7 @@ let VOTES={};                         // voterId -> {w:{week:{rid:score}},veto:[
 let LOGS={};
 let myId='me',names={},mode='local';
 let db=null;
-let ui={tab:'woche',week:NEXT_WEEK,q:'',f:{meal:[],diet:[],nut:[],time:0,prep:[],fav:false,own:false,heart:false},date:dkey(),undo:null};
+let ui={tab:'woche',week:NEXT_WEEK,q:'',f:{keys:[],fav:false,own:false,heart:false},date:dkey(),undo:null};
 const tried={};
 
 function lsGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}}
@@ -485,15 +637,35 @@ const dietTag=r=>`<span class="diet d-${r.diet}">${DIETS[r.diet]}</span>${r.own?
 
 // ================= voting =================
 function recentRids(w){const s=new Set();for(let k=1;k<=(HH.pause||0);k++){const W=WEEKS[addDays(w,-7*k)];if(!W||!W.days)continue;Object.values(W.days).forEach(x=>{if(x&&x.rid&&!x.skip)s.add(x.rid);});}return s;}
-const FOCUS={hp:['High Protein',r=>r.hp],lowcarb:['Low Carb',r=>r.lowcarb],lowfat:['Low Fat',r=>r.lowfat],light:['Unter 500 kcal',r=>r.light],veg:['Vegetarisch',r=>r.diet==='veg'||r.diet==='vegan'],vegan:['Vegan',r=>r.diet==='vegan'],quick:['Schnell (bis 30 Min.)',r=>r.min<=30]};
-const focusOf=w=>((WEEKS[w]&&WEEKS[w].focus)||[]).filter(f=>FOCUS[f]);
+const hasI=(r,...ids)=>r.ings.some(([id])=>ids.includes(id)),nmR=(r,re)=>re.test(r.n);
+const FG=[
+ ['Zeit','one',[['t15','bis 15 Min.',r=>r.min<=15],['t30','bis 30 Min.',r=>r.min<=30],['t45','bis 45 Min.',r=>r.min<=45],['t60','bis 1 Std.',r=>r.min<=60]]],
+ ['Mahlzeit','any',[['F','Frühstück',r=>r.meals.includes('F')],['M','Mittag',r=>r.meals.includes('M')],['A','Abendessen',r=>r.meals.includes('A')]]],
+ ['Ernährung','any',[['veg','Vegetarisch',r=>r.diet==='veg'||r.diet==='vegan'],['vegan','Vegan',r=>r.diet==='vegan'],['pesc','Pescetarisch',r=>r.diet!=='meat'],['meat','Fleisch',r=>r.diet==='meat'],['fish','Fisch',r=>r.diet==='fish']]],
+ ['Unverträglichkeiten','all',[['gf','Glutenfrei',r=>!r.tags.has('gluten')],['lf','Laktosefrei',r=>!r.tags.has('dairy')],['nf','Ohne Nüsse',r=>!r.tags.has('nuts')],['sf','Ohne Soja',r=>!r.tags.has('soy')],['ef','Ohne Ei',r=>!r.tags.has('egg')]]],
+ ['Nährwerte pro Portion','all',[['hp','High Protein',r=>r.hp],['lowcarb','Low Carb',r=>r.lowcarb],['lowfat','Low Fat',r=>r.lowfat],['light','Unter 500 kcal',r=>r.light],['big','Sättigend (ab 650 kcal)',r=>r.per.k>=650]]],
+ ['Gerichtart','any',[['pasta','Pasta',r=>hasI(r,'nudeln','gnocchi')],['rice','Reis',r=>hasI(r,'reis')],['potato','Kartoffeln',r=>hasI(r,'kartoffeln','suesskartoffel')],['curry','Curry & Dal',r=>nmR(r,/curry|dal|masala/i)],['soup','Suppe',r=>nmR(r,/suppe/i)],['salad','Salat',r=>nmR(r,/salat/i)],['bowl','Bowl',r=>nmR(r,/bowl/i)],['wrap','Wraps & Tacos',r=>hasI(r,'tortilla')],['oven','Ofengericht',r=>r.flags.includes('o')],['pan','Pfanne',r=>nmR(r,/pfanne|wok|scramble|rührei|omelett|shakshuka|frittata/i)],['bread','Brot & Toast',r=>hasI(r,'vollkornbrot')],['sweet','Süß',r=>r.meals.includes('F')&&hasI(r,'honig','banane','beeren','mango','apfel')]]],
+ ['Hauptzutat','any',[['chicken','Hähnchen & Pute',r=>hasI(r,'haehnchen','putenhack')],['mince','Hackfleisch',r=>hasI(r,'hack_rind','putenhack')],['salmon','Lachs & Fisch',r=>hasI(r,'lachs','thunfisch')],['shrimp','Garnelen',r=>hasI(r,'garnelen')],['tofu','Tofu',r=>hasI(r,'tofu','raeuchertofu')],['legume','Hülsenfrüchte',r=>hasI(r,'kichererbsen','linsen','kidneybohnen','schwarzebohnen','weissebohnen','edamame')],['eggs','Eier',r=>hasI(r,'eier')],['cheese','Käse',r=>hasI(r,'feta','parmesan','reibekaese','huettenkaese')]]],
+ ['Küche','any',[['it','Italienisch',r=>nmR(r,/pasta|spaghetti|bolognese|pesto|risotto|lasagne|gnocchi|frittata|rahm-nudeln/i)],['asia','Asiatisch',r=>hasI(r,'sojasauce','sesam','edamame')||nmR(r,/thai|teriyaki|wok/i)],['ind','Indisch',r=>nmR(r,/dal|masala|tikka|kichererbsen-spinat-curry|hähnchen-curry|kokos-curry/i)],['mex','Mexikanisch',r=>hasI(r,'tortilla','kidneybohnen','schwarzebohnen')||nmR(r,/chili|burrito|taco/i)],['orient','Orientalisch',r=>hasI(r,'tahin','couscous')||nmR(r,/shakshuka|falafel/i)],['greek','Griechisch',r=>nmR(r,/gyros|griech|feta/i)],['classic','Klassiker',r=>nmR(r,/kartoffelsuppe|pellkartoffel|rührei|omelett|bircher|porridge|bolognese|linsensuppe|pancakes|eiersalat/i)]]],
+ ['Zubereitung','all',[['o','Ofen',r=>r.flags.includes('o')],['p','Ein Topf / eine Pfanne',r=>r.flags.includes('p')],['m','Meal-Prep',r=>r.flags.includes('m')],['k','Ohne Kochen',r=>r.flags.includes('k')],['few','Wenige Zutaten (max. 6)',r=>r.ings.length<=6]]],
+];
+const FKEY={};FG.forEach(([g,mode,items])=>items.forEach(([k,l,fn])=>FKEY[k]={g,mode,l,fn}));
+function passes(r,keys){for(const [g,mode,items] of FG){const sel=items.filter(([k])=>keys.includes(k));if(!sel.length)continue;if(mode==='all'?!sel.every(x=>x[2](r)):!sel.some(x=>x[2](r)))return false;}return true;}
+function toggleKey(keys,k){if(keys.includes(k))return keys.filter(x=>x!==k);const f=FKEY[k];return keys.filter(x=>!(f.mode==='one'&&FKEY[x]&&FKEY[x].g===f.g)).concat(k);}
+const QUICK=['t30','t60','hp','veg','vegan','lowcarb','light','pasta','asia','curry','bowl','soup','chicken','legume','gf','m'];
 const picksOf=w=>{const P=(WEEKS[w]&&WEEKS[w].picks)||{};return Object.keys(P).filter(id=>P[id]&&R(id)).sort((a,b)=>(P[a].t||0)-(P[b].t||0));};
-const dinnerPool=(w=ui.week)=>{const rec=recentRids(w),fo=focusOf(w);return RECIPES.filter(r=>(r.meals.includes('A')||r.meals.includes('M'))&&!rec.has(r.id)&&fo.every(f=>FOCUS[f][1](r)));};
+const focusOf=w=>((WEEKS[w]&&WEEKS[w].focus)||[]).map(f=>f==='quick'?'t30':f).filter(f=>FKEY[f]);
+// Zutaten-Vorlieben für eine Woche (pro Person, wirken auf die gemeinsamen Vorschläge)
+const wkIng=(vid,w)=>{const x=VOTES[vid]&&VOTES[vid].ing&&VOTES[vid].ing[w];return{like:(x&&x.like)||[],dis:(x&&x.dis)||[]};};
+function ingScore(r,w){let sc=0;const ids=r.ings.map(([id])=>id);
+  Object.keys(VOTES).forEach(v=>{const p=wkIng(v,w);sc+=2*p.like.filter(i=>ids.includes(i)).length-3*p.dis.filter(i=>ids.includes(i)).length;});
+  sc+=likeScore(r)-2*(ME.meh||[]).filter(x=>ids.includes(x.slice(4))).length;return sc;}
+const dinnerPool=(w=ui.week)=>{const rec=recentRids(w),fo=focusOf(w);return RECIPES.filter(r=>(r.meals.includes('A')||r.meals.includes('M'))&&!rec.has(r.id)&&passes(r,fo));};
 const SUGG_N=12;
 // Wöchentlich wechselnde Vorschläge: eigene Rezepte und Gerichte, die schon jemand gut fand, zuerst
 function suggestions(w){const pool=dinnerPool(w),picks=new Set(picksOf(w));
   const pri=r=>(Object.keys(VOTES).some(v=>scoreFor(v,w,r.id)>=2)?2:0)+(r.own?1:0);
-  return pool.filter(r=>!picks.has(r.id)).sort((a,b)=>pri(b)-pri(a)||hash(w+a.id)-hash(w+b.id));}
+  return pool.filter(r=>!picks.has(r.id)).sort((a,b)=>pri(b)-pri(a)||ingScore(b,w)-ingScore(a,w)||hash(w+a.id)-hash(w+b.id));}
 function voters(){return Object.keys(VOTES).filter(id=>VOTES[id]&&(id===myId||Object.keys((VOTES[id].w||{})).length));}
 function scoreFor(vid,w,rid){const v=VOTES[vid]||{};const s=v.w&&v.w[w]&&v.w[w][rid];if(s!=null)return s;if((v.veto||[]).includes(rid))return 0;return null;}
 function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
@@ -597,15 +769,24 @@ function vWeek(){
   }
   const fo=focusOf(w),picks=picksOf(w),sug=suggestions(w),shown=ui.showAll?sug:sug.slice(0,SUGG_N);
   const others=voters().filter(v=>v!==myId),paused=recentRids(w).size;
-  h+=`<h2>Fokus der Woche</h2><div class="row" style="margin:0 2px">${Object.entries(FOCUS).map(([k,[l]])=>`<button class="pill" data-focus="${k}" aria-pressed="${fo.includes(k)}">${l}</button>`).join('')}</div>
-  <p class="small muted" style="margin:8px 4px 0">${fo.length?`Gilt für euch beide. ${dinnerPool(w).length} Gerichte passen.`:'Optional. Wählt aus, worauf ihr diese Woche Lust habt, dann kommen nur passende Vorschläge.'}</p>`;
+  const qk=QUICK.filter(k=>k!=='F'),extra=fo.filter(k=>!qk.includes(k));
+  h+=`<h2>Fokus der Woche</h2><div class="chips">${qk.map(k=>`<button class="pill" data-focus="${k}" aria-pressed="${fo.includes(k)}">${FKEY[k].l}</button>`).join('')}</div>
+  ${extra.length?`<div class="row" style="margin:0 2px 8px">${extra.map(k=>`<button class="pill x" data-focus="${k}">${FKEY[k].l}</button>`).join('')}</div>`:''}
+  <div class="spread" style="margin:0 4px"><span class="small muted">${fo.length?`Gilt für euch beide. ${dinnerPool(w).length} Gerichte passen.`:'Optional. Nur passende Gerichte werden vorgeschlagen.'}</span><button class="link" data-a="focusAll" style="flex:none">Alle Kategorien${fo.length?` (${fo.length})`:''}</button></div>`;
+  const mi=wkIng(myId,w),others0=Object.keys(VOTES).filter(v=>v!==myId);
+  const ingSel=(id,ex)=>`<select id="${id}" style="margin-top:6px"><option value="">Zutat hinzufügen …</option>${Object.values(ING).filter(i=>!i.custom&&!ex.includes(i.id)).sort((a,b)=>a.n.localeCompare(b.n,'de')).map(i=>`<option value="${i.id}">${esc(i.n)}</option>`).join('')}</select>`;
+  const otherTxt=k=>others0.map(v=>{const l=wkIng(v,w)[k];return l.length?`${esc(nameOf(v))}: ${l.map(i=>esc(ING[i]?ING[i].n:i)).join(', ')}`:'';}).filter(Boolean).join(' · ');
+  h+=`<h2>Zutaten diese Woche</h2><div class="panel" style="margin-top:0">
+   <h3>Lust auf</h3><div class="row" style="margin-top:6px">${mi.like.map(i=>`<button class="pill x" data-wk="like" data-v="${i}">${esc(ING[i]?ING[i].n:i)}</button>`).join('')||'<span class="small muted">Noch nichts</span>'}</div>${otherTxt('like')?`<p class="small muted" style="margin:6px 0 0">${otherTxt('like')}</p>`:''}${ingSel('wkLike',mi.like)}
+   <h3 style="margin-top:14px">Diese Woche lieber nicht</h3><div class="row" style="margin-top:6px">${mi.dis.map(i=>`<button class="pill x" data-wk="dis" data-v="${i}">${esc(ING[i]?ING[i].n:i)}</button>`).join('')||'<span class="small muted">Noch nichts</span>'}</div>${otherTxt('dis')?`<p class="small muted" style="margin:6px 0 0">${otherTxt('dis')}</p>`:''}${ingSel('wkDis',mi.dis)}
+   <p class="small muted" style="margin:10px 0 0">Gerichte mit diesen Zutaten rücken in den Vorschlägen nach oben bzw. unten.</p></div>`;
   h+=`<div style="margin-top:16px">${favBtn}</div>`;
   if(picks.length)h+=`<h2>Fest eingeplant</h2><div class="group">${picks.map(id=>{const r=R(id),by=W.picks[id].by;return`<div class="vrow"><div class="vtop" data-open="${id}"><div class="vt"><span class="heart">♥</span> ${esc(r.n)}</div><div class="s">${by===myId?'Dein Favorit':'Favorit von '+esc(nameOf(by))} · kommt sicher in den Plan</div></div><button class="link" data-unpick="${id}">Entfernen</button></div>`;}).join('')}</div>`;
   const vbtn=(r,v,cls,ic,lab)=>{const s=scoreFor(myId,w,r.id);return`<button class="${cls}" data-vote="${v}" data-r="${r.id}" aria-pressed="${s===v}" aria-label="${lab}">${ic}</button>`;};
   const row=r=>{const s=scoreFor(myId,w,r.id),av=recipeAvoid(r);
     const oth=others.map(v=>{const x=scoreFor(v,w,r.id);return x==null?'':`<span class="s${x}">${esc(nameOf(v))}: ${x===3?'Unbedingt':x===2?'Ja':'Nein'}</span>`;}).join('');
     return`<div class="vrow ${s===0?'voted0':''}"><div class="vtop" data-open="${r.id}"><div class="vt">${hearted(r.id)?'<span class="heart">♥</span> ':''}${esc(r.n)}</div>
-     <div class="s">${dietTag(r)}${r.min} Min. · ${r0(r.per.k)} kcal · ${r0(r.per.p)} g Protein${!av.ok?' · <span class="warn">mit Ersatz</span>':''}</div>${mbar(r)}${oth?`<div class="who" style="margin-top:6px">${oth}</div>`:''}</div>
+     <div class="s">${dietTag(r)}${r.min} Min. · ${r0(r.per.k)} kcal · ${r0(r.per.p)} g Protein${!av.ok?' · <span class="warn">mit Ersatz</span>':''}${ingHint(r,w)}</div>${mbar(r)}${oth?`<div class="who" style="margin-top:6px">${oth}</div>`:''}</div>
      <div class="vmini">${vbtn(r,0,'v0',ICON.no,'Nein')}${vbtn(r,2,'v2',ICON.yes,'Ja')}${vbtn(r,3,'v3',ICON.love,'Unbedingt')}</div></div>`;};
   const mine=shown.filter(r=>scoreFor(myId,w,r.id)!=null).length;
   h+=`<h2>${ui.showAll?'Alle passenden Gerichte':'Vorschläge dieser Woche'}</h2><p class="small muted" style="margin:0 4px 8px">Du hast ${mine} von ${shown.length} bewertet. Ein „Nein“ von einer Person reicht, dann fliegt das Gericht raus.${paused?` ${paused} Gerichte der letzten ${HH.pause===1?'Woche':HH.pause+' Wochen'} pausieren.`:''}</p>
@@ -620,6 +801,8 @@ function vWeek(){
   <p class="small muted" style="margin-top:8px">${w===NEXT_WEEK&&new Date()<=dl?'Wenn ihr nichts tut, legt die App den Plan nach Freitag automatisch fest, sobald jemand sie öffnet.':''}</p>`;
   return h;
 }
+function ingHint(r,w){const ids=r.ings.map(([id])=>id),L=new Set(),D=new Set();Object.keys(VOTES).forEach(v=>{const p=wkIng(v,w);p.like.forEach(i=>ids.includes(i)&&L.add(i));p.dis.forEach(i=>ids.includes(i)&&D.add(i));});
+  return(L.size?` · <span style="color:var(--accent)">Lust: ${[...L].map(i=>esc(ING[i].n)).join(', ')}</span>`:'')+(D.size?` · <span class="warn">lieber nicht: ${[...D].map(i=>esc(ING[i].n)).join(', ')}</span>`:'');}
 // ---------- Favoriten ----------
 function favList(){return(ME.hearts||[]).map(R).filter(Boolean);}
 function favRow(r){const w=ui.week,W=WEEKS[w]||{},inPlan=picksOf(w).includes(r.id)||Object.values(W.days||{}).some(x=>x&&x.rid===r.id&&!x.skip);
@@ -672,53 +855,55 @@ function vShop(){
 }
 
 // ---------- Rezepte ----------
-function activeFilters(){const f=ui.f,a=[];
-  f.meal.forEach(m=>a.push(['meal',m,MEALS[m]]));f.diet.forEach(d=>a.push(['diet',d,DIETS[d]]));
-  f.nut.forEach(n=>a.push(['nut',n,NUT[n][0]]));if(f.time)a.push(['time',f.time,'bis '+f.time+' Min.']);
-  f.prep.forEach(p=>a.push(['prep',p,FLAGS[p]]));if(f.fav)a.push(['fav',1,'mit Lieblingszutaten']);if(f.own)a.push(['own',1,'Eigene Rezepte']);if(f.heart)a.push(['heart',1,'♥ Herz-Rezepte']);return a;}
-const NUT={hp:['High Protein','mind. 25 g Protein oder 30 % der Kalorien'],lowfat:['Low Fat','max. 12 g Fett'],lowcarb:['Low Carb','max. 30 g Kohlenhydrate'],light:['Unter 500 kcal','pro Portion']};
+function activeExtras(){const f=ui.f,a=[];if(f.fav)a.push(['fav','mit Lieblingszutaten']);if(f.own)a.push(['own','Eigene Rezepte']);if(f.heart)a.push(['heart','♥ Favoriten']);return a;}
 function filtered(){
-  const f=ui.f,qq=ui.q.trim().toLowerCase();
+  const f=ui.f,qq=ui.q.trim().toLowerCase(),meh=new Set((ME.meh||[]).map(x=>x.slice(4)));
+  const mehN=r=>r.ings.filter(([id])=>meh.has(id)).length;
   return RECIPES.filter(r=>{
-    if(f.meal.length&&!f.meal.some(m=>r.meals.includes(m)))return false;
-    if(f.diet.length&&!f.diet.some(d=>d==='veg'?(r.diet==='veg'||r.diet==='vegan'):r.diet===d))return false;
-    if(f.nut.some(n=>!r[n]))return false;
-    if(f.time&&r.min>f.time)return false;
-    if(f.prep.some(p=>!r.flags.includes(p)))return false;
+    if(!passes(r,f.keys))return false;
     if(f.fav&&!likeScore(r))return false;
     if(f.own&&!r.own)return false;
     if(f.heart&&!hearted(r.id))return false;
     if(qq&&!(r.n.toLowerCase().includes(qq)||r.ings.some(([id])=>ING[id].n.toLowerCase().includes(qq))))return false;
     const av=recipeAvoid(r);if(!av.ok&&!(ME.showSubs&&av.fixable))return false;
-    return true;}).sort((a,b)=>(hearted(b.id)-hearted(a.id))||likeScore(b)-likeScore(a)||a.n.localeCompare(b.n,'de'));
+    return true;}).sort((a,b)=>(hearted(b.id)-hearted(a.id))||mehN(a)-mehN(b)||likeScore(b)-likeScore(a)||a.n.localeCompare(b.n,'de'));
 }
 function lrow(r){const ls=likeScore(r),av=recipeAvoid(r);
   return`<button class="lrow" data-open="${r.id}"><div class="min">${r.min}<small>Min.</small></div><div><div class="t">${hearted(r.id)?'<span class="heart">♥</span> ':''}${esc(r.n)}</div><div class="s">${dietTag(r)}${r.meals.map(m=>MEALS[m]).join(', ')}${ls?` · ♥ ${ls}`:''}${!av.ok?' · <span class="warn">mit Ersatz</span>':''}</div>${mbar(r)}</div><div class="k"><b>${r0(r.per.k)}</b><br><span class="small muted">kcal</span><br><span class="small">${r0(r.per.p)} g P</span></div></button>`;}
+const WEEK_IDX=Math.round(parseK(THIS_WEEK).getTime()/(7*864e5));
+function rotate(list,n){const L=list.slice().sort((a,b)=>hash('r'+a.id)-hash('r'+b.id));if(L.length<=n)return L;const st=(WEEK_IDX*n)%L.length;return Array.from({length:n},(_,i)=>L[(st+i)%L.length]);}
+const NEWCATS=[['Frühstück',['F']],['Schnell (bis 30 Min.)',['t30','A']],['High Protein',['hp']],['Vegetarisch',['veg','A']],['Fleisch & Fisch',['meat','fish']],['Asiatisch',['asia']],['Pasta',['pasta']],['Ofengerichte',['oven']]];
+function rcard(r){return`<div class="rcard" data-open="${r.id}"><button class="hbtn" data-heart="${r.id}" aria-label="${hearted(r.id)?'Aus Favoriten entfernen':'Als Favorit speichern'}">${hearted(r.id)?'♥':'♡'}</button>${dietTag(r)}<div class="rn">${esc(r.n)}</div><div class="s">${r.min} Min. · ${r0(r.per.k)} kcal · ${r0(r.per.p)} g Protein</div>${mbar(r)}</div>`;}
 function vRecipes(){
-  const list=filtered(),af=activeFilters();
-  return mast('Rezepte',`<b>${list.length}</b>von ${RECIPES.length}`)+
-  `<div class="row" style="flex-wrap:nowrap;margin-bottom:10px"><input type="search" id="q" placeholder="Rezept oder Zutat suchen" value="${esc(ui.q)}"><button class="btn" data-a="filters">Filter${af.length?` (${af.length})`:''}</button></div>
-  <div class="row" style="margin-bottom:12px"><button class="pill" data-a="heartf" aria-pressed="${ui.f.heart}">♥ Meine Herz-Rezepte (${(ME.hearts||[]).filter(id=>R(id)).length})</button></div>
-  ${af.length?`<div class="row" style="margin-bottom:12px">${af.map(([g,v,l])=>`<button class="pill x" data-a="rmf" data-g="${g}" data-v="${v}">${esc(l)}</button>`).join('')}<button class="link" data-a="clearf">Alle entfernen</button></div>`:''}
-  <button class="btn" data-a="newRec" style="width:100%;margin-bottom:14px">+ Eigenes Rezept anlegen</button>
-  ${list.length?`<div class="ledger">${list.map(lrow).join('')}</div>`:`<div class="empty">Nichts passt zu allen Filtern gleichzeitig. Entferne einen Filter.</div>`}
+  const list=filtered(),f=ui.f,ex=activeExtras(),nonQuick=f.keys.filter(k=>!QUICK.includes(k)&&k!=='F'&&k!=='A'),any=f.keys.length||ex.length||ui.q.trim();
+  const qk=['F','A'].concat(QUICK);
+  let h=mast('Rezepte',`<b>${list.length}</b>von ${RECIPES.length}`)+
+  `<div class="row" style="flex-wrap:nowrap;margin-bottom:10px"><input type="search" id="q" placeholder="Rezept oder Zutat suchen" value="${esc(ui.q)}"><button class="btn" data-a="filters" style="flex:none">Alle Filter${f.keys.length+ex.length?` (${f.keys.length+ex.length})`:''}</button></div>
+  <div class="chips"><button class="pill" data-a="heartf" aria-pressed="${f.heart}">♥ Favoriten</button>${qk.map(k=>`<button class="pill" data-fk="${k}" aria-pressed="${f.keys.includes(k)}">${FKEY[k].l}</button>`).join('')}</div>
+  ${nonQuick.length||ex.length?`<div class="row" style="margin-bottom:12px">${nonQuick.map(k=>`<button class="pill x" data-fk="${k}">${FKEY[k].l}</button>`).join('')}${ex.map(([k,l])=>`<button class="pill x" data-a="rmx" data-k="${k}">${l}</button>`).join('')}<button class="link" data-a="clearf">Alle entfernen</button></div>`:''}`;
+  if(!any){h+=NEWCATS.map(([t,keys])=>{const g=FG.map(x=>x[2]).flat();const sel=RECIPES.filter(r=>{const by={};keys.forEach(k=>{(by[FKEY[k].g]=by[FKEY[k].g]||[]).push(FKEY[k].fn(r));});return Object.values(by).every(v=>v.some(Boolean));});
+      const pick=rotate(sel,4);return pick.length?`<h2>Neu diese Woche · ${t}</h2><div class="hscroll">${pick.map(rcard).join('')}</div>`:'';}).join('');}
+  h+=`<button class="btn" data-a="newRec" style="width:100%;margin:${any?'0':'22px'} 0 14px">+ Eigenes Rezept anlegen</button>
+  ${any?'':'<h2>Alle Rezepte</h2>'}${list.length?`<div class="ledger">${list.slice(0,ui.lim||60).map(lrow).join('')}</div>${list.length>(ui.lim||60)?`<button class="btn ghost" data-a="more" style="width:100%;margin-top:10px">Weitere ${Math.min(60,list.length-(ui.lim||60))} von ${list.length-(ui.lim||60)} anzeigen</button>`:''}`:`<div class="empty">Nichts passt zu allen Filtern gleichzeitig. Entferne einen Filter.</div>`}
   <p class="small muted" style="margin-top:14px">Balken unter jedem Rezept: Anteil der Kalorien aus <span style="color:var(--basil)">Protein</span>, <span style="color:var(--saffron)">Kohlenhydraten</span> und <span style="color:var(--plum)">Fett</span>.</p>`;
+  return h;
 }
-function filterSheet(){
-  const f=ui.f;const tg=(g,v,l,on,hint)=>`<button class="pill" data-fg="${g}" data-fv="${v}" aria-pressed="${on}" ${hint?`title="${esc(hint)}"`:''}>${l}</button>`;
-  openSheet(`<div class="sheet-head"><h2>Filter</h2><button class="x-btn" data-close aria-label="Schließen">×</button></div>
-  <p class="small muted">Alles lässt sich kombinieren. Innerhalb einer Gruppe reicht eine Übereinstimmung, zwischen Gruppen muss alles passen.</p>
-  <div class="fgroup"><h3>Mahlzeit</h3><div class="row">${Object.entries(MEALS).map(([k,l])=>tg('meal',k,l,f.meal.includes(k))).join('')}</div></div>
-  <div class="fgroup"><h3>Ernährung</h3><div class="row">${Object.entries(DIETS).map(([k,l])=>tg('diet',k,l,f.diet.includes(k))).join('')}</div><p class="small muted" style="margin:6px 0 0">„Vegetarisch“ schließt vegane Rezepte ein.</p></div>
-  <div class="fgroup"><h3>Nährwerte pro Portion</h3><div class="row">${Object.entries(NUT).map(([k,[l,hint]])=>tg('nut',k,l,f.nut.includes(k),hint)).join('')}</div><p class="small muted" style="margin:6px 0 0">${Object.values(NUT).map(([l,h])=>`${l}: ${h}`).join(' · ')}</p></div>
-  <div class="fgroup"><h3>Zeit</h3><div class="row">${[15,30,45,60].map(t=>tg('time',t,'bis '+t+' Min.',f.time===t)).join('')}</div></div>
-  <div class="fgroup"><h3>Zubereitung</h3><div class="row">${Object.entries(FLAGS).map(([k,l])=>tg('prep',k,l,f.prep.includes(k))).join('')}</div></div>
-  <div class="fgroup"><h3>Sonstiges</h3><div class="row">${tg('fav',1,'Mit Lieblingszutaten',f.fav)}${tg('own',1,'Eigene Rezepte',f.own)}${tg('heart',1,'♥ Herz-Rezepte',f.heart)}${ME.avoid.length?tg('subs',1,'Rezepte mit Ersatz zeigen',ME.showSubs):''}</div></div>
-  <button class="btn basil" data-close style="width:100%;margin-top:16px">${filtered().length} Rezepte anzeigen</button>`);
-  document.querySelector('.sheet').addEventListener('click',e=>{const b=e.target.closest('[data-fg]');if(!b)return;const g=b.dataset.fg,v=b.dataset.fv;
-    if(['meal','diet','nut','prep'].includes(g)){const arr=f[g];const i=arr.indexOf(v);i>=0?arr.splice(i,1):arr.push(v);}
-    else if(g==='time')f.time=f.time===+v?0:+v;else if(g==='subs'){ME.showSubs=!ME.showSubs;saveMe();}else f[g]=!f[g];
-    render();filterSheet();});
+// Filter-Sheet: für die Rezeptliste (mode 'rez') oder als Wochen-Fokus (mode 'week')
+function filterSheet(mode='rez'){
+  const keys=mode==='week'?focusOf(ui.week):ui.f.keys,f=ui.f;
+  const groups=FG.filter(([g])=>!(mode==='week'&&g==='Mahlzeit'));
+  const count=mode==='week'?dinnerPool(ui.week).length:filtered().length;
+  openSheet(`<div class="sheet-head"><h2>${mode==='week'?'Fokus der Woche':'Filter'}</h2><button class="x-btn" data-close aria-label="Schließen">×</button></div>
+  <p class="small muted">Innerhalb einer Gruppe reicht eine Übereinstimmung (bei Nährwerten, Unverträglichkeiten und Zubereitung muss alles passen), zwischen Gruppen muss alles passen.${mode==='week'?' Gilt für euch beide.':''}</p>
+  ${groups.map(([g,mode2,items])=>`<div class="fgroup"><h3>${g}</h3><div class="row">${items.map(([k,l])=>`<button class="pill" data-sk="${k}" aria-pressed="${keys.includes(k)}">${l}</button>`).join('')}</div></div>`).join('')}
+  ${mode==='rez'?`<div class="fgroup"><h3>Sonstiges</h3><div class="row"><button class="pill" data-sx="fav" aria-pressed="${f.fav}">Mit Lieblingszutaten</button><button class="pill" data-sx="own" aria-pressed="${f.own}">Eigene Rezepte</button><button class="pill" data-sx="heart" aria-pressed="${f.heart}">♥ Favoriten</button>${ME.avoid.length?`<button class="pill" data-sx="subs" aria-pressed="${ME.showSubs}">Rezepte mit Ersatz zeigen</button>`:''}</div></div>`:''}
+  <div class="row" style="margin-top:16px;flex-wrap:nowrap"><button class="btn ghost" data-sclear style="flex:none">Zurücksetzen</button><button class="btn basil" data-close style="flex:1">${count} ${mode==='week'?'Gerichte passen':'Rezepte anzeigen'}</button></div>`);
+  const sh=document.querySelector('.sheet');const top=sh.scrollTop;
+  sh.addEventListener('click',e=>{const b=e.target.closest('[data-sk],[data-sx],[data-sclear]');if(!b)return;const st=document.querySelector('.sheet').scrollTop;
+    if(b.dataset.sk){if(mode==='week')patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),b.dataset.sk)});else{ui.f.keys=toggleKey(ui.f.keys,b.dataset.sk);render();}}
+    else if(b.dataset.sx){const k=b.dataset.sx;if(k==='subs'){ME.showSubs=!ME.showSubs;saveMe();}else f[k]=!f[k];render();}
+    else{if(mode==='week')patchWeek(ui.week,{focus:[]});else{ui.f={keys:[],fav:false,own:false,heart:false};render();}}
+    filterSheet(mode);document.querySelector('.sheet').scrollTop=st;});
 }
 
 // ---------- Recipe sheet ----------
@@ -962,6 +1147,9 @@ function vMe(){
   <h2>Mag ich besonders</h2><p class="small muted">Rezepte damit stehen weiter oben.</p>
   <div class="row" style="margin:8px 0">${ME.likes.map(v=>`<button class="pill x" data-a="rmLk" data-v="${v}">${esc(labelPref(v))}</button>`).join('')||'<span class="muted small">Noch nichts.</span>'}</div>
   <select id="addLike"><option value="">Hinzufügen …</option>${ingOpts.filter(i=>!ME.likes.includes('ing:'+i.id)).map(i=>`<option value="ing:${i.id}">${esc(i.n)}</option>`).join('')}</select>
+  <h2>Mag ich nicht so</h2><p class="small muted">Kein Verbot, aber Gerichte damit rutschen nach unten.</p>
+  <div class="row" style="margin:8px 0">${(ME.meh||[]).map(v=>`<button class="pill x" data-a="rmMeh" data-v="${v}">${esc(labelPref(v))}</button>`).join('')||'<span class="muted small">Noch nichts.</span>'}</div>
+  <select id="addMeh"><option value="">Hinzufügen …</option>${ingOpts.filter(i=>!(ME.meh||[]).includes('ing:'+i.id)).map(i=>`<option value="ing:${i.id}">${esc(i.n)}</option>`).join('')}</select>
   <h2>Tagesziele</h2><p class="small muted">Optional, für die Balken im Tracker.</p>
   <div class="formg" style="margin-top:8px">${[['k','kcal'],['p','Protein g'],['c','Kohlenhydrate g'],['f','Fett g']].map(([k,l])=>`<label>${l}<input type="number" inputmode="numeric" data-goal="${k}" value="${esc(ME.goals[k])}" min="0"></label>`).join('')}</div>
   ${ME.favFoods.length?`<h2>Favoriten</h2><div class="row">${ME.favFoods.map((f,i)=>`<button class="pill x" data-a="rmFav" data-i="${i}">${esc(f.name)}</button>`).join('')}</div>`:''}
@@ -978,7 +1166,9 @@ const app=document.getElementById('app');
 app.addEventListener('click',e=>{
   const hb=e.target.closest('[data-heart]');if(hb){e.stopPropagation();toggleHeart(hb.dataset.heart);render();return;}
   const v=e.target.closest('[data-vote]');if(v){vote(v.dataset.r,+v.dataset.vote);return;}
-  const fc=e.target.closest('[data-focus]');if(fc){const cur=focusOf(ui.week),k=fc.dataset.focus;patchWeek(ui.week,{focus:cur.includes(k)?cur.filter(x=>x!==k):cur.concat(k)});return;}
+  const fc=e.target.closest('[data-focus]');if(fc){patchWeek(ui.week,{focus:toggleKey(focusOf(ui.week),fc.dataset.focus)});return;}
+  const fk=e.target.closest('[data-fk]');if(fk){ui.f.keys=toggleKey(ui.f.keys,fk.dataset.fk);render();return;}
+  const wk=e.target.closest('[data-wk]');if(wk){const v=myVotes();v.ing=v.ing||{};const cur=wkIng(myId,ui.week);cur[wk.dataset.wk]=cur[wk.dataset.wk].filter(x=>x!==wk.dataset.v);v.ing[ui.week]=cur;saveVotes();render();return;}
   const pk=e.target.closest('[data-pick]');if(pk){pickFavorite(ui.week,pk.dataset.pick);return;}
   const up=e.target.closest('[data-unpick]');if(up){unpick(ui.week,up.dataset.unpick);return;}
   const o=e.target.closest('[data-open]');if(o){openRecipe(o.dataset.open);return;}
@@ -1002,10 +1192,14 @@ app.addEventListener('click',e=>{
   else if(a==='exadd'){const inp=document.getElementById('exIn');const val=inp.value.trim();if(!val)return;inp.value='';inp.blur();patchWeek(w,{extras:{[uid()]:{t:val,done:false}}});}
   else if(a==='exdel'){e.preventDefault();patchWeek(w,{extras:{[t.dataset.k]:null}});}
   else if(a==='clearBuy'){const W=weekDoc(w);const b={};Object.keys(W.bought||{}).forEach(k=>b[k]=false);const ex={};Object.keys(W.extras||{}).forEach(k=>{if(W.extras[k])ex[k]={done:false};});patchWeek(w,{bought:b,extras:ex});}
-  else if(a==='filters')filterSheet();
+  else if(a==='filters')filterSheet('rez');
+  else if(a==='focusAll')filterSheet('week');
+  else if(a==='more'){ui.lim=(ui.lim||60)+60;render();}
+  else if(a==='rmx'){ui.f[t.dataset.k]=false;render();}
+  else if(a==='rmMeh'){ME.meh=(ME.meh||[]).filter(x=>x!==t.dataset.v);saveMe();render();}
   else if(a==='heartf'){ui.f.heart=!ui.f.heart;render();}
-  else if(a==='rmf'){const g=t.dataset.g,val=t.dataset.v;if(Array.isArray(ui.f[g]))ui.f[g]=ui.f[g].filter(x=>x!==val);else ui.f[g]=g==='time'?0:false;render();}
-  else if(a==='clearf'){ui.f={meal:[],diet:[],nut:[],time:0,prep:[],fav:false,own:false,heart:false};render();}
+  else if(a==='rmf_old'){const g=t.dataset.g,val=t.dataset.v;if(Array.isArray(ui.f[g]))ui.f[g]=ui.f[g].filter(x=>x!==val);else ui.f[g]=g==='time'?0:false;render();}
+  else if(a==='clearf'){ui.f={keys:[],fav:false,own:false,heart:false};render();}
   else if(a==='newRec')newRecipeSheet();
   else if(a==='day-'){ui.date=addDays(ui.date,-1);render();}
   else if(a==='day+'&&ui.date!==dkey()){ui.date=addDays(ui.date,1);render();}
@@ -1034,6 +1228,8 @@ app.addEventListener('change',e=>{
   else if(t.dataset.goal){ME.goals[t.dataset.goal]=t.value;saveMe();}
   else if(t.id==='addAvoid'&&t.value){ME.avoid.push(t.value);saveMe();render(true);}
   else if(t.id==='addLike'&&t.value){ME.likes.push(t.value);saveMe();render(true);}
+  else if(t.id==='addMeh'&&t.value){ME.meh=(ME.meh||[]).concat(t.value);saveMe();render(true);}
+  else if((t.id==='wkLike'||t.id==='wkDis')&&t.value){const v=myVotes();v.ing=v.ing||{};const cur=wkIng(myId,ui.week),k=t.id==='wkLike'?'like':'dis',o=k==='like'?'dis':'like';cur[o]=cur[o].filter(x=>x!==t.value);if(!cur[k].includes(t.value))cur[k].push(t.value);v.ing[ui.week]=cur;saveVotes();render(true);}
 });
 // Gericht aus dem Plan gegessen: in den eigenen Tracker, Tag für beide als gekocht markieren
 async function eatPlanned(w,d,portions=1){
