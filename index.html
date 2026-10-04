@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
 <meta http-equiv="Pragma" content="no-cache">
-<title>Familienküche</title>
+<title>Mmmh</title>
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Küche">
+<meta name="apple-mobile-web-app-title" content="Mmmh">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -527,7 +527,7 @@ function weekSeg(){const lab=w=>`${fmtD(w,{day:'numeric',month:'short'})} – ${
 // ---------- Einrichtung ----------
 function vSetup(){
   const pre=new URLSearchParams(location.search).get('k')||'';
-  return mast('Familienküche','<b>Willkommen.</b>Einmal einrichten, dann geht’s los.')+
+  return mast('Mmmh','<b>Willkommen.</b>Einmal einrichten, dann geht’s los.')+
   `<p>Hier plant ihr zu zweit die Woche: Gerichte abstimmen, Plan festlegen, gemeinsam einkaufen.</p>
   <div class="panel"><div class="formg">
    <label style="grid-column:1/-1">Dein Vorname<input type="text" id="suName" autocomplete="given-name" placeholder="z. B. Sabine"></label>
@@ -957,7 +957,7 @@ app.addEventListener('click',e=>{
   else if(a==='rmLk'){ME.likes=ME.likes.filter(x=>x!==t.dataset.v);saveMe();render();}
   else if(a==='rmFav'){ME.favFoods.splice(+t.dataset.i,1);saveMe();render();}
   else if(a==='share'){const url=shareLink(),text=`Lass uns zusammen planen, was wir kochen. Öffne den Link, gib deinen Namen ein, der Küchen-Code „${SETUP.code}“ ist schon drin:`;
-    if(navigator.share)navigator.share({title:'Familienküche',text,url}).catch(()=>{});
+    if(navigator.share)navigator.share({title:'Mmmh',text,url}).catch(()=>{});
     else if(navigator.clipboard)navigator.clipboard.writeText(text+' '+url).then(()=>toast('Link kopiert'),()=>prompt('Link kopieren:',url));
     else prompt('Link kopieren:',url);}
   else if(a==='reset'){if(confirm('Code oder Namen neu eingeben? Eure gemeinsamen Daten bleiben unter dem alten Code gespeichert.')){try{localStorage.removeItem('fk-setup');}catch(e){}location.href=location.pathname;}}
