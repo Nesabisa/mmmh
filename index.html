@@ -198,10 +198,11 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .rcard{flex:0 0 70%;max-width:260px;scroll-snap-align:start;background:var(--card);border-radius:16px;padding:14px;position:relative;cursor:pointer}
 .rcard .rn{font-weight:700;font-size:17px;line-height:1.2;margin:8px 0 6px;padding-right:30px}
 .rcard .s{font-size:13px;color:var(--muted)}
-.hbtn{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:var(--fill);color:var(--pink);font-size:17px;line-height:1}
+.hbtn{position:absolute;z-index:2;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--pink);font-size:17px;line-height:1}
 .netb{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:60;background:var(--saffron);color:#000;font-size:13px;font-weight:600;padding:8px 12px;border-radius:12px;text-align:center}
 .prog{background:var(--card);border-radius:14px;padding:14px 16px}
 .fold{margin-top:18px}.fold summary{padding:8px 4px;font-size:13px}
+.rcard .rimg{display:block;width:calc(100% + 28px);margin:-14px -14px 10px;height:130px;object-fit:cover;border-radius:16px 16px 0 0}
 .vrow{display:flex;gap:12px;align-items:center;padding:12px 14px;position:relative}
 .vrow+.vrow::before{content:"";position:absolute;top:0;left:14px;right:0;border-top:.5px solid var(--line)}
 .vtop{flex:1;min-width:0;cursor:pointer}
@@ -594,7 +595,7 @@ function buildRecipe(id,n,meals,min,ings,steps,flags,own,extra){
   const per={k:tot.k/BASE,p:tot.p/BASE,c:tot.c/BASE,f:tot.f/BASE};
   const diet=tags.has('meat')?'meat':tags.has('fish')?'fish':(tags.has('dairy')||tags.has('egg')||tags.has('nonvegan'))?'veg':'vegan';
   const kc=per.k||1;
-  return{id,n,meals,min,ings,steps,flags:flags||'',per,tags,diet,own:!!own,src:extra&&extra.src||'',img:extra&&extra.img||'',
+  return{id,n,meals,min,ings,steps,flags:flags||'',per,tags,diet,own:!!own,src:extra&&extra.src||'',img:extra&&extra.img||'',web:extra&&extra.web||'',
     hp:per.p>=25||per.p*4/kc>=0.3,lowfat:per.f<=12,lowcarb:per.c<=30,light:per.k<=500};
 }
 function rebuildRecipes(){
@@ -608,7 +609,10 @@ function rebuildRecipes(){
         ING[id]={id,n:x.name||'Zutat',u,k:+x.k||0,p:+x.p||0,c:+x.c||0,f:+x.f||0,tags:Array.isArray(x.tags)?x.tags.filter(t=>CATS[t]||t==='nonvegan'):[],pack:u==='Stk'?1:(u==='ml'?500:250),pantry:false,subs:[],custom:true,nonut:!(+x.k)};}
       ings.push([id,(+x.amt||0)*f]);
     });
-    RECIPES.push(buildRecipe(rid,c.n,(c.meals||['A']).filter(m=>MEALS[m]),+c.min||30,ings,c.steps||[],c.flags||'',true,{src:c.src,img:c.img}));
+    const rr=buildRecipe(rid,c.n,(c.meals||['A']).filter(m=>MEALS[m]),+c.min||30,ings,c.steps||[],c.flags||'',true,{src:c.src,img:c.img,web:c.web});
+    if(c.vegan){rr.diet='vegan';['dairy','egg','nonvegan','meat','fish'].forEach(t=>rr.tags.delete(t));}
+    if(c.per&&c.per.k>0){rr.per=c.per;const kc=c.per.k||1;rr.hp=c.per.p>=25||c.per.p*4/kc>=0.3;rr.lowfat=c.per.f<=12;rr.lowcarb=c.per.c<=30;rr.light=c.per.k<=500;}
+    RECIPES.push(rr);
   });
 }
 const R=id=>RECIPES.find(r=>r.id===id);
@@ -711,7 +715,7 @@ function toast(t){document.querySelectorAll('.toast').forEach(e=>e.remove());con
 function slotNow(){const h=new Date().getHours();return h<11?'Frühstück':h<15?'Mittag':h<18?'Snack':'Abendessen';}
 const nameOf=id=>id===myId?'Du':(names[id]||'Partner:in');
 function mbar(r){const p=r.per.p*4,c=r.per.c*4,f=r.per.f*9,t=p+c+f||1;return`<div class="mbar" aria-label="Protein ${r0(p/t*100)} %, Kohlenhydrate ${r0(c/t*100)} %, Fett ${r0(f/t*100)} % der Kalorien"><i class="ip" style="width:${p/t*100}%"></i><i class="ic" style="width:${c/t*100}%"></i><i class="if" style="width:${f/t*100}%"></i></div>`;}
-const dietTag=r=>`<span class="diet d-${r.diet}">${DIETS[r.diet]}</span>${r.own?'<span class="diet own">Eigenes</span>':''}`;
+const dietTag=r=>`<span class="diet d-${r.diet}">${DIETS[r.diet]}</span>${r.web?`<span class="diet own">${esc(r.web)}</span>`:r.own?'<span class="diet own">Eigenes</span>':''}`;
 
 // ================= voting =================
 function recentRids(w){const s=new Set();for(let k=1;k<=(HH.pause||0);k++){const W=WEEKS[addDays(w,-7*k)];if(!W||!W.days)continue;Object.values(W.days).forEach(x=>{if(x&&x.rid&&!x.skip)s.add(x.rid);});}return s;}
@@ -1012,7 +1016,7 @@ function lrow(r){const ls=likeScore(r),av=recipeAvoid(r);
 const WEEK_IDX=Math.round(parseK(THIS_WEEK).getTime()/(7*864e5));
 function rotate(list,n){const L=list.slice().sort((a,b)=>hash('r'+a.id)-hash('r'+b.id));if(L.length<=n)return L;const st=(WEEK_IDX*n)%L.length;return Array.from({length:n},(_,i)=>L[(st+i)%L.length]);}
 const NEWCATS=[['Frühstück',['F']],['Schnell (bis 30 Min.)',['t30','A']],['High Protein',['hp']],['Vegetarisch',['veg','A']],['Fleisch & Fisch',['meat','fish']],['Asiatisch',['asia']],['Pasta',['pasta']],['Ofengerichte',['oven']]];
-function rcard(r){return`<div class="rcard" data-open="${r.id}"><button class="hbtn" data-heart="${r.id}" aria-label="${hearted(r.id)?'Aus Favoriten entfernen':'Als Favorit speichern'}">${hearted(r.id)?'♥':'♡'}</button>${dietTag(r)}<div class="rn">${esc(r.n)}</div><div class="s">${r.min} Min. · ${r0(r.per.k)} kcal · ${r0(r.per.p)} g Protein</div>${mbar(r)}</div>`;}
+function rcard(r){return`<div class="rcard" data-open="${r.id}">${r.img?`<img class="rimg" src="${esc(r.img)}" alt="" loading="lazy" onerror="this.remove()">`:''}<button class="hbtn" data-heart="${r.id}" aria-label="${hearted(r.id)?'Aus Favoriten entfernen':'Als Favorit speichern'}">${hearted(r.id)?'♥':'♡'}</button>${dietTag(r)}<div class="rn">${esc(r.n)}</div><div class="s">${r.min} Min. · ${r0(r.per.k)} kcal · ${r0(r.per.p)} g Protein</div>${mbar(r)}</div>`;}
 function vRecipes(){
   const list=filtered(),f=ui.f,ex=activeExtras(),nonQuick=f.keys.filter(k=>!QUICK.includes(k)&&k!=='F'&&k!=='A'),any=f.keys.length||ex.length||ui.q.trim();
   const qk=['F','A'].concat(QUICK);
@@ -1020,7 +1024,10 @@ function vRecipes(){
   `<div class="row" style="flex-wrap:nowrap;margin-bottom:10px"><input type="search" id="q" placeholder="Rezept oder Zutat suchen" value="${esc(ui.q)}"><button class="btn" data-a="filters" style="flex:none">Alle Filter${f.keys.length+ex.length?` (${f.keys.length+ex.length})`:''}</button></div>
   <div class="chips"><button class="pill" data-a="heartf" aria-pressed="${f.heart}">♥ Favoriten</button>${qk.map(k=>`<button class="pill" data-fk="${k}" aria-pressed="${f.keys.includes(k)}">${FKEY[k].l}</button>`).join('')}</div>
   ${nonQuick.length||ex.length?`<div class="row" style="margin-bottom:12px">${nonQuick.map(k=>`<button class="pill x" data-fk="${k}">${FKEY[k].l}</button>`).join('')}${ex.map(([k,l])=>`<button class="pill x" data-a="rmx" data-k="${k}">${l}</button>`).join('')}<button class="link" data-a="clearf">Alle entfernen</button></div>`:''}`;
-  if(!any){h+=NEWCATS.map(([t,keys])=>{const g=FG.map(x=>x[2]).flat();const sel=RECIPES.filter(r=>{const by={};keys.forEach(k=>{(by[FKEY[k].g]=by[FKEY[k].g]||[]).push(FKEY[k].fn(r));});return Object.values(by).every(v=>v.some(Boolean));});
+  if(!any){const nw=RECIPES.filter(isNewWeb).sort((a,b)=>CUSTOM[b.id].created-CUSTOM[a.id].created);
+    h+=`<h2>Neu aus dem Netz</h2>${nw.length?`<div class="hscroll">${nw.map(rcard).join('')}</div>`:'<p class="small muted" style="margin:0 4px">Noch nichts geholt. Einmal pro Woche kommen automatisch neue, passend zu euren Vorlieben.</p>'}
+    <div class="spread" style="margin:8px 4px 0"><span class="small muted" id="webMsg">${esc(WEB.msg)}</span><button class="btn sm" data-a="webMore" ${WEB.running?'disabled':''} style="flex:none">Mehr aus dem Netz holen</button></div>`;
+    h+=NEWCATS.map(([t,keys])=>{const g=FG.map(x=>x[2]).flat();const sel=RECIPES.filter(r=>{const by={};keys.forEach(k=>{(by[FKEY[k].g]=by[FKEY[k].g]||[]).push(FKEY[k].fn(r));});return Object.values(by).every(v=>v.some(Boolean));});
       const pick=rotate(sel,4);return pick.length?`<h2>Neu diese Woche · ${t}</h2><div class="hscroll">${pick.map(rcard).join('')}</div>`:'';}).join('');}
   h+=`<button class="btn" data-a="newRec" style="width:100%;margin:${any?'0':'22px'} 0 14px">+ Eigenes Rezept anlegen</button>
   ${any?'':'<h2>Alle Rezepte</h2>'}${list.length?`<div class="ledger">${list.slice(0,ui.lim||60).map(lrow).join('')}</div>${list.length>(ui.lim||60)?`<button class="btn ghost" data-a="more" style="width:100%;margin-top:10px">Weitere ${Math.min(60,list.length-(ui.lim||60))} von ${list.length-(ui.lim||60)} anzeigen</button>`:''}`:`<div class="empty">Nichts passt zu allen Filtern gleichzeitig. Entferne einen Filter.</div>`}
@@ -1054,7 +1061,7 @@ function drawRecipe(){
   const html=`<div class="sheet-head"><div>${dietTag(r)}<h2>${esc(r.n)}</h2></div><div class="row" style="flex-wrap:nowrap"><button class="x-btn" data-r="heart" aria-pressed="${hearted(r.id)}" aria-label="${hearted(r.id)?'Herz entfernen':'Mit Herz speichern'}" style="color:var(--pink)">${hearted(r.id)?'♥':'♡'}</button><button class="x-btn" data-close aria-label="Schließen">×</button></div></div>
   ${r.img?`<img src="${esc(r.img)}" alt="" style="width:100%;max-height:240px;object-fit:cover;border-radius:14px;margin:4px 0 10px" onerror="this.remove()">`:''}
   <p class="small muted">${r.meals.map(m=>MEALS[m]).join(', ')} · ${r.min} Min.${r.flags?' · '+r.flags.split('').map(x=>FLAGS[x]).join(', '):''}</p>
-  <div class="row" style="gap:16px;margin:2px 0 6px">${r.src?`<a class="link" href="${esc(r.src)}" target="_blank" rel="noopener">Original-Rezept öffnen ↗</a>`:`<a class="link" href="https://www.chefkoch.de/rs/s0/${encodeURIComponent(r.n.replace(/\s*\(.*\)/,''))}/Rezepte.html" target="_blank" rel="noopener">Ähnliche bei Chefkoch ↗</a><a class="link" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(r.n+' Rezept')}" target="_blank" rel="noopener">Fotos ansehen ↗</a>`}</div>
+  <div class="row" style="gap:16px;margin:2px 0 6px">${r.src?`<a class="link" href="${esc(r.src)}" target="_blank" rel="noopener">${r.web?'Original bei '+esc(r.web):'Original-Rezept'} öffnen ↗</a>`:`<a class="link" href="https://www.chefkoch.de/rs/s0/${encodeURIComponent(r.n.replace(/\s*\(.*\)/,''))}/Rezepte.html" target="_blank" rel="noopener">Ähnliche bei Chefkoch ↗</a><a class="link" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(r.n+' Rezept')}" target="_blank" rel="noopener">Fotos ansehen ↗</a>`}</div>
   <div class="facts4"><div><b>${r0(r.per.k)}</b><small>kcal</small></div><div><b>${r0(r.per.p)}</b><small>g Protein</small></div><div><b>${r0(r.per.c)}</b><small>g Kohlenh.</small></div><div><b>${r0(r.per.f)}</b><small>g Fett</small></div></div>
   <p class="small muted">Pro Portion, aus Richtwerten je Zutat berechnet${r.ings.some(([id])=>ING[id].nonut)?'. Für manche eigene Zutaten fehlen Nährwerte':''}.</p>
   <div class="panel"><div class="spread"><h3>Zutaten</h3><span class="stepper"><button data-r="s-">−</button><span>${cur.serv}</span><button data-r="s+">+</button></span></div>
@@ -1339,6 +1346,85 @@ function vMe(){
   <h2>Als App installieren</h2><p class="small muted">iPhone: in Safari unten auf „Teilen“ tippen, dann „Zum Home-Bildschirm“. Android: im Chrome-Menü „App installieren“.</p>`;
 }
 
+// ================= Neue Rezepte aus dem Netz =================
+// Kostenlos: RSS-Feeds deutscher Food-Blogs, Seiten über r.jina.ai (CORS), Rezeptdaten aus schema.org/JSON-LD
+const FEEDS=[
+ {n:'Emmi kocht einfach',u:'https://emmikochteinfach.de/feed/',wp:'https://emmikochteinfach.de/'},
+ {n:'Kochkarussell',u:'https://kochkarussell.com/feed/',wp:'https://kochkarussell.com/'},
+ {n:'Gaumenfreundin',u:'https://www.gaumenfreundin.de/feed/',wp:'https://www.gaumenfreundin.de/'},
+ {n:'Einfach Malene',u:'https://www.einfachmalene.de/feed/',wp:'https://www.einfachmalene.de/'},
+ {n:'Küchenchaotin',u:'https://kuechenchaotin.de/feed/',wp:'https://kuechenchaotin.de/'},
+ {n:'Eat This!',u:'https://www.eat-this.org/feed/',wp:'https://www.eat-this.org/',vegan:1},
+ {n:'Vegan Heaven',u:'https://veganheaven.de/feed/',wp:'https://veganheaven.de/',vegan:1},
+ {n:'Chefkoch',u:'https://www.chefkoch.de/rss/rezept-des-tages.php'},
+ {n:'Kitchen Stories',u:'https://www.kitchenstories.com/de/feed'},
+];
+const NOMEAL=/ketchup|mayo|senf selber|selber machen|grundrezept|brühe|fond\b|sauce\b|soße\b|kuchen|torte|keks|cookie|plätzchen|muffin|brownie|dessert|\beis\b|creme\b|mousse|marmelade|konfitüre|likör|cocktail|getränk|drink|smoothie|sirup|brötchen|\bbrot\b|zopf|zimtschnecke|waffel|pudding|milchreis|\bdip\b|dressing|gewürz|rezeptsammlung|favoriten|tipps|gebäck|crumble|praline|schokolade|aufstrich|limonade|\btee\b|punsch|glühwein|plätzchen|stollen|lebkuchen|tiramisu|cheesecake|pancake-sirup|granola-riegel|energy ?balls?/i;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let WEB={running:false,msg:''};
+async function jina(url,html){const r=await fetch('https://r.jina.ai/'+url,{headers:html?{'X-Return-Format':'html'}:{}});if(!r.ok)throw new Error('http '+r.status);return r.text();}
+function feedLinks(txt,feed){const host=new URL(feed.u).hostname.replace(/^www\./,'');const out=new Set();
+  (txt.match(/https?:\/\/[^\s<>"'\])]+/g)||[]).forEach(u=>{u=u.replace(/&amp;/g,'&').replace(/[.,]+$/,'');let h;try{h=new URL(u);}catch(e){return;}
+    if(h.hostname.replace(/^www\./,'')!==host)return;if(/\/(feed|tag|category|kategorie|author|page|wp-content|wp-json|comments?)\b|#|\?|\.(jpe?g|png|webp|xml|css|js)$/i.test(h.pathname+h.search+h.hash))return;
+    if(h.pathname.split('/').filter(Boolean).length<1||h.pathname==='/')return;out.add(h.origin+h.pathname);});return[...out];}
+function nutrNum(x){const m=String(x||'').replace(',','.').match(/[\d.]+/);return m?+m[0]:0;}
+function webDoc(rec,url,blog,vegan){
+  const name=String(rec.name||'').replace(/\s*\([^)]*\)/g,' ').replace(/\s+Rezept$/i,'').replace(/\s+von\s+\S+$/i,'').replace(/\s+[–—-]\s+[^–—-]*(einfach|schnell|rezept|lecker|beste|klassi|blitz|minuten|perfekt|cremig)[^–—-]*$/i,'').replace(/\s+/g,' ').trim();
+  const cats=[].concat(rec.recipeCategory||[],rec.recipeCuisine||[],rec.keywords||[]).join(' ');
+  if(!name||NOMEAL.test(name)||/dessert|nachtisch|kuchen|gebäck|getränk|backen|süßspeise/i.test(cats))return null;
+  const ingLines=(rec.recipeIngredient||[]).map(String);if(ingLines.length<4)return null;
+  const p=parseRecipeText('Zutaten:\n'+ingLines.join('\n'));const known=p.rows.filter(r=>r.id!=='_other');if(known.length<2)return null;
+  const y=String(Array.isArray(rec.recipeYield)?rec.recipeYield[0]:rec.recipeYield||'').match(/\d+/);const serv=Math.min(12,Math.max(1,y?+y[0]:4));
+  const min=isoMin(rec.totalTime)||((isoMin(rec.prepTime)||0)+(isoMin(rec.cookTime)||0))||30;
+  const meals=/frühstück|breakfast|brunch/i.test(cats+' '+name)?['F']:/snack|vorspeise|beilage/i.test(cats)&&!/hauptgericht/i.test(cats)?['M']:['M','A'];
+  let img=rec.image;if(Array.isArray(img))img=img[0];if(img&&typeof img==='object')img=img.url||img.contentUrl;
+  const n=rec.nutrition||{},per=nutrNum(n.calories)>50?{k:nutrNum(n.calories),p:nutrNum(n.proteinContent),c:nutrNum(n.carbohydrateContent),f:nutrNum(n.fatContent)}:null;
+  const ings=p.rows.filter(x=>+x.amt>0).map(x=>x.id==='_other'?{id:null,name:x.name,amt:+x.amt,unit:x.unit||'g',k:0,p:0,c:0,f:0,tags:[]}:{id:x.id,name:ING[x.id].n,amt:+x.amt,unit:ING[x.id].u});
+  const doc={n:name,serv,min,meals,flags:'',ings,steps:stepsOf(rec.recipeInstructions).slice(0,15),src:url,img:typeof img==='string'?img:'',web:blog,created:Date.now(),by:'web'};if(vegan)doc.vegan=true;
+  if(per)doc.per=per;return doc;}
+// Wie gut passt ein Netz-Rezept zu euch? (Fokus, Lust auf, Lieblingszutaten; wer etwas gar nicht isst und es keinen Ersatz gibt → raus)
+function webScore(doc){
+  const ings=doc.ings.filter(x=>x.id).map(x=>[x.id,x.amt*BASE/(doc.serv||BASE)]);
+  const r=buildRecipe('tmp',doc.n,doc.meals,doc.min,ings,[],'',true,{});if(doc.per){r.per=doc.per;}if(r.per.k<150)return -999;
+  for(const v of participants()){const L=avoidOf(v);if(r.ings.some(([id])=>avoidsIng(L,id)&&!subFor(id,L)))return -999;
+    if(L.some(x=>x.startsWith('txt:')&&doc.n.toLowerCase().includes(x.slice(4))))return -999;}
+  let sc=Math.random()*1.5;const fo=focusOf(NEXT_WEEK);if(fo.length)sc+=passes(r,fo)?4:-2;
+  sc+=ingScore(r,NEXT_WEEK);if(doc.img)sc+=0.5;if(doc.per)sc+=0.3;return sc;}
+function searchWords(){const w=new Set();Object.keys(VOTES).forEach(v=>wkIng(v,NEXT_WEEK).like.forEach(x=>w.add(labelPref(x))));(ME.likes||[]).forEach(x=>w.add(labelPref(x)));
+  return[...w].map(x=>x.split(/[\/(]/)[0].trim()).filter(x=>x.length>2).slice(0,4);}
+// Holt neue Rezepte. auto: einmal pro Woche; sonst „Mehr aus dem Netz holen“
+async function webFetch(max=10,auto=false){
+  if(WEB.running)return;const meta=db?await db.doc('household/meta').get().then(s=>s.exists?s.data():{}).catch(()=>({})):(lsGet('fk-webmeta')||{});
+  if(auto&&(meta.webDone===THIS_WEEK||(meta.webAt&&meta.webAt>Date.now()-20*60000)))return;
+  WEB={running:true,msg:'Suche neue Rezepte …'};setWebMsg();
+  const saveMeta=m=>{if(db)return db.doc('household/meta').update(m).catch(()=>{});lsSet('fk-webmeta',Object.assign(meta,m));};
+  await saveMeta({webAt:Date.now(),webBy:myId});
+  const seen=new Set([...(meta.webSeen||[]),...Object.values(CUSTOM).map(c=>c&&c.src).filter(Boolean)]),depth=meta.webDepth||{};
+  // Quellen: neueste Beiträge, tiefere Seiten (ältere Rezepte) und Suche nach euren Lieblingszutaten
+  const words=searchWords(),src=[];
+  FEEDS.forEach(f=>{src.push({f,u:f.u});if(f.wp){const d=(depth[f.n]||1)+1;src.push({f,u:f.u+'?paged='+d,deep:d});words.forEach(w=>src.push({f,u:f.wp+'?s='+encodeURIComponent(w)+'&feed=rss2'}));}});
+  src.sort(()=>Math.random()-.5);
+  const queue=[],found=[];let req=0;const newSeen=[];
+  for(const s of src){if(queue.length>=Math.max(18,max*2))break;
+    try{WEB.msg=`Durchsuche ${s.f.n} …`;setWebMsg();const txt=await jina(s.u);req++;let n=0;
+      for(const u of feedLinks(txt,s.f)){if(seen.has(u)||queue.some(q=>q.u===u))continue;queue.push({u,f:s.f});if(++n>=4)break;}
+      if(s.deep)depth[s.f.n]=s.deep;}catch(e){console.warn('feed',s.u,e);}
+    await sleep(3200);}
+  for(let i=0;i<queue.length;i++){const {u,f}=queue[i];WEB.msg=`Lese Rezept ${i+1} von ${queue.length} …`;setWebMsg();
+    try{const html=await jina(u,true);const d=new DOMParser().parseFromString(html,'text/html');let rec=null;
+      d.querySelectorAll('script[type="application/ld+json"]').forEach(sc=>{if(rec)return;try{rec=findRecipe(JSON.parse(sc.textContent));}catch(e){}});
+      newSeen.push(u);if(rec){const doc=webDoc(rec,u,f.n,f.vegan);if(doc){const sc=webScore(doc);if(sc>-50)found.push({doc,sc,blog:f.n});}}}catch(e){console.warn('rezept',u,e);}
+    if(found.length>=max*2)break;await sleep(3200);}
+  found.sort((a,b)=>b.sc-a.sc);const per={},pick=[];for(const x of found){if((per[x.blog]||0)>=3)continue;per[x.blog]=(per[x.blog]||0)+1;pick.push(x.doc);if(pick.length>=max)break;}
+  for(const doc of pick){const rid='web_'+hash(doc.src).toString(36);CUSTOM[rid]=doc;if(db)write('rec'+rid,()=>db.doc('recipes/'+rid).set(clone(doc)));}
+  rebuildRecipes();persistLocal();
+  await saveMeta({webSeen:[...seen,...newSeen].slice(-800),webDepth:depth,webAt:Date.now(),...(auto?{webDone:THIS_WEEK}:{})});
+  WEB={running:false,msg:pick.length?`${pick.length} neue Rezepte aus dem Netz`:'Diesmal nichts Passendes gefunden. Später nochmal versuchen.'};
+  if(pick.length)toast(`${pick.length} neue Rezepte aus dem Netz`);render();setTimeout(()=>{WEB.msg='';setWebMsg();},8000);
+}
+function setWebMsg(){const e=document.getElementById('webMsg');if(e)e.textContent=WEB.msg;const b=document.querySelector('[data-a="webMore"]');if(b)b.disabled=WEB.running;}
+const isNewWeb=r=>r.web&&CUSTOM[r.id]&&CUSTOM[r.id].created>Date.now()-10*864e5;
+
 // ================= Sicherungen =================
 // Einmal pro Woche eine Kopie der gemeinsamen Daten in der Cloud ablegen (backups/{datum})
 async function autoBackup(){
@@ -1402,6 +1488,7 @@ app.addEventListener('click',e=>{
   else if(a==='clearBuy'){const W=weekDoc(w);const b={};Object.keys(W.bought||{}).forEach(k=>b[k]=false);const ex={};Object.keys(W.extras||{}).forEach(k=>{if(W.extras[k])ex[k]={done:false};});patchWeek(w,{bought:b,extras:ex});}
   else if(a==='filters')filterSheet('rez');
   else if(a==='focusAll')filterSheet('week');
+  else if(a==='webMore'){webFetch(8,false);}
   else if(a==='more'){ui.lim=(ui.lim||60)+60;render();}
   else if(a==='rmx'){ui.f[t.dataset.k]=false;render();}
   else if(a==='rmMeh'){ME.meh=(ME.meh||[]).filter(x=>x!==t.dataset.v);saveMe();render();}
@@ -1502,6 +1589,7 @@ render();
     [7,14,21,28,35,42].forEach(n=>{const w=addDays(THIS_WEEK,-n);db.doc('weeks/'+w).get().then(s=>{if(s.exists){WEEKS[w]=deepMerge(emptyWeek(),clone(s.data()));render();}}).catch(()=>{});});
     syncVeto();
     setTimeout(autoBackup,8000);
+    setTimeout(()=>webFetch(10,true),15000);
     cloudTried=true;
   }catch(e){cloudTried=true;console.warn(e);setSync('err');toast('Keine Verbindung. Die App speichert erstmal nur auf diesem Gerät.');autoFinalize();}
   render();
