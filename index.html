@@ -178,6 +178,7 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .formg input,.formg select{width:100%}
 .nrow{padding:10px 0;border-bottom:.5px solid var(--line)}
 .nrow .top{display:grid;grid-template-columns:1fr 84px auto;gap:6px;align-items:center}
+.nrow .top3{display:grid;grid-template-columns:1fr 64px 62px auto;gap:6px;align-items:center}.nrow .top3 input,.nrow .top3 select{width:100%;padding-left:8px;padding-right:8px}.nrow .top3 select{padding-right:22px;background-position:calc(100% - 13px) 52%,calc(100% - 8px) 52%}
 .nrow .top input{width:100%}
 .nrow .other{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
 .nrow .nut4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;grid-column:1/-1}
@@ -606,6 +607,95 @@ const WEB_RAW=[
 ['w_pinkepasta','Pinke Tofu-Rote-Bete-Pasta','MA',40,[['rotebete',400],['olivenoel',30],['sonnenblumenkerne',60],['nudeln',500],['tofu',300],['knoblauch',2],['sojasauce',30]],['Ofen auf 200 °C vorheizen. Rote Bete würfeln, mit Öl und Salz 25 Minuten rösten, die Sonnenblumenkerne die letzten 5 Minuten mit.','Vollkornpenne kochen.','Rote Bete mit Tofu, Knoblauch, Apfelessig, Sojasauce und etwas Nudelwasser cremig pürieren.','Mit den Nudeln mischen und mit Sonnenblumenkernen servieren.'],'o',WX('Eat This!','https://www.eat-this.org/pinke-tofu-bete-pasta/','https://www.eat-this.org/wp-content/uploads/2026/01/eat_this_pinke_tofu-bete-pasta_006.jpg',W4,1)],
 ['w_djuvec','Djuvec-Reis mit Ajvar','MA',25,[['reis',200],['ajvar',100],['erbsen',130],['gemuesebruehe',500],['paprika',1],['zwiebel',1],['knoblauch',1],['fruehlingszwiebeln',1],['raeuchertofu',100]],['Zwiebel, Knoblauch und Paprika anbraten, gewürfelten Räuchertofu (oder vegane Chorizo) mitbraten.','Reis, Ajvar und Paprikapulver unterrühren.','Brühe angießen und zugedeckt 18 Minuten garen, Erbsen die letzten 5 Minuten dazu.','Mit Frühlingszwiebeln und Petersilie servieren.'],'p',WX('Vegan Heaven','https://veganheaven.de/rezepte/djuvec-reis-super-einfach-und-lecker/','https://veganheaven.de/wp-content/uploads/2017/10/Djuvec-Reis-super-einfach-und-lecker-6.jpg',W4,1)],
 ];
+
+// ================= Nährwert-Tabelle für eigene Zutaten =================
+// [Name, kcal, Protein, Kohlenhydrate, Fett je 100 g (bzw. 100 ml), Tags (m Fleisch, f Fisch, d Milch, e Ei, g Gluten, n Nüsse, s Soja, a Sesam), Stückgewicht g (0 = keins), Einheit]
+const NUTRI_DB=[
+// Gemüse
+['Artischocke',47,3.3,10.5,0.2,'',300,'g'],['Artischockenherzen (Glas)',35,2,5,1,'',0,'g'],['Aubergine',24,1.2,3,0.2,'',300,'g'],['Avocado',190,2,4,19,'',170,'g'],
+['Blattspinat',23,2.9,1,0.4,'',0,'g'],['Blumenkohl',25,2,2.5,0.3,'',800,'g'],['Bohnen, grün',30,2,4,0.2,'',0,'g'],['Brokkoli',35,3.5,3,0.4,'',400,'g'],
+['Champignons',22,3,0.5,0.3,'',20,'g'],['Chinakohl',13,1.2,1.2,0.3,'',800,'g'],['Chilischote',40,2,8,0.4,'',15,'g'],['Erbsen',80,5.5,11,0.5,'',0,'g'],
+['Feldsalat',20,1.8,0.7,0.4,'',0,'g'],['Fenchel',25,1.2,3,0.2,'',300,'g'],['Frühlingszwiebel',30,2,5,0.5,'',20,'g'],['Grünkohl',45,4.3,2.5,0.9,'',0,'g'],
+['Gurke',13,0.6,2,0.2,'',400,'g'],['Ingwer',80,1.8,16,0.8,'',0,'g'],['Karotte',40,0.9,8,0.2,'',80,'g'],['Kartoffel',75,2,16,0.1,'',120,'g'],
+['Kirschtomaten',20,1,3,0.2,'',15,'g'],['Knoblauch',140,6,28,0.5,'',4,'g'],['Kohlrabi',27,2,4,0.1,'',300,'g'],['Kürbis (Hokkaido)',60,1.7,12,0.6,'',1000,'g'],
+['Butternut-Kürbis',45,1,10,0.1,'',1000,'g'],['Lauch',30,1.6,4,0.3,'',250,'g'],['Mais',85,3,15,1.2,'',0,'g'],['Mangold',20,2,3,0.3,'',0,'g'],
+['Okra',33,2,7,0.2,'',0,'g'],['Pak Choi',13,1.5,1,0.2,'',150,'g'],['Paprika',30,1,6,0.3,'',160,'g'],['Pastinake',75,1.3,12,0.4,'',150,'g'],
+['Pfifferlinge',20,1.6,0.2,0.5,'',0,'g'],['Portobello',22,2.1,3,0.4,'',80,'g'],['Radieschen',16,1,2,0.1,'',10,'g'],['Rosenkohl',43,4.5,3.3,0.3,'',15,'g'],
+['Rote Bete',45,1.6,8,0.1,'',150,'g'],['Rotkohl',30,1.5,5,0.2,'',1000,'g'],['Rucola',25,2.6,2,0.7,'',0,'g'],['Salat (Kopfsalat)',14,1.2,1.5,0.2,'',300,'g'],
+['Schalotte',72,2.5,17,0.1,'',30,'g'],['Shiitake',34,2.2,7,0.5,'',15,'g'],['Spargel, grün',20,2,2,0.2,'',20,'g'],['Spargel, weiß',18,1.9,2,0.1,'',40,'g'],
+['Spitzkohl',25,1.3,4,0.2,'',800,'g'],['Staudensellerie',15,1,2,0.2,'',40,'g'],['Knollensellerie',30,1.5,5,0.3,'',500,'g'],['Süßkartoffel',86,1.6,20,0.1,'',300,'g'],
+['Tomate',18,0.9,3,0.2,'',100,'g'],['Topinambur',75,2,16,0,'',0,'g'],['Trüffel',30,6,1,0.5,'',0,'g'],['Zitronengras',100,1.8,25,0.5,'',20,'g'],['Koriander (frisch)',23,2,4,0.5,'',0,'g'],['Petersilie (frisch)',36,3,6,0.8,'',0,'g'],['Basilikum (frisch)',23,3,3,0.6,'',0,'g'],['Weißkohl',25,1.3,4,0.2,'',1000,'g'],
+['Wirsing',30,3,3,0.4,'',800,'g'],['Zucchini',20,1.5,2.5,0.4,'',250,'g'],['Zuckerschoten',42,3,7,0.2,'',0,'g'],['Zwiebel',30,1,6,0,'',80,'g'],
+['Rote Zwiebel',40,1.1,9,0.1,'',80,'g'],['Oliven',150,1.3,4,15,'',4,'g'],['Kapern',25,2,5,0.9,'',0,'g'],['Getrocknete Tomaten',210,3,15,15,'',0,'g'],
+['Sauerkraut',20,1.5,1,0.3,'',0,'g'],['Kimchi',20,1.5,3,0.5,'',0,'g'],['Edamame',120,11,7,5,'s',0,'g'],['Bambussprossen',20,2,2,0.3,'',0,'g'],['Sojasprossen',30,3,4,0.2,'s',0,'g'],
+// Obst
+['Ananas',55,0.5,12,0.2,'',1000,'g'],['Apfel',55,0.3,13,0.2,'',150,'g'],['Aprikose',45,1,9,0.1,'',40,'g'],['Banane',90,1.2,21,0.2,'',120,'g'],['Birne',55,0.4,13,0.2,'',150,'g'],
+['Blaubeeren',45,0.7,9,0.6,'',0,'g'],['Datteln (getrocknet)',280,2.5,66,0.5,'',8,'g'],['Erdbeeren',32,0.8,5.5,0.4,'',15,'g'],['Feigen',70,1.3,13,0.4,'',50,'g'],
+['Granatapfelkerne',80,1.7,18,1,'',0,'g'],['Himbeeren',35,1.3,5,0.3,'',0,'g'],['Kirschen',60,0.9,13,0.3,'',0,'g'],['Kiwi',50,1,9,0.6,'',75,'g'],
+['Limette',30,0.7,8,0.2,'',60,'g'],['Mango',60,0.6,13,0.4,'',300,'g'],['Nektarine',45,1,10,0.3,'',130,'g'],['Orange',45,1,9,0.2,'',180,'g'],
+['Pfirsich',40,0.8,9,0.1,'',130,'g'],['Pflaume',50,0.6,10,0.2,'',35,'g'],['Rosinen',300,2.5,69,0.5,'',0,'g'],['Weintrauben',70,0.7,16,0.3,'',0,'g'],
+['Zitrone',30,0.7,3,0.3,'',100,'g'],['Wassermelone',30,0.6,7,0.2,'',0,'g'],['Cranberrys (getrocknet)',330,0.1,80,1.4,'',0,'g'],
+// Hülsenfrüchte, Getreide, Beilagen
+['Bulgur',350,12,70,1.5,'g',0,'g'],['Couscous',360,12,72,2,'g',0,'g'],['Dinkelmehl',340,12,70,2,'g',0,'g'],['Weizenmehl',340,10,72,1,'g',0,'g'],
+['Gnocchi',150,4,32,0.4,'g',0,'g'],['Haferflocken',370,13.5,59,7,'g',0,'g'],['Hirse',360,10,69,4,'',0,'g'],['Kichererbsen (gekocht)',120,7,16,2.5,'',0,'g'],
+['Kichererbsen (getrocknet)',340,19,48,6,'',0,'g'],['Kidneybohnen (gekocht)',110,7.5,15,0.5,'',0,'g'],['Weiße Bohnen (gekocht)',100,7,13,0.5,'',0,'g'],
+['Linsen, rot (trocken)',340,24,50,1.5,'',0,'g'],['Linsen, Beluga (trocken)',330,25,48,1.5,'',0,'g'],['Linsen (gekocht)',115,9,18,0.4,'',0,'g'],
+['Nudeln (trocken)',355,12.5,71,1.5,'g',0,'g'],['Vollkornnudeln (trocken)',340,14,64,2.5,'g',0,'g'],['Nudeln (gekocht)',150,5,30,0.7,'g',0,'g'],
+['Glasnudeln (trocken)',350,0.2,86,0.1,'',0,'g'],['Reisnudeln (trocken)',360,6,80,0.6,'',0,'g'],['Udon-Nudeln',130,3.5,27,0.5,'g',0,'g'],['Ramen-Nudeln (trocken)',440,10,60,17,'g',0,'g'],
+['Orzo',355,12.5,71,1.5,'g',0,'g'],['Polenta (Maisgrieß)',350,8,75,1.5,'',0,'g'],['Quinoa',360,14,64,6,'',0,'g'],['Reis (trocken)',350,7,78,0.6,'',0,'g'],
+['Reis (gekocht)',130,2.7,28,0.3,'',0,'g'],['Basmatireis (trocken)',350,8,77,0.7,'',0,'g'],['Risottoreis (trocken)',350,7,78,0.6,'',0,'g'],['Wildreis (trocken)',357,15,75,1,'',0,'g'],
+['Grieß',330,11,69,1,'g',0,'g'],['Spätzle (Kühlregal)',190,7,35,2.5,'ge',0,'g'],['Schupfnudeln',160,4,33,1,'g',0,'g'],['Maultaschen',200,9,25,7,'gme',50,'g'],
+['Tortellini',280,11,44,7,'gde',0,'g'],['Ravioli (frisch)',260,11,38,7,'gde',0,'g'],['Lasagneplatten',355,12.5,71,1.5,'g',20,'g'],
+['Brot (Weizen)',260,8,50,2,'g',40,'g'],['Vollkornbrot',220,7.5,40,1.5,'g',50,'g'],['Toastbrot',260,8,48,4,'g',25,'g'],['Brötchen',260,9,50,2,'g',60,'g'],
+['Baguette',260,9,52,1.5,'g',0,'g'],['Pita/Fladenbrot',270,9,55,1.2,'g',90,'g'],['Naan',300,9,50,7,'gd',100,'g'],['Tortilla (Weizen)',300,8,50,8,'g',60,'g'],
+['Wrap (Vollkorn)',290,9,46,7,'g',60,'g'],['Reiswaffeln',380,8,80,3,'',8,'g'],['Knäckebrot',350,10,65,2,'g',10,'g'],['Semmelbrösel',350,11,72,2,'g',0,'g'],
+['Blätterteig',400,6,35,26,'g',0,'g'],['Pizzateig',250,7,48,3,'g',0,'g'],['Hefeteig',280,7,50,5,'g',0,'g'],['Mürbeteig',430,6,48,24,'gd',0,'g'],
+['Cornflakes',375,7,84,0.9,'',0,'g'],['Müsli',370,10,62,7,'gn',0,'g'],['Granola',450,9,62,18,'gn',0,'g'],
+// Fleisch & Fisch
+['Hähnchenbrust',110,23,0,1.5,'m',150,'g'],['Hähnchenschenkel',180,18,0,12,'m',200,'g'],['Hähnchen (ganz)',165,19,0,10,'m',0,'g'],['Putenbrust',105,24,0,1,'m',150,'g'],
+['Putenhack',150,20,0,8,'m',0,'g'],['Rinderhack',250,18,0,20,'m',0,'g'],['Gemischtes Hack',260,18,0,21,'m',0,'g'],['Rindersteak',150,22,0,7,'m',200,'g'],
+['Rinderfilet',120,21,0,4,'m',180,'g'],['Gulasch (Rind)',140,20,0,6,'m',0,'g'],['Schweinefilet',120,22,0,3,'m',0,'g'],['Schweineschnitzel',110,22,0,2,'m',150,'g'],
+['Schweinebauch',300,15,0,27,'m',0,'g'],['Kotelett',180,20,0,11,'m',200,'g'],['Lammfleisch',230,18,0,17,'m',0,'g'],['Entenbrust',200,19,0,13,'m',300,'g'],
+['Speck/Bacon',300,15,0,27,'m',0,'g'],['Schinken (gekocht)',110,19,1,3,'m',0,'g'],['Serrano/Parmaschinken',240,30,0,13,'m',0,'g'],['Salami',400,22,1,34,'m',0,'g'],
+['Chorizo',450,24,2,38,'m',0,'g'],['Bratwurst',290,13,1,26,'m',100,'g'],['Wiener Würstchen',250,13,1,22,'m',50,'g'],['Leberkäse',300,12,1,28,'m',0,'g'],
+['Lachsfilet',200,20,0,13,'f',125,'g'],['Räucherlachs',180,21,0,10,'f',0,'g'],['Kabeljau',80,18,0,0.7,'f',125,'g'],['Seelachs',80,18,0,0.9,'f',125,'g'],
+['Forelle',110,20,0,3,'f',0,'g'],['Thunfisch (Dose, natur)',110,25,0,1,'f',0,'g'],['Thunfischsteak',130,24,0,4,'f',150,'g'],['Garnelen',80,18,0,1,'f',0,'g'],
+['Muscheln',70,12,3,1.5,'f',0,'g'],['Tintenfisch',80,16,1,1,'f',0,'g'],['Makrele',200,19,0,14,'f',0,'g'],['Sardinen (Dose)',200,24,0,11,'f',0,'g'],
+['Pangasius',90,15,0,3,'f',125,'g'],['Fischstäbchen',200,13,18,9,'fg',30,'g'],['Surimi',100,8,15,0.5,'fe',0,'g'],
+// Eier & Milchprodukte
+['Ei',140,12.5,0.7,10,'e',60,'g'],['Milch 3,5 %',64,3.4,4.8,3.5,'d',0,'ml'],['Milch 1,5 %',47,3.4,4.9,1.5,'d',0,'ml'],['Buttermilch',37,3.5,4,0.5,'d',0,'ml'],
+['Sahne 30 %',290,2.4,3,30,'d',0,'ml'],['Kochsahne 15 %',170,3,4,15,'d',0,'ml'],['Schmand',240,2.7,4,24,'d',0,'g'],['Crème fraîche',290,2.5,3,30,'d',0,'g'],
+['Saure Sahne',115,3,4,10,'d',0,'g'],['Joghurt 3,5 %',65,4,5,3.5,'d',0,'g'],['Griechischer Joghurt',120,5,4,10,'d',0,'g'],['Skyr',63,11,4,0.2,'d',0,'g'],
+['Magerquark',67,12,4,0.3,'d',0,'g'],['Quark 20 %',110,12,3,5,'d',0,'g'],['Hüttenkäse',100,12,3,4.5,'d',0,'g'],['Frischkäse',230,6,3,22,'d',0,'g'],
+['Ricotta',150,9,3,11,'d',0,'g'],['Mascarpone',435,4.5,4,44,'d',0,'g'],['Mozzarella',250,18,1,19,'d',125,'g'],['Burrata',300,15,1,26,'d',125,'g'],
+['Feta',265,17,1,21,'d',0,'g'],['Halloumi',320,22,2,25,'d',0,'g'],['Parmesan',390,35,0,28,'d',0,'g'],['Gouda',360,25,0,28,'d',0,'g'],['Emmentaler',380,29,0,30,'d',0,'g'],
+['Bergkäse',400,28,0,32,'d',0,'g'],['Cheddar',400,25,1,33,'d',0,'g'],['Camembert',300,20,0,24,'d',0,'g'],['Ziegenkäse',270,16,2,22,'d',0,'g'],['Gorgonzola',350,19,0,31,'d',0,'g'],
+['Butter',740,0.7,0.6,82,'d',0,'g'],['Ghee',900,0,0,99,'d',0,'g'],
+// Pflanzliche Alternativen
+['Tofu',125,13,2,7.5,'s',0,'g'],['Räuchertofu',160,17,2,10,'s',0,'g'],['Seidentofu',55,5,2,3,'s',0,'g'],['Tempeh',190,19,9,11,'s',0,'g'],['Seitan',120,25,4,1.5,'g',0,'g'],
+['Sojagranulat (trocken)',340,50,15,1,'s',0,'g'],['Sojaschnetzel (trocken)',340,50,15,1,'s',0,'g'],['Veganes Hack',220,18,5,14,'s',0,'g'],['Sojajoghurt',50,4,2,2.5,'s',0,'g'],
+['Haferdrink',45,0.5,7,1.5,'g',0,'ml'],['Sojadrink',40,3.3,2,1.8,'s',0,'ml'],['Mandeldrink',25,0.5,2,1.2,'n',0,'ml'],['Kokosmilch',180,1.5,3,18,'',0,'ml'],
+['Kokosmilch light',75,0.7,2,7,'',0,'ml'],['Hafer-Cuisine',150,0.8,6,13,'g',0,'ml'],['Veganer Frischkäse',230,5,5,21,'',0,'g'],['Hefeflocken',380,50,20,5,'',0,'g'],
+['Jackfruit (Dose)',40,1,7,0.3,'',0,'g'],['Hummus',250,7,14,18,'a',0,'g'],
+// Nüsse, Samen, Öle
+['Cashews',590,18,30,44,'n',0,'g'],['Erdnüsse',600,26,12,50,'n',0,'g'],['Erdnussmus',600,25,13,49,'n',0,'g'],['Haselnüsse',650,15,10,61,'n',0,'g'],
+['Mandeln',600,21,6,53,'n',0,'g'],['Mandelmus',620,21,8,55,'n',0,'g'],['Pinienkerne',680,14,4,68,'n',0,'g'],['Pistazien',570,20,18,45,'n',0,'g'],
+['Walnüsse',650,15,11,65,'n',0,'g'],['Pekannüsse',700,9,14,72,'n',0,'g'],['Kürbiskerne',580,30,10,49,'',0,'g'],['Sonnenblumenkerne',580,21,12,49,'',0,'g'],
+['Sesam',580,18,12,50,'a',0,'g'],['Tahin',600,18,10,54,'a',0,'g'],['Chiasamen',490,17,8,31,'',0,'g'],['Leinsamen',490,20,2,42,'',0,'g'],['Kokosraspel',650,6,7,62,'',0,'g'],
+['Olivenöl',820,0,0,91,'',0,'ml'],['Rapsöl',820,0,0,92,'',0,'ml'],['Sonnenblumenöl',820,0,0,92,'',0,'ml'],['Sesamöl',880,0,0,99,'a',0,'ml'],['Kokosöl',860,0,0,99,'',0,'g'],
+// Soßen, Würze, Süßes
+['Ajvar',90,1.5,8,6,'',0,'g'],['Pesto (grün)',450,5,5,45,'dn',0,'g'],['Pesto rosso',350,4,8,33,'d',0,'g'],['Tomatenmark',85,4,13,0.5,'',0,'g'],['Passata',35,1.4,6,0.2,'',0,'g'],
+['Gehackte Tomaten (Dose)',22,1.2,3.5,0.2,'',0,'g'],['Ketchup',110,1.5,24,0.2,'',0,'g'],['Mayonnaise',680,1,2,75,'e',0,'g'],['Senf',90,6,5,5,'',0,'g'],
+['Sojasauce',60,8,5,0,'sg',0,'ml'],['Teriyakisauce',130,5,25,0,'sg',0,'ml'],['Hoisinsauce',220,3,45,3,'s',0,'ml'],['Austernsauce',50,1,11,0.3,'f',0,'ml'],
+['Fischsauce',35,5,3.5,0,'f',0,'ml'],['Sriracha',90,2,18,1,'',0,'ml'],['Sambal Oelek',60,2,10,1,'',0,'g'],['Harissa',150,3,10,11,'',0,'g'],['Gochujang',200,4,40,2,'sg',0,'g'],
+['Miso',200,12,26,6,'s',0,'g'],['Currypaste',100,2,10,5,'',0,'g'],['BBQ-Sauce',170,1,40,0.5,'',0,'g'],['Balsamico',100,0.5,20,0,'',0,'ml'],['Essig',20,0,1,0,'',0,'ml'],
+['Gemüsebrühe',4,0.2,0.6,0.1,'',0,'ml'],['Rinderfond',10,1.5,0.5,0.3,'m',0,'ml'],['Weißwein',80,0.1,2.6,0,'',0,'ml'],['Rotwein',85,0.1,2.6,0,'',0,'ml'],
+['Honig',305,0.4,76,0,'',0,'g'],['Ahornsirup',260,0,67,0.1,'',0,'ml'],['Agavendicksaft',310,0,76,0,'',0,'ml'],['Zucker',400,0,100,0,'',0,'g'],
+['Brauner Zucker',380,0,98,0,'',0,'g'],['Schokolade (Zartbitter)',540,8,32,40,'d',0,'g'],['Kakaopulver',350,20,11,21,'',0,'g'],['Marmelade',250,0.3,60,0.1,'',0,'g'],
+['Speisestärke',350,0.3,86,0.1,'',0,'g'],['Apfelmark',75,0.3,17,0.1,'',0,'g'],['Proteinpulver',380,80,8,4,'d',0,'g']
+];
+const NUTRI={};NUTRI_DB.forEach(r=>NUTRI[r[0].toLowerCase()]=r);
+const TAGMAP={m:'meat',f:'fish',d:'dairy',e:'egg',g:'gluten',n:'nuts',s:'soy',a:'sesam'};
 
 </script>
 <script>
@@ -1169,25 +1259,68 @@ async function onRecipeClick(e){
 
 // ---------- Eigenes Rezept anlegen ----------
 let nr=null;
-const TAG_OPTS=[['','–'],['meat','Fleisch'],['fish','Fisch'],['dairy','Milchprodukt'],['egg','Ei'],['gluten','Gluten'],['nuts','Nüsse'],['soy','Soja'],['sesam','Sesam']];
-function newRecipeSheet(){nr={n:'',serv:4,min:'',meals:['A'],flags:'',steps:'',rows:[{id:'',amt:''},{id:'',amt:''},{id:'',amt:''}]};drawNew();}
+const UNITS=['g','ml','Stk','EL','TL'];
+let OWN_ING={};   // eigene, neu angelegte Zutaten (für euch beide gespeichert)
+const offCache={};
+const blankRow=()=>({name:'',amt:'',unit:'g',m:null});
+function newRecipeSheet(){nr={n:'',serv:4,min:'',meals:['A'],flags:'',steps:'',rows:[blankRow(),blankRow(),blankRow()]};drawNew();}
+// Stückgewicht einer Zutat (für Umrechnung Stück ↔ g)
+function pieceG(name,id){const n=(name||'').toLowerCase();const db=NUTRI[n]||Object.values(NUTRI).find(r=>r[6]&&n&&(r[0].toLowerCase().startsWith(n)||n.startsWith(r[0].toLowerCase())));
+  return(db&&db[6])||(id&&PIECE_G[id])||(OWN_ING[n]&&OWN_ING[n].pg)||100;}
+// Strenger als matchIng: nur ganze Wörter (oder Mehrzahl), damit z. B. „Zitronengras“ nicht als Zitrone erkannt wird
+function strictIng(t){const l=' '+t.toLowerCase().replace(/[^a-zäöüß ]/g,' ').replace(/\s+/g,' ').trim()+' ';
+  for(const [k,id] of SYN_LIST){const kk=k.trim();if(kk.includes(' ')){if(l.includes(' '+kk+' '))return id;continue;}
+    for(const w of l.trim().split(' ')){if(w===kk||(w.startsWith(kk)&&w.length-kk.length<=2&&/^(n|en|e|s|er)$/.test(w.slice(kk.length))))return id;}}return null;}
+// Zutat → Nährwerte automatisch zuordnen
+function resolveRow(x){const t=x.name.trim(),l=t.toLowerCase();x.m=null;if(!t)return;
+  const ex=Object.values(ING).find(i=>!i.custom&&(i.n.toLowerCase()===l||i.n.toLowerCase().replace(/\s*\(.*\)/,'')===l));
+  const id=ex?ex.id:strictIng(t);
+  if(id&&ING[id]){const i=ING[id];x.m={type:'ing',id,name:i.n,k:i.k,p:i.p,c:i.c,f:i.f,base:i.u};if(!x.amtTouched&&x.unit==='g'&&i.u!=='g')x.unit=i.u;return;}
+  const own=OWN_ING[l];if(own){x.m={type:'own',name:own.n,k:own.k,p:own.p,c:own.c,f:own.f,base:own.u||'g',pg:own.pg,tags:own.tags||[]};return;}
+  let db=NUTRI[l];if(!db){const words=l.split(/[\s,()/-]+/).filter(Boolean),same=(a,b)=>a===b||(a.startsWith(b)&&/^(n|en|e|s|er)$/.test(a.slice(b.length)))||(b.startsWith(a)&&/^(n|en|e|s|er)$/.test(b.slice(a.length)));
+    const c=NUTRI_DB.filter(r=>{const n=r[0].toLowerCase();if(l.length>=3&&n.startsWith(l))return true;const nw=n.split(/[\s,()/-]+/).filter(Boolean);return nw.some(a=>words.some(b=>b.length>3&&(same(a,b)||(b.length>4&&a.endsWith(b)))));});
+    c.sort((a,b)=>a[0].length-b[0].length);db=c[0];}
+  if(db){x.m={type:'db',name:db[0],k:db[1],p:db[2],c:db[3],f:db[4],base:db[7]||'g',pg:db[6]||0,tags:[...db[5]].map(c=>TAGMAP[c]).filter(Boolean)};if(!x.amtTouched&&x.unit==='g'&&db[7]==='ml')x.unit='ml';return;}
+  x.m={type:'pending'};offLookup(t).then(r=>{if(x.name.trim()!==t)return;x.m=r?{type:'off',name:r.name,k:r.k,p:r.p,c:r.c,f:r.f,base:'g',tags:[]}:{type:'none'};if(document.getElementById('nrName')){readNew();drawNew();}});}
+// Open Food Facts: besten passenden Eintrag automatisch wählen
+async function offLookup(term,tries=2){const key=term.toLowerCase();if(key in offCache)return offCache[key];
+  try{const r=await fetch('https://de.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(term)+'&search_simple=1&action=process&json=1&page_size=20&fields=product_name,nutriments');
+    const d=await r.json();const bad=/chips|praline|pesto|sauce|soße|mayo|creme|riegel|keks|schoko|eis|getränk|drink|aufstrich|dip|pizza|snack/i;
+    const best=(d.products||[]).map(p=>{const n=p.nutriments||{},name=String(p.product_name||'').trim();const k=+n['energy-kcal_100g'];if(!name||!(k>=0))return null;
+      const ln=name.toLowerCase();let sc=0;if(ln.startsWith(key))sc+=4;if(ln.includes(key))sc+=2;if(bad.test(ln)&&!bad.test(key))sc-=5;sc-=name.split(/\s+/).length*0.3;
+      return{sc,name,k:+k,p:+(n.proteins_100g||0),c:+(n.carbohydrates_100g||0),f:+(n.fat_100g||0)};}).filter(Boolean).sort((a,b)=>b.sc-a.sc)[0];
+    offCache[key]=best&&best.sc>0?best:null;}catch(e){console.warn(e);if(tries>1){await new Promise(r=>setTimeout(r,1500));return offLookup(term,tries-1);}return null;}return offCache[key];}
+// Menge in g/ml (bzw. Stück bei Stück-Zutaten der App) umrechnen
+function rowBase(x){const a=+x.amt||0,m=x.m;if(!m||!a)return null;let base=m.base||'g';
+  if(m.type==='ing'&&base==='Stk'){const pg=pieceG(x.name,m.id);const v=x.unit==='Stk'?a:x.unit==='EL'?a*15/pg:x.unit==='TL'?a*5/pg:a/pg;return{amt:v,unit:'Stk'};}
+  const g=x.unit==='Stk'?a*(m.pg||pieceG(x.name,m.id)):x.unit==='EL'?a*15:x.unit==='TL'?a*5:a;return{amt:g,unit:base==='ml'?'ml':'g'};}
+function rowNutr(x){const b=rowBase(x),m=x.m;if(!b||!m||!['ing','own','db','off','manual'].includes(m.type))return null;const f=b.unit==='Stk'?b.amt:b.amt/100;return{k:m.k*f,p:m.p*f,c:m.c*f,f:m.f*f};}
 function readNew(){
   const g=id=>document.getElementById(id);if(!g('nrName'))return;
   nr.n=g('nrName').value;if(g('impUrl'))nr.url=g('impUrl').value;if(g('impText'))nr.pasteText=g('impText').value;if(g('impMsg'))nr.msg=g('impMsg').innerHTML;nr.serv=g('nrServ').value;nr.min=g('nrMin').value;nr.steps=g('nrSteps').value;
   nr.meals=[...document.querySelectorAll('[data-nrm]')].filter(c=>c.checked).map(c=>c.dataset.nrm);
   nr.flags=[...document.querySelectorAll('[data-nrf]')].filter(c=>c.checked).map(c=>c.dataset.nrf).join('');
-  nr.rows.forEach((x,i)=>{const el=s=>document.querySelector(`[data-nr${s}="${i}"]`);x.id=el('i').value;x.amt=el('a').value;
-    if(x.id==='_other'&&el('n')){x.name=el('n').value;x.unit=el('u').value;x.tag=el('t').value;['k','p','c','f'].forEach(k=>x[k]=el(k).value);}});
+  nr.rows.forEach((x,i)=>{const el=s=>document.querySelector(`[data-nr${s}="${i}"]`);if(!el('n'))return;x.name=el('n').value;x.amt=el('a').value;x.unit=el('u').value;
+    if(x.edit&&el('k')){x.m={type:'manual',name:x.name,k:+el('k').value||0,p:+el('p').value||0,c:+el('c').value||0,f:+el('f').value||0,base:x.m&&x.m.base==='ml'?'ml':'g',pg:+el('pg').value||0,tags:x.m&&x.m.tags||[]};}});
 }
+function nutTxt(m){if(!m)return'';const per=m.base==='Stk'?'Stück':m.base==='ml'?'100 ml':'100 g';return`${r0(m.k)} kcal · P ${r0(m.p)} · K ${r0(m.c)} · F ${r0(m.f)} pro ${per}`;}
 function drawNew(){
-  const ingOpts=Object.values(ING).filter(i=>!i.custom).sort((a,b)=>a.n.localeCompare(b.n,'de'));
-  const row=(x,i)=>{const unit=x.id&&x.id!=='_other'?ING[x.id].u:'';
-    return`<div class="nrow"><div class="top"><select data-nri="${i}"><option value="">Zutat wählen …</option>${ingOpts.map(o=>`<option value="${o.id}" ${x.id===o.id?'selected':''}>${esc(o.n)}</option>`).join('')}<option value="_other" ${x.id==='_other'?'selected':''}>Andere Zutat …</option></select>
-     <input type="number" inputmode="decimal" data-nra="${i}" value="${esc(x.amt)}" placeholder="${unit||'Menge'}" min="0" step="any"><button class="link" data-n="rm" data-i="${i}" aria-label="Zeile entfernen" style="color:var(--muted)">✕</button></div>
-     ${unit?`<div class="small muted" style="margin-top:2px">Menge in ${unit}</div>`:''}
-     ${x.id==='_other'?`<div class="other"><input type="text" data-nrn="${i}" value="${esc(x.name||'')}" placeholder="Name"><div class="row" style="flex-wrap:nowrap;gap:6px"><select data-nru="${i}">${['g','ml','Stk'].map(u=>`<option ${(x.unit||'g')===u?'selected':''}>${u}</option>`).join('')}</select><select data-nrt="${i}" aria-label="Art">${TAG_OPTS.map(([v,l])=>`<option value="${v}" ${(x.tag||'')===v?'selected':''}>${l}</option>`).join('')}</select></div>
-      <div class="nut4">${[['k','kcal'],['p','Protein'],['c','Kohlenh.'],['f','Fett']].map(([k,l])=>`<input type="number" inputmode="decimal" step="any" data-nr${k}="${i}" value="${esc(x[k]||'')}" placeholder="${l}">`).join('')}</div>
-      <div class="small muted" style="grid-column:1/-1">Nährwerte optional, pro 100 g/ml bzw. pro Stück (steht auf der Packung).</div></div>`:''}</div>`;};
+  const row=(x,i)=>{const m=x.m;let st='';
+    if(!x.name.trim())st='';
+    else if(!m||m.type==='pending')st='<span class="muted">Suche Nährwerte …</span>';
+    else if(m.type==='none')st=`<span class="warn">Keine Nährwerte gefunden.</span> <button class="link" data-n="retry" data-i="${i}">Nochmal suchen</button> · <button class="link" data-n="edit" data-i="${i}">Selbst eintragen</button>`;
+    else st=`<span style="color:var(--basil)">✓ ${esc(m.name)}</span> <span class="muted">· ${nutTxt(m)}${m.type==='off'?' · aus Open Food Facts':''}</span> <button class="link" data-n="edit" data-i="${i}">${x.edit?'':'ändern'}</button>`;
+    const pgNeeded=x.unit==='Stk'&&m&&m.base!=='Stk';
+    return`<div class="nrow"><div class="top3"><input type="text" list="ingAll" data-nrn="${i}" value="${esc(x.name)}" placeholder="Zutat, z. B. Rucola" autocomplete="off">
+     <input type="number" inputmode="decimal" data-nra="${i}" value="${esc(x.amt)}" placeholder="Menge" min="0" step="any">
+     <select data-nru="${i}">${UNITS.map(u=>`<option ${x.unit===u?'selected':''}>${u}</option>`).join('')}</select>
+     <button class="link" data-n="rm" data-i="${i}" aria-label="Zeile entfernen" style="color:var(--muted)">✕</button></div>
+     ${st?`<div class="small" style="margin-top:4px">${st}</div>`:''}
+     ${x.edit?`<div class="nut4" style="margin-top:6px">${[['k','kcal'],['p','Protein'],['c','Kohlenh.'],['f','Fett']].map(([k,l])=>`<input type="number" inputmode="decimal" step="any" data-nr${k}="${i}" value="${m&&m[k]!=null?r0(m[k]*10)/10:''}" placeholder="${l}">`).join('')}</div>
+       <div class="small muted" style="margin-top:4px">Werte pro 100 g/ml (steht auf der Packung).</div>`:''}
+     ${pgNeeded||x.edit&&x.unit==='Stk'?`<div class="row small" style="margin-top:6px;flex-wrap:nowrap">1 Stück ≈ <input type="number" inputmode="decimal" data-nrpg="${i}" value="${(m&&m.pg)||pieceG(x.name,m&&m.id)}" style="width:80px"> g</div>`:''}</div>`;};
+  const tot={k:0,p:0,c:0,f:0};let missing=0;nr.rows.forEach(x=>{if(!x.name.trim())return;const n=rowNutr(x);if(!n){missing++;return;}for(const q in tot)tot[q]+=n[q];});const sv=+nr.serv||4;
+  const dl=[...new Set(Object.values(ING).filter(i=>!i.custom).map(i=>i.n.replace(/\s*\(.*\)/,'')).concat(NUTRI_DB.map(r=>r[0]),Object.values(OWN_ING).map(o=>o.n)))].sort((a,b)=>a.localeCompare(b,'de'));
   const html=`<div class="sheet-head"><h2>Eigenes Rezept</h2><button class="x-btn" data-close aria-label="Schließen">×</button></div>
   <p class="small muted">Eigene Rezepte seht ihr beide und könnt darüber abstimmen. Nährwerte werden aus den Zutaten berechnet.</p>
   <div class="panel"><h3>Aus dem Netz übernehmen</h3><p class="small muted" style="margin:4px 0 8px">Link zu einem Rezept einfügen (z. B. Chefkoch, Lecker, ein Food-Blog). Zutaten, Schritte und Foto werden übernommen.</p>
@@ -1206,21 +1339,29 @@ function drawNew(){
    <label>Portionen<input type="number" inputmode="numeric" id="nrServ" value="${esc(nr.serv)}" min="1"></label><label>Minuten<input type="number" inputmode="numeric" id="nrMin" value="${esc(nr.min)}" min="1" placeholder="30"></label></div>
   <div class="row" style="margin:12px 0 4px">${Object.entries(MEALS).map(([k,l])=>`<label class="row" style="gap:4px"><input type="checkbox" data-nrm="${k}" ${nr.meals.includes(k)?'checked':''}> ${l}</label>`).join('')}</div>
   <div class="row" style="margin:4px 0 8px">${Object.entries(FLAGS).map(([k,l])=>`<label class="row small" style="gap:4px"><input type="checkbox" data-nrf="${k}" ${nr.flags.includes(k)?'checked':''}> ${l}</label>`).join('')}</div>
-  <div class="panel"><h3>Zutaten</h3><p class="small muted" style="margin:2px 0 0">Mengen für die oben angegebenen Portionen. Salz, Pfeffer und Gewürze weglassen.</p>${nr.rows.map(row).join('')}
-   <button class="btn ghost sm" data-n="add" style="margin-top:10px">+ Zutat</button></div>
+  <div class="panel"><h3>Zutaten</h3><p class="small muted" style="margin:2px 0 0">Zutat eintippen, Menge und Einheit wählen – die Nährwerte werden automatisch zugeordnet. Salz, Pfeffer und Gewürze weglassen.</p>${nr.rows.map(row).join('')}
+   <button class="btn ghost sm" data-n="add" style="margin-top:10px">+ Zutat</button>
+   ${nr.rows.some(x=>x.name.trim())?`<p class="small" style="margin:12px 0 0"><b>Pro Portion ca. ${r0(tot.k/sv)} kcal</b> · P ${r0(tot.p/sv)} g · K ${r0(tot.c/sv)} g · F ${r0(tot.f/sv)} g${missing?` <span class="warn">(${missing} Zutat${missing>1?'en':''} ohne Werte)</span>`:''}</p>`:''}
+   <datalist id="ingAll">${dl.map(n=>`<option value="${esc(n)}">`).join('')}</datalist></div>
   <div class="panel"><h3 style="margin-bottom:6px">Zubereitung</h3><textarea id="nrSteps" placeholder="Ein Schritt pro Zeile">${esc(nr.steps)}</textarea></div>
   <p class="small warn" id="nrErr"></p><button class="btn basil" data-n="save" style="width:100%">Rezept speichern</button>`;
   const sc=document.querySelector('.sheet');const top=sc?sc.scrollTop:0;
   if(!sc)openSheet(html);else sc.innerHTML=html;
   const s2=document.querySelector('.sheet');s2.scrollTop=top;
   s2.onclick=e=>{const b=e.target.closest('[data-n]');if(!b)return;readNew();const a=b.dataset.n;
-    if(a==='add'){nr.rows.push({id:'',amt:''});drawNew();}
-    if(a==='rm'){nr.rows.splice(+b.dataset.i,1);if(!nr.rows.length)nr.rows.push({id:'',amt:''});drawNew();}
+    if(a==='add'){nr.rows.push(blankRow());drawNew();}
+    if(a==='rm'){nr.rows.splice(+b.dataset.i,1);if(!nr.rows.length)nr.rows.push(blankRow());drawNew();}
+    if(a==='edit'){const x=nr.rows[+b.dataset.i];x.edit=true;if(x.m&&x.m.base==='Stk'){const pg=pieceG(x.name,x.m.id);x.m=Object.assign({},x.m,{k:x.m.k/pg*100,p:x.m.p/pg*100,c:x.m.c/pg*100,f:x.m.f/pg*100,base:'g',pg});}if(!x.m||!['ing','own','db','off','manual'].includes(x.m.type))x.m={type:'manual',name:x.name,k:0,p:0,c:0,f:0,base:'g'};else x.m=Object.assign({},x.m,{type:'manual',name:x.name});drawNew();}
     if(a==='save')saveNew();
+    if(a==='retry'){const x=nr.rows[+b.dataset.i];delete offCache[x.name.trim().toLowerCase()];resolveRow(x);drawNew();}
     if(a==='url')importUrl();
     if(a==='rmPhoto'){nr.img='';drawNew();}
     if(a==='parse'){const t=(nr.pasteText||'').trim();if(t)applyParsed(parseRecipeText(t));}};
-  s2.onchange=e=>{if(e.target.matches('[data-nri]')){readNew();drawNew();}if(e.target.id==='nrPhoto'&&e.target.files[0]){readNew();shrinkPhoto(e.target.files[0]).then(u=>{nr.img=u;drawNew();}).catch(()=>toast('Das Foto konnte nicht gelesen werden'));}if(e.target.id==='impFiles'&&e.target.files.length)runOCR(Array.from(e.target.files).slice(0,6));};
+  s2.onchange=e=>{const t=e.target;
+    if(t.matches('[data-nrn]')){readNew();const x=nr.rows[+t.dataset.nrn];x.edit=false;resolveRow(x);drawNew();return;}
+    if(t.matches('[data-nra],[data-nru],[data-nrpg],[data-nrk],[data-nrp],[data-nrc],[data-nrf],#nrServ')){readNew();const pg=t.dataset.nrpg;if(pg!=null){const x=nr.rows[+pg];if(x.m)x.m.pg=+t.value||0;}drawNew();return;}
+    if(t.id==='nrPhoto'&&t.files[0]){readNew();shrinkPhoto(t.files[0]).then(u=>{nr.img=u;drawNew();}).catch(()=>toast('Das Foto konnte nicht gelesen werden'));}
+    if(t.id==='impFiles'&&t.files.length)runOCR(Array.from(t.files).slice(0,6));};
 }
 // ---------- Rezept aus Screenshot / Text erkennen (läuft komplett auf dem Gerät) ----------
 const OCR_SRC='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
@@ -1297,8 +1438,10 @@ function applyParsed(p){
   readNew();
   if(p.name&&!nr.n.trim())nr.n=p.name;
   if(p.serv)nr.serv=p.serv;if(p.min&&!nr.min)nr.min=p.min;
-  const kept=nr.rows.filter(x=>x.id&&x.amt);
-  nr.rows=kept.concat(p.rows.map(x=>Object.assign({},x,{amt:String(x.amt)})));if(!nr.rows.length)nr.rows=[{id:'',amt:''}];
+  const kept=nr.rows.filter(x=>x.name.trim()&&x.amt);
+  const conv=p.rows.map(x=>{if(x.id==='_other'){const r={name:x.name,amt:String(x.amt),unit:x.unit||'g',m:null};resolveRow(r);return r;}
+    const i=ING[x.id];return{name:i.n.replace(/\s*\(.*\)/,''),amt:String(+(+x.amt).toFixed(1)),unit:i.u,m:{type:'ing',id:x.id,name:i.n,k:i.k,p:i.p,c:i.c,f:i.f,base:i.u}};});
+  nr.rows=kept.concat(conv);if(!nr.rows.length)nr.rows=[blankRow()];
   if(p.steps.length&&(!nr.steps.trim()||nr.src))nr.steps=p.steps.join('\n');
   drawNew();
   const el=document.getElementById('impMsg');
@@ -1349,14 +1492,22 @@ function shrinkPhoto(file,max=1000){return new Promise((res,rej)=>{const url=URL
     if(d.length>330000)return shrinkPhoto(file,Math.round(max*0.7)).then(res,rej);res(d);};
   img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('img'));};img.src=url;});}
 function saveNew(){
-  const err=t=>{document.getElementById('nrErr').textContent=t;};
+  readNew();const err=t=>{document.getElementById('nrErr').textContent=t;};
   const name=nr.n.trim();if(!name)return err('Bitte einen Namen eintragen.');
-  const rows=nr.rows.filter(x=>x.id&&!(x.id==='_other'&&!String(x.name||'').trim()));
-  if(!rows.length)return err('Bitte mindestens eine Zutat auswählen.');
+  const rows=nr.rows.filter(x=>x.name.trim());
+  if(!rows.length)return err('Bitte mindestens eine Zutat eintragen.');
   if(rows.some(x=>!(+x.amt>0)))return err('Bitte bei allen Zutaten eine Menge eintragen.');
-  const ings=rows.map(x=>x.id==='_other'
-    ?{id:null,name:x.name.trim(),amt:+x.amt,unit:x.unit||'g',k:+x.k||0,p:+x.p||0,c:+x.c||0,f:+x.f||0,tags:x.tag?[x.tag]:[]}
-    :{id:x.id,name:ING[x.id].n,amt:+x.amt,unit:ING[x.id].u});
+  if(rows.some(x=>x.m&&x.m.type==='pending'))return err('Einen Moment, die Nährwerte werden noch gesucht …');
+  const noNut=rows.filter(x=>!x.m||x.m.type==='none').map(x=>x.name.trim());
+  if(noNut.length&&!confirm(`Für ${noNut.join(', ')} fehlen Nährwerte – die Kalorien werden dann zu niedrig berechnet. Trotzdem speichern?`))return;
+  const ings=rows.map(x=>{const m=x.m||{},b=rowBase(x)||{amt:+x.amt,unit:x.unit==='ml'?'ml':'g'};
+    if(m.type==='ing')return{id:m.id,name:ING[m.id].n,amt:+b.amt.toFixed(2),unit:ING[m.id].u};
+    return{id:null,name:x.name.trim(),amt:+b.amt.toFixed(1),unit:b.unit==='ml'?'ml':'g',k:m.k||0,p:m.p||0,c:m.c||0,f:m.f||0,tags:m.tags||[]};});
+  // neue Zutaten merken (für Vorschläge und automatische Nährwerte, für euch beide)
+  rows.forEach(x=>{const m=x.m;if(!m||!['off','manual'].includes(m.type))return;const l=x.name.trim().toLowerCase();
+    const e={n:x.name.trim(),k:+m.k||0,p:+m.p||0,c:+m.c||0,f:+m.f||0,u:m.base==='ml'?'ml':'g',pg:+m.pg||0,tags:m.tags||[]};OWN_ING[l]=e;
+    if(db)write('ing'+l,()=>db.doc('ingredients/'+slug(l).replace(/[^a-z0-9äöüß_-]/g,'')||uid()).set(clone(e)));});
+  lsSet('fk-own-ing',OWN_ING);
   const doc={n:name,serv:+nr.serv||4,min:+nr.min||30,meals:nr.meals.length?nr.meals:['A'],flags:nr.flags,ings,src:nr.src||'',img:nr.img||'',
     steps:nr.steps.split('\n').map(s=>s.trim()).filter(Boolean),created:Date.now(),by:myId};
   const rid='own_'+uid();CUSTOM[rid]=doc;persistLocal();rebuildRecipes();
@@ -1576,6 +1727,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 
 // ================= boot =================
 (function(){const L=lsGet('fk2');if(L){ME=Object.assign(clone(P_DEF),L.ME||{});HH=Object.assign(HH,L.HH||{});WEEKS=L.WEEKS||{};VOTES=L.VOTES||{};CUSTOM=L.CUSTOM||{};}})();
+OWN_ING=lsGet('fk-own-ing')||{};
 if(SETUP){myId=SETUP.id;if(VOTES.me&&!VOTES[myId]){VOTES[myId]=VOTES.me;}delete VOTES.me;}
 rebuildRecipes();
 if(WEEKS[NEXT_WEEK]&&WEEKS[NEXT_WEEK].finalized&&!WEEKS[THIS_WEEK])ui.week=NEXT_WEEK;
@@ -1591,6 +1743,7 @@ render();
     LOGS={};
     db.collection('members').onSnapshot(s=>{s.docs.forEach(x=>{if(x.exists&&x.data().name)names[x.id]=x.data().name;});render();},e=>console.warn(e));
     db.doc('household/main').onSnapshot(s=>{if(s.exists)HH=Object.assign({dinners:7,serv:4,pause:2},clone(s.data()));else if(!s.cache)saveHH();render();},e=>console.warn(e));
+    db.collection('ingredients').onSnapshot(s=>{s.docs.forEach(x=>{if(x.exists){const d=x.data();if(d&&d.n)OWN_ING[d.n.toLowerCase()]=d;}});lsSet('fk-own-ing',OWN_ING);},e=>console.warn(e));
     db.collection('recipes').onSnapshot(s=>{if(s.cache&&!s.docs.length)return;const c={};s.docs.forEach(x=>{if(x.exists)c[x.id]=clone(x.data());});CUSTOM=c;rebuildRecipes();persistLocal();render();},e=>console.warn(e));
     db.collection('votes').onSnapshot(s=>{if(s.cache&&!s.docs.length)return;const mine=VOTES[myId];const v={};s.docs.forEach(x=>{if(x.exists)v[x.id]=clone(x.data());});if(mine&&(vT||!v[myId])){v[myId]=mine;if(!vT)saveVotes();}VOTES=v;persistLocal();render();},e=>console.warn(e));
     let fin=false;
