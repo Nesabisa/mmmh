@@ -1300,8 +1300,8 @@ function readNew(){
   nr.n=g('nrName').value;if(g('impUrl'))nr.url=g('impUrl').value;if(g('impText'))nr.pasteText=g('impText').value;if(g('impMsg'))nr.msg=g('impMsg').innerHTML;nr.serv=g('nrServ').value;nr.min=g('nrMin').value;nr.steps=g('nrSteps').value;
   nr.meals=[...document.querySelectorAll('[data-nrm]')].filter(c=>c.checked).map(c=>c.dataset.nrm);
   nr.flags=[...document.querySelectorAll('[data-nrf]')].filter(c=>c.checked).map(c=>c.dataset.nrf).join('');
-  nr.rows.forEach((x,i)=>{const el=s=>document.querySelector(`[data-nr${s}="${i}"]`);if(!el('n'))return;x.name=el('n').value;x.amt=el('a').value;x.unit=el('u').value;
-    if(x.edit&&el('k')){x.m={type:'manual',name:x.name,k:+el('k').value||0,p:+el('p').value||0,c:+el('c').value||0,f:+el('f').value||0,base:x.m&&x.m.base==='ml'?'ml':'g',pg:+el('pg').value||0,tags:x.m&&x.m.tags||[]};}});
+  nr.rows.forEach((x,i)=>{const el=s=>document.querySelector(`[data-nr${s}="${i}"]`);if(!el('n'))return;x.name=el('n').value;x.amt=numStr(el('a').value);x.unit=el('u').value;
+    if(x.edit&&el('k')){x.m={type:'manual',name:x.name,k:num(el('k').value)||0,p:num(el('p').value)||0,c:num(el('c').value)||0,f:num(el('f').value)||0,base:x.m&&x.m.base==='ml'?'ml':'g',pg:el('pg')?num(el('pg').value)||0:(x.m&&x.m.pg)||0,tags:x.m&&x.m.tags||[]};}});
 }
 function nutTxt(m){if(!m)return'';const per=m.base==='Stk'?'Stück':m.base==='ml'?'100 ml':'100 g';return`${r0(m.k)} kcal · P ${r0(m.p)} · K ${r0(m.c)} · F ${r0(m.f)} pro ${per}`;}
 function drawNew(){
@@ -1313,13 +1313,13 @@ function drawNew(){
       st=`<span style="color:var(--basil)">✓ ${esc(m.name)}</span> <span class="muted">· ${n?r0(n.k)+' kcal'+conv:nutTxt(m)}${m.type==='off'?' · Open Food Facts':''}</span> ${x.edit?'':`<button class="link" data-n="edit" data-i="${i}">ändern</button>`}`;}
     const pgNeeded=false;
     return`<div class="nrow"><div class="top3"><input type="text" list="ingAll" data-nrn="${i}" value="${esc(x.name)}" placeholder="Zutat, z. B. Rucola" autocomplete="off">
-     <input type="number" inputmode="decimal" data-nra="${i}" value="${esc(x.amt)}" placeholder="Menge" min="0" step="any">
+     <input type="text" inputmode="decimal" autocomplete="off" data-nra="${i}" value="${esc(fmtP(x.amt))}" placeholder="Menge" min="0" step="any">
      <select data-nru="${i}">${UNITS.map(u=>`<option value="${u}" ${x.unit===u?'selected':''}>${UNIT_L[u]}</option>`).join('')}</select>
      <button class="link" data-n="rm" data-i="${i}" aria-label="Zeile entfernen" style="color:var(--muted)">✕</button></div>
      ${st?`<div class="small" style="margin-top:4px">${st}</div>`:''}
-     ${x.edit?`<div class="nut4" style="margin-top:6px">${[['k','kcal'],['p','Protein'],['c','Kohlenh.'],['f','Fett']].map(([k,l])=>`<input type="number" inputmode="decimal" step="any" data-nr${k}="${i}" value="${m&&m[k]!=null?r0(m[k]*10)/10:''}" placeholder="${l}">`).join('')}</div>
+     ${x.edit?`<div class="nut4" style="margin-top:6px">${[['k','kcal'],['p','Protein'],['c','Kohlenh.'],['f','Fett']].map(([k,l])=>`<input type="text" inputmode="decimal" autocomplete="off" step="any" data-nr${k}="${i}" value="${m&&m[k]!=null?fmtP(r0(m[k]*10)/10):''}" placeholder="${l}">`).join('')}</div>
        <div class="small muted" style="margin-top:4px">Werte pro 100 g bzw. 100 ml (steht auf der Packung).</div>`:''}
-     ${x.edit&&x.unit==='Stk'?`<div class="row small" style="margin-top:6px;flex-wrap:nowrap">Ein Stück wiegt etwa <input type="number" inputmode="decimal" data-nrpg="${i}" value="${(m&&m.pg)||pieceG(x.name,m&&m.id)}" style="width:80px"> g</div>`:''}</div>`;};
+     ${x.edit&&x.unit==='Stk'?`<div class="row small" style="margin-top:6px;flex-wrap:nowrap">Ein Stück wiegt etwa <input type="text" inputmode="decimal" autocomplete="off" data-nrpg="${i}" value="${(m&&m.pg)||pieceG(x.name,m&&m.id)}" style="width:80px"> g</div>`:''}</div>`;};
   const tot={k:0,p:0,c:0,f:0};let missing=0;nr.rows.forEach(x=>{if(!x.name.trim())return;const n=rowNutr(x);if(!n){missing++;return;}for(const q in tot)tot[q]+=n[q];});const sv=+nr.serv||4;
   const dl=[...new Set(Object.values(ING).filter(i=>!i.custom).map(i=>i.n.replace(/\s*\(.*\)/,'')).concat(NUTRI_DB.map(r=>r[0]),Object.values(OWN_ING).map(o=>o.n)))].sort((a,b)=>a.localeCompare(b,'de'));
   const html=`<div class="sheet-head"><h2>Eigenes Rezept</h2><button class="x-btn" data-close aria-label="Schließen">×</button></div>
@@ -1360,7 +1360,7 @@ function drawNew(){
     if(a==='parse'){const t=(nr.pasteText||'').trim();if(t)applyParsed(parseRecipeText(t));}};
   s2.onchange=e=>{const t=e.target;
     if(t.matches('[data-nrn]')){readNew();const x=nr.rows[+t.dataset.nrn];x.edit=false;resolveRow(x);drawNew();return;}
-    if(t.matches('[data-nra],[data-nru],[data-nrpg],[data-nrk],[data-nrp],[data-nrc],[data-nrf],#nrServ')){readNew();const pg=t.dataset.nrpg;if(pg!=null){const x=nr.rows[+pg];if(x.m)x.m.pg=+t.value||0;}drawNew();return;}
+    if(t.matches('[data-nra],[data-nru],[data-nrpg],[data-nrk],[data-nrp],[data-nrc],[data-nrf],#nrServ')){readNew();const pg=t.dataset.nrpg;if(pg!=null){const x=nr.rows[+pg];if(x.m)x.m.pg=num(t.value)||0;}drawNew();return;}
     if(t.id==='nrPhoto'&&t.files[0]){readNew();shrinkPhoto(t.files[0]).then(u=>{nr.img=u;drawNew();}).catch(()=>toast('Das Foto konnte nicht gelesen werden'));}
     if(t.id==='impFiles'&&t.files.length)runOCR(Array.from(t.files).slice(0,6));};
 }
@@ -1536,14 +1536,14 @@ function foodForm(pre={}){
   ${pre.hint?`<p class="small muted">${esc(pre.hint)}</p>`:''}
   <div class="formg"><label style="grid-column:1/-1">Name<input type="text" id="fName" value="${esc(pre.name||'')}"></label>
   <label>Werte gelten für<select id="fBasis"><option value="100" ${pre.basis!=='portion'?'selected':''}>100 g / ml</option><option value="portion" ${pre.basis==='portion'?'selected':''}>1 Portion</option></select></label>
-  <label id="gW">Gegessen (g / ml)<input type="number" inputmode="decimal" id="fGrams" value="${pre.grams||''}" min="0"></label>
-  <label>kcal<input type="number" inputmode="decimal" id="fK" value="${pre.k??''}" step="any"></label><label>Protein g<input type="number" inputmode="decimal" id="fP" value="${pre.p??''}" step="any"></label>
-  <label>Kohlenhydrate g<input type="number" inputmode="decimal" id="fC" value="${pre.c??''}" step="any"></label><label>Fett g<input type="number" inputmode="decimal" id="fF" value="${pre.f??''}" step="any"></label>
+  <label id="gW">Gegessen (g / ml)<input type="text" inputmode="decimal" autocomplete="off" id="fGrams" value="${pre.grams||''}" min="0"></label>
+  <label>kcal<input type="text" inputmode="decimal" autocomplete="off" id="fK" value="${pre.k??''}" step="any"></label><label>Protein g<input type="text" inputmode="decimal" autocomplete="off" id="fP" value="${pre.p??''}" step="any"></label>
+  <label>Kohlenhydrate g<input type="text" inputmode="decimal" autocomplete="off" id="fC" value="${pre.c??''}" step="any"></label><label>Fett g<input type="text" inputmode="decimal" autocomplete="off" id="fF" value="${pre.f??''}" step="any"></label>
   <label>Mahlzeit<select id="fSlot">${SLOTS.map(s=>`<option ${s===slotNow()?'selected':''}>${s}</option>`).join('')}</select></label>
   <label style="flex-direction:row;align-items:center;gap:8px;margin-top:22px"><input type="checkbox" id="fFav"> Als Favorit merken</label></div>
   <p class="small warn" id="fErr"></p><button class="btn basil" id="fSave" style="width:100%">Eintragen</button>`);
   const sync=()=>document.getElementById('gW').style.display=document.getElementById('fBasis').value==='100'?'flex':'none';document.getElementById('fBasis').onchange=sync;sync();
-  document.getElementById('fSave').onclick=()=>{const v=id=>{const x=document.getElementById(id).value;return x===''?NaN:+x;};
+  document.getElementById('fSave').onclick=()=>{const v=id=>num(document.getElementById(id).value);
     const name=document.getElementById('fName').value.trim(),basis=document.getElementById('fBasis').value,vals={k:v('fK'),p:v('fP')||0,c:v('fC')||0,f:v('fF')||0};
     if(!name||isNaN(vals.k)){document.getElementById('fErr').textContent='Bitte mindestens Name und kcal ausfüllen.';return;}
     let m=1,grams=null;if(basis==='100'){grams=v('fGrams');if(!(grams>0)){document.getElementById('fErr').textContent='Bitte die gegessene Menge angeben.';return;}m=grams/100;}
@@ -1572,7 +1572,7 @@ function vMe(){
   <div class="row" style="margin:8px 0">${(ME.meh||[]).map(v=>`<button class="pill x" data-a="rmMeh" data-v="${v}">${esc(labelPref(v))}</button>`).join('')||'<span class="muted small">Noch nichts.</span>'}</div>
   ${prefAdder('addMeh')}${ingDatalist()}
   <h2>Tagesziele</h2><p class="small muted">Optional, für die Balken im Tracker.</p>
-  <div class="formg" style="margin-top:8px">${[['k','kcal'],['p','Protein g'],['c','Kohlenhydrate g'],['f','Fett g']].map(([k,l])=>`<label>${l}<input type="number" inputmode="numeric" data-goal="${k}" value="${esc(ME.goals[k])}" min="0"></label>`).join('')}</div>
+  <div class="formg" style="margin-top:8px">${[['k','kcal'],['p','Protein g'],['c','Kohlenhydrate g'],['f','Fett g']].map(([k,l])=>`<label>${l}<input type="text" inputmode="decimal" autocomplete="off" data-goal="${k}" value="${esc(ME.goals[k])}" min="0"></label>`).join('')}</div>
   ${ME.favFoods.length?`<h2>Favoriten</h2><div class="row">${ME.favFoods.map((f,i)=>`<button class="pill x" data-a="rmFav" data-i="${i}">${esc(f.name)}</button>`).join('')}</div>`:''}
   <h2>Gemeinsam nutzen</h2>
   <div class="panel"><p><span class="sync ${st[0]}"></span>${st[1]}</p>
@@ -1683,10 +1683,12 @@ app.addEventListener('change',e=>{
   const t=e.target,w=ui.week;
   if(t.dataset.buy){patchWeek(w,{bought:{[t.dataset.buy]:t.checked?myId:false}});}
   else if(t.dataset.ex){patchWeek(w,{extras:{[t.dataset.ex]:{done:t.checked?myId:false}}});}
-  else if(t.dataset.goal){ME.goals[t.dataset.goal]=t.value;saveMe();}
+  else if(t.dataset.goal){ME.goals[t.dataset.goal]=numStr(t.value);saveMe();}
 });
 // Gericht aus dem Plan gegessen: in den eigenen Tracker, Tag für beide als gekocht markieren
 const fmtP=n=>String(n).replace('.',',');
+const num=v=>{const x=parseFloat(String(v??'').trim().replace(/\s/g,'').replace(',','.'));return isNaN(x)?NaN:x;};
+const numStr=v=>String(v??'').trim().replace(',','.');
 async function eatPlanned(w,d,portions=1,slotIn){
   const x=weekDoc(w).days[d]||{},r=x.rid&&R(x.rid);if(!r)return;
   const today=dkey(),k=d<today?d:today,slot=slotIn||(k===today&&slotNow()!=='Snack'?slotNow():'Abendessen');
