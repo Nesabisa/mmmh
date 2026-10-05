@@ -178,7 +178,7 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .formg input,.formg select{width:100%}
 .nrow{padding:10px 0;border-bottom:.5px solid var(--line)}
 .nrow .top{display:grid;grid-template-columns:1fr 84px auto;gap:6px;align-items:center}
-.nrow .top3{display:grid;grid-template-columns:1fr 64px 62px auto;gap:6px;align-items:center}.nrow .top3 input,.nrow .top3 select{width:100%;padding-left:8px;padding-right:8px}.nrow .top3 select{padding-right:22px;background-position:calc(100% - 13px) 52%,calc(100% - 8px) 52%}
+.nrow .top3 [data-nrn]{grid-column:1/-1}.nrow .top3{display:grid;grid-template-columns:1fr 1.4fr auto;gap:6px;align-items:center}.nrow .top3 input,.nrow .top3 select{width:100%;padding-left:8px;padding-right:8px}.nrow .top3 select{padding-right:22px;background-position:calc(100% - 13px) 52%,calc(100% - 8px) 52%}
 .nrow .top input{width:100%}
 .nrow .other{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
 .nrow .nut4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;grid-column:1/-1}
@@ -1259,7 +1259,7 @@ async function onRecipeClick(e){
 
 // ---------- Eigenes Rezept anlegen ----------
 let nr=null;
-const UNITS=['g','ml','Stk','EL','TL'];
+const UNITS=['g','ml','Stk','EL','TL'],UNIT_L={g:'Gramm',ml:'ml',Stk:'Stück',EL:'Esslöffel',TL:'Teelöffel'};
 let OWN_ING={};   // eigene, neu angelegte Zutaten (für euch beide gespeichert)
 const offCache={};
 const blankRow=()=>({name:'',amt:'',unit:'g',m:null});
@@ -1309,16 +1309,17 @@ function drawNew(){
     if(!x.name.trim())st='';
     else if(!m||m.type==='pending')st='<span class="muted">Suche Nährwerte …</span>';
     else if(m.type==='none')st=`<span class="warn">Keine Nährwerte gefunden.</span> <button class="link" data-n="retry" data-i="${i}">Nochmal suchen</button> · <button class="link" data-n="edit" data-i="${i}">Selbst eintragen</button>`;
-    else st=`<span style="color:var(--basil)">✓ ${esc(m.name)}</span> <span class="muted">· ${nutTxt(m)}${m.type==='off'?' · aus Open Food Facts':''}</span> <button class="link" data-n="edit" data-i="${i}">${x.edit?'':'ändern'}</button>`;
-    const pgNeeded=x.unit==='Stk'&&m&&m.base!=='Stk';
+    else{const n=rowNutr(x),b=rowBase(x);const conv=b&&x.unit!=='g'&&x.unit!=='ml'&&b.unit!=='Stk'?` (${fmtP(+x.amt)} ${UNIT_L[x.unit]} ≈ ${r0(b.amt)} ${b.unit==='ml'?'ml':'g'})`:'';
+      st=`<span style="color:var(--basil)">✓ ${esc(m.name)}</span> <span class="muted">· ${n?r0(n.k)+' kcal'+conv:nutTxt(m)}${m.type==='off'?' · Open Food Facts':''}</span> ${x.edit?'':`<button class="link" data-n="edit" data-i="${i}">ändern</button>`}`;}
+    const pgNeeded=false;
     return`<div class="nrow"><div class="top3"><input type="text" list="ingAll" data-nrn="${i}" value="${esc(x.name)}" placeholder="Zutat, z. B. Rucola" autocomplete="off">
      <input type="number" inputmode="decimal" data-nra="${i}" value="${esc(x.amt)}" placeholder="Menge" min="0" step="any">
-     <select data-nru="${i}">${UNITS.map(u=>`<option ${x.unit===u?'selected':''}>${u}</option>`).join('')}</select>
+     <select data-nru="${i}">${UNITS.map(u=>`<option value="${u}" ${x.unit===u?'selected':''}>${UNIT_L[u]}</option>`).join('')}</select>
      <button class="link" data-n="rm" data-i="${i}" aria-label="Zeile entfernen" style="color:var(--muted)">✕</button></div>
      ${st?`<div class="small" style="margin-top:4px">${st}</div>`:''}
      ${x.edit?`<div class="nut4" style="margin-top:6px">${[['k','kcal'],['p','Protein'],['c','Kohlenh.'],['f','Fett']].map(([k,l])=>`<input type="number" inputmode="decimal" step="any" data-nr${k}="${i}" value="${m&&m[k]!=null?r0(m[k]*10)/10:''}" placeholder="${l}">`).join('')}</div>
-       <div class="small muted" style="margin-top:4px">Werte pro 100 g/ml (steht auf der Packung).</div>`:''}
-     ${pgNeeded||x.edit&&x.unit==='Stk'?`<div class="row small" style="margin-top:6px;flex-wrap:nowrap">1 Stück ≈ <input type="number" inputmode="decimal" data-nrpg="${i}" value="${(m&&m.pg)||pieceG(x.name,m&&m.id)}" style="width:80px"> g</div>`:''}</div>`;};
+       <div class="small muted" style="margin-top:4px">Werte pro 100 g bzw. 100 ml (steht auf der Packung).</div>`:''}
+     ${x.edit&&x.unit==='Stk'?`<div class="row small" style="margin-top:6px;flex-wrap:nowrap">Ein Stück wiegt etwa <input type="number" inputmode="decimal" data-nrpg="${i}" value="${(m&&m.pg)||pieceG(x.name,m&&m.id)}" style="width:80px"> g</div>`:''}</div>`;};
   const tot={k:0,p:0,c:0,f:0};let missing=0;nr.rows.forEach(x=>{if(!x.name.trim())return;const n=rowNutr(x);if(!n){missing++;return;}for(const q in tot)tot[q]+=n[q];});const sv=+nr.serv||4;
   const dl=[...new Set(Object.values(ING).filter(i=>!i.custom).map(i=>i.n.replace(/\s*\(.*\)/,'')).concat(NUTRI_DB.map(r=>r[0]),Object.values(OWN_ING).map(o=>o.n)))].sort((a,b)=>a.localeCompare(b,'de'));
   const html=`<div class="sheet-head"><h2>Eigenes Rezept</h2><button class="x-btn" data-close aria-label="Schließen">×</button></div>
