@@ -308,6 +308,53 @@ const ING_RAW=[
 ['fruehlingszwiebeln','Frühlingszwiebeln (Bund)','Stk',30,2,5,0.5,[],1,0,[SB('Rote Zwiebel'),SB('Schnittlauch')]],
 ['rotkohl','Rotkohl','g',30,1.5,5,0.2,[],1000,0,[SB('Weißkohl'),SB('Karotten')]],
 ['ingwer','Ingwer','g',80,1.8,16,0.8,[],100,0,[SB('Ingwerpulver')]],
+['mozzarella','Mozzarella','g',250,18,1,19,['dairy'],125,0,[SB('Burrata',['dairy']),SB('Veganer Mozzarella')]],
+['burrata','Burrata','g',300,15,1,26,['dairy'],125,0,[SB('Mozzarella',['dairy']),SB('Veganer Mozzarella')]],
+['halloumi','Halloumi','g',320,22,2,25,['dairy'],225,0,[SB('Räuchertofu',['soy']),SB('Feta',['dairy'])]],
+['ricotta','Ricotta','g',150,9,3,11,['dairy'],250,0,[SB('Hüttenkäse',['dairy']),SB('Seidentofu',['soy'])]],
+['ziegenkaese','Ziegenfrischkäse','g',270,16,2,22,['dairy'],150,0,[SB('Feta',['dairy']),SB('Veganer Frischkäse')]],
+['frischkaese','Frischkäse','g',230,6,3,22,['dairy'],200,0,[SB('Skyr',['dairy']),SB('Veganer Frischkäse')]],
+['cremefraiche','Crème fraîche','g',290,2.5,3,30,['dairy'],150,0,[SB('Skyr',['dairy']),SB('Hafer-Cuisine',['gluten'])]],
+['tortellini','Tortellini (Kühlregal, Ricotta-Spinat)','g',280,11,44,7,['gluten','dairy','egg'],500,0,[SB('Gnocchi',['gluten'])]],
+['kabeljau','Kabeljaufilet','g',80,18,0,0.7,['fish'],400,0,[SB('Seelachs',['fish']),SB('Tofu (fest)',['soy'])]],
+['haehnchenschenkel','Hähnchenschenkel (ohne Knochen)','g',180,18,0,12,['meat'],500,0,[SB('Hähnchenbrust',['meat']),SB('Tofu (fest)',['soy'])]],
+['rindersteak','Rindersteak (Hüfte)','g',150,22,0,7,['meat'],300,0,[SB('Portobello-Pilze'),SB('Räuchertofu',['soy'])]],
+['schweinefilet','Schweinefilet','g',120,22,0,3,['meat'],500,0,[SB('Hähnchenbrust',['meat']),SB('Räuchertofu',['soy'])]],
+['chorizo','Chorizo','g',450,24,2,38,['meat'],200,0,[SB('Räuchertofu',['soy']),SB('Kichererbsen mit geräuchertem Paprikapulver')]],
+['speck','Speckwürfel','g',300,15,0,27,['meat'],125,0,[SB('Räuchertofu',['soy'])]],
+['tempeh','Tempeh','g',190,19,9,11,['soy'],200,0,[SB('Räuchertofu',['soy']),SB('Kichererbsen')]],
+['kuerbis','Hokkaido-Kürbis','g',60,1.7,12,0.6,[],1000,0,[SB('Süßkartoffel'),SB('Butternut-Kürbis')]],
+['rotebete','Rote Bete (vorgegart)','g',45,1.6,8,0.1,[],500,0,[SB('Karotten')]],
+['fenchel','Fenchel','g',25,1.2,3,0.2,[],300,0,[SB('Staudensellerie')]],
+['lauch','Lauch','g',30,1.6,4,0.3,[],300,0,[SB('Zwiebel')]],
+['gruenebohnen','Grüne Bohnen','g',30,2,4,0.2,[],400,0,[SB('Brokkoli')]],
+['spargel','Grüner Spargel','g',20,2,2,0.2,[],500,0,[SB('Grüne Bohnen')]],
+['pakchoi','Pak Choi','g',13,1.5,1,0.2,[],300,0,[SB('Spinat'),SB('Chinakohl')]],
+['spitzkohl','Spitzkohl','g',25,1.3,4,0.2,[],800,0,[SB('Weißkohl'),SB('Rotkohl')]],
+['orzo','Orzo (Kritharaki)','g',355,12.5,71,1.5,['gluten'],500,0,[SB('Reis')]],
+['reisnudeln','Reisnudeln','g',360,6,80,0.6,[],250,0,[SB('Nudeln',['gluten'])]],
+['udon','Udon-Nudeln (vorgegart)','g',130,3.5,27,0.5,['gluten'],400,0,[SB('Reisnudeln')]],
+['bulgur','Bulgur','g',350,12,70,1.5,['gluten'],500,0,[SB('Quinoa'),SB('Couscous',['gluten'])]],
+['pita','Fladenbrot/Pita','Stk',170,6,33,1,['gluten'],4,0,[SB('Tortilla',['gluten']),SB('Glutenfreies Brot')]],
+['naan','Naan-Brot','Stk',260,8,45,5,['gluten','dairy'],2,0,[SB('Fladenbrot',['gluten'])]],
+['blaetterteig','Blätterteig (Rolle)','g',400,6,35,26,['gluten'],275,0,[]],
+['pizzateig','Pizzateig (Kühlregal)','g',250,7,48,3,['gluten'],400,0,[]],
+['passata','Passata','g',35,1.4,6,0.2,[],500,0,[SB('Gehackte Tomaten')]],
+['currypaste','Rote Currypaste','g',100,2,10,5,[],50,1,[SB('Currypulver + Chili')]],
+['miso','Miso-Paste','g',200,12,26,6,['soy'],300,1,[SB('Gemüsebrühe + etwas Sojasauce',['soy'])]],
+['gochujang','Gochujang (Chilipaste)','g',200,4,40,2,['soy','gluten'],200,1,[SB('Sriracha')]],
+['kimchi','Kimchi','g',20,1.5,3,0.5,[],300,0,[SB('Sauerkraut')]],
+['kapern','Kapern','g',25,2,5,0.9,[],50,1,[SB('Oliven')]],
+['oliven','Oliven (Kalamata)','g',230,1.5,4,23,[],150,0,[SB('Kapern')]],
+['getrtomaten','Getrocknete Tomaten (in Öl)','g',210,3,15,15,[],200,0,[SB('Tomatenmark')]],
+['granatapfel','Granatapfelkerne','g',80,1.7,18,1,[],150,0,[SB('Cranberrys')]],
+['harissa','Harissa','g',150,3,10,11,[],90,1,[SB('Chiliflocken + Tomatenmark')]],
+['erdnuesse','Erdnüsse (geröstet)','g',600,26,12,50,['nuts'],200,1,[SB('Sonnenblumenkerne')]],
+['cashews','Cashews','g',590,18,30,44,['nuts'],200,0,[SB('Sonnenblumenkerne')]],
+['sesamoel','Sesamöl (geröstet)','ml',880,0,0,99,['sesam'],250,1,[SB('Rapsöl')]],
+['hummus','Hummus','g',250,7,14,18,['sesam'],200,0,[SB('Frischkäse',['dairy'])]],
+['birne','Birne','Stk',100,0.6,25,0.2,[],4,0,[SB('Apfel')]],
+['kokosflocken','Kokosraspel','g',650,6,7,62,[],200,1,[SB('Gehackte Mandeln',['nuts'])]],
 ];
 const ING={};ING_RAW.forEach(r=>{ING[r[0]]={id:r[0],n:r[1],u:r[2],k:r[3],p:r[4],c:r[5],f:r[6],tags:r[7],pack:r[8],pantry:!!r[9],subs:r[10]};});
 
@@ -385,120 +432,107 @@ const REC_RAW=[
 ['thunwrap','Thunfisch-Wraps','M',10,[['tortilla',8],['thunfisch',300],['mais',140],['joghurt',200],['salat',150],['tomaten',300]],['Thunfisch mit Joghurt, Mais, Salz und Pfeffer verrühren.','Tortillas mit Salat, Tomaten und Thunfischcreme füllen und einrollen.'],'k'],
 ['tofuwok','Tofu-Gemüse-Wok mit Nudeln','MA',25,[['tofu',400],['nudeln',300],['paprika',2],['karotten',200],['brokkoli',300],['sojasauce',60],['ingwer',15],['olivenoel',20]],['Nudeln kochen.','Tofu würfeln und in Öl knusprig braten, herausnehmen.','Gemüse mit Ingwer im Wok 5 Minuten braten.','Nudeln, Tofu und Sojasauce dazu und durchschwenken.'],'p'],
 ['chilibohnen','Mexikanische Bohnenpfanne mit Ei','FMA',20,[['kidneybohnen',250],['schwarzebohnen',250],['tomaten_dose',400],['paprika',1],['eier',4],['avocado',1],['tortilla',4]],['Paprika würfeln und anbraten, Bohnen und Tomaten dazu, mit Kreuzkümmel und Chili würzen.','Vier Mulden formen, Eier hineingeben und zugedeckt stocken lassen.','Mit Avocado und warmen Tortillas servieren.'],'p'],
+// ---- Pasta & Italienisch ----
+['bakedfeta','Baked Feta Pasta mit Kirschtomaten','MA',35,[['nudeln',400],['feta',200],['tomaten',600],['knoblauch',3],['olivenoel',40],['spinat',150]],['Ofen auf 200 °C vorheizen. Kirschtomaten in eine Auflaufform geben, den Feta-Block in die Mitte legen.','Mit Olivenöl beträufeln, mit Chiliflocken, Oregano, Salz und Pfeffer würzen und 25 Minuten backen, bis die Tomaten platzen.','Währenddessen Nudeln kochen. Knoblauch fein hacken und die letzten 5 Minuten mit in die Form geben.','Feta und Tomaten direkt in der Form zu einer cremigen Soße zerdrücken, Spinat und Nudeln unterheben, bis der Spinat zusammenfällt.'],'o'],
+['onepot','One-Pot-Pasta mit Tomate und Basilikum','MA',20,[['nudeln',400],['tomaten',500],['zwiebel',1],['knoblauch',3],['gemuesebruehe',900],['olivenoel',20],['parmesan',40]],['Zwiebel in feine Ringe, Knoblauch in Scheiben, Tomaten halbieren.','Alles mit den rohen Spaghetti, Brühe und Öl in einen großen Topf geben.','Aufkochen und offen 10–12 Minuten unter häufigem Rühren köcheln, bis die Flüssigkeit fast eingekocht und sämig ist.','Mit Salz, Pfeffer, viel Basilikum und Parmesan servieren.'],'p'],
+['carbonara','Spaghetti Carbonara (klassisch)','MA',20,[['nudeln',400],['speck',150],['eier',4],['parmesan',80],['knoblauch',1]],['Spaghetti in kräftig gesalzenem Wasser al dente kochen.','Speck mit der angedrückten Knoblauchzehe ohne Fett knusprig auslassen, Knoblauch entfernen.','Eier mit geriebenem Parmesan und viel Pfeffer verquirlen.','Nudeln tropfnass zum Speck geben, vom Herd nehmen, Ei-Käse-Mischung und 3 EL Nudelwasser unterrühren, bis eine cremige Soße entsteht (nicht mehr erhitzen).'],''],
+['zitronenpasta','Zitronen-Ricotta-Pasta mit Erbsen','MA',20,[['nudeln',400],['ricotta',250],['zitrone',1],['erbsen',300],['parmesan',40],['olivenoel',15]],['Nudeln kochen, Erbsen die letzten 3 Minuten mitgaren.','Ricotta mit Zitronenabrieb, 2 EL Zitronensaft, Parmesan, Öl, Salz und Pfeffer glatt rühren.','Nudeln und Erbsen abgießen, etwas Nudelwasser auffangen.','Alles mit der Ricottacreme und einem Schuss Nudelwasser cremig mischen, mit Minze oder Basilikum servieren.'],''],
+['burratapasta','Pasta mit Burrata und gerösteten Tomaten','MA',30,[['nudeln',400],['burrata',250],['tomaten',500],['knoblauch',2],['olivenoel',30],['pesto',60]],['Ofen auf 220 °C vorheizen. Kirschtomaten mit Knoblauch, Öl und Salz 15 Minuten rösten.','Nudeln kochen.','Nudeln mit Pesto und den Ofentomaten mischen.','Auf Teller verteilen, Burrata aufreißen und darauf legen, mit Pfeffer und Olivenöl beträufeln.'],'o'],
+['kuerbispasta','Kürbis-Salbei-Pasta mit Parmesan','MA',30,[['nudeln',400],['kuerbis',600],['zwiebel',1],['butter',30],['parmesan',60],['nuesse',40],['gemuesebruehe',200]],['Kürbis würfeln (Hokkaido muss nicht geschält werden), Zwiebel hacken.','Beides in Butter 5 Minuten anbraten, Brühe dazu und 12 Minuten weich köcheln, dann grob pürieren.','Nudeln kochen. Salbeiblätter und Walnüsse in etwas Butter knusprig braten.','Nudeln mit der Kürbissoße und Parmesan mischen, mit Salbei und Nüssen toppen.'],'p'],
+['arrabbiata','Penne all’Arrabbiata mit Oliven','MA',25,[['nudeln',400],['passata',500],['knoblauch',3],['oliven',80],['kapern',20],['olivenoel',30],['parmesan',30]],['Nudeln kochen.','Knoblauch in Scheiben mit 1 TL Chiliflocken in Öl anschwitzen.','Passata, halbierte Oliven und Kapern dazu, 10 Minuten köcheln.','Mit den Nudeln mischen, Petersilie und Parmesan darüber.'],''],
+['lasagne','Lasagne Bolognese','MA',75,[['nudeln',250],['hack_rind',500],['passata',700],['zwiebel',1],['karotten',150],['milch',600],['butter',40],['reibekaese',150]],['Zwiebel und Karotte fein würfeln, mit dem Hack krümelig braten, Passata dazu und 20 Minuten köcheln, kräftig würzen.','Für die Béchamel Butter schmelzen, 3 EL Mehl anschwitzen, Milch einrühren und 5 Minuten köcheln, mit Muskat würzen.','Ofen auf 180 °C vorheizen. Soße, Lasagneplatten und Béchamel abwechselnd schichten, mit Béchamel und Käse abschließen.','40 Minuten backen und 10 Minuten ruhen lassen.'],'om'],
+['tortellinipfanne','Tortellini in Tomaten-Sahne mit Spinat','MA',15,[['tortellini',500],['passata',400],['sahne',150],['spinat',200],['knoblauch',2],['parmesan',30]],['Tortellini nach Packung garen.','Knoblauch anschwitzen, Passata und Sahne dazu, kurz köcheln.','Spinat unterrühren, bis er zusammenfällt.','Tortellini in der Soße schwenken, mit Parmesan servieren.'],'p'],
+['gnocchiburrata','Knusprige Gnocchi mit Pesto und Burrata','MA',20,[['gnocchi',800],['pesto',120],['tomaten',300],['burrata',250],['olivenoel',20]],['Gnocchi in Öl ohne Vorkochen 8–10 Minuten goldbraun und knusprig braten.','Halbierte Kirschtomaten 2 Minuten mitbraten.','Vom Herd nehmen, Pesto unterschwenken.','Mit aufgerissener Burrata und Pfeffer servieren.'],'p'],
+['orzopfanne','Zitronen-Orzo mit Hähnchen und Spinat','MA',30,[['orzo',300],['haehnchen',500],['spinat',200],['zitrone',1],['gemuesebruehe',800],['parmesan',40],['knoblauch',2],['olivenoel',15]],['Hähnchen würfeln, würzen und in Öl goldbraun braten, herausnehmen.','Knoblauch und Orzo kurz anrösten, Brühe angießen und 10 Minuten unter Rühren köcheln wie ein Risotto.','Spinat, Zitronenabrieb und -saft und Parmesan einrühren.','Hähnchen unterheben und abschmecken.'],'p'],
+['pizza','Pizza vom Blech mit Mozzarella und Gemüse','MA',35,[['pizzateig',400],['passata',250],['mozzarella',250],['paprika',1],['pilze',200],['zwiebel',1],['olivenoel',15]],['Ofen auf 230 °C (Umluft 210 °C) vorheizen.','Teig auf dem Blech ausrollen, Passata mit Salz und Oregano darauf streichen.','Mit Gemüse und zerrupftem Mozzarella belegen, mit Öl beträufeln.','12–15 Minuten backen, bis der Rand knusprig ist. Mit Rucola servieren.'],'o'],
+['risottokuerbis','Kürbisrisotto mit Ziegenkäse','MA',40,[['reis',300],['kuerbis',500],['zwiebel',1],['gemuesebruehe',1000],['ziegenkaese',100],['parmesan',40],['butter',20]],['Kürbis klein würfeln, Zwiebel hacken.','Zwiebel in Butter anschwitzen, Reis und Kürbis kurz mitrösten.','Heiße Brühe nach und nach angießen und 20 Minuten unter Rühren garen.','Parmesan einrühren, mit Ziegenkäse-Klecksen und Pfeffer servieren.'],'p'],
+['ofengnocchichorizo','Ofen-Gnocchi mit Chorizo und Paprika','MA',30,[['gnocchi',800],['chorizo',150],['paprika',2],['zwiebel',1],['passata',300],['mozzarella',125]],['Ofen auf 200 °C vorheizen.','Chorizo in Scheiben, Paprika und Zwiebel in Streifen schneiden.','Mit Gnocchi und Passata in einer Form mischen, würzen, Mozzarella darauf.','25 Minuten backen.'],'o'],
+['caprese','Caprese-Salat mit Pasta','M',20,[['nudeln',300],['mozzarella',250],['tomaten',500],['pesto',80],['salat',60],['olivenoel',20]],['Nudeln kochen und abschrecken.','Tomaten und Mozzarella würfeln.','Alles mit Pesto, Öl, Salz und Pfeffer mischen.','Rucola unterheben und gut durchziehen lassen.'],'m'],
+// ---- Asiatisch ----
+['bangbang','Bang-Bang-Tofu mit Reis und Gurke','MA',30,[['tofu',400],['reis',250],['gurke',300],['joghurt',100],['honig',20],['sojasauce',20],['fruehlingszwiebeln',1],['olivenoel',30]],['Reis kochen. Tofu gut ausdrücken, würfeln und in 2 EL Speisestärke wälzen.','In Öl rundum knusprig braten.','Für die Bang-Bang-Soße Joghurt (oder Mayo), Sriracha, Honig und Sojasauce verrühren.','Tofu in der Soße schwenken, mit Reis, Gurke und Frühlingszwiebeln servieren.'],''],
+['bangbangchicken','Bang-Bang-Chicken mit Reis','MA',30,[['haehnchen',600],['reis',250],['gurke',300],['joghurt',100],['honig',20],['sojasauce',20],['fruehlingszwiebeln',1],['olivenoel',30]],['Reis kochen. Hähnchen würfeln, salzen und in Speisestärke wälzen.','In Öl rundum knusprig braten.','Joghurt (oder Mayo), Sriracha, Honig und Sojasauce zur Soße verrühren.','Hähnchen in der Soße schwenken, mit Reis, Gurke und Frühlingszwiebeln servieren.'],''],
+['ramen','Miso-Ramen mit Ei und Pak Choi','MA',30,[['udon',600],['miso',60],['gemuesebruehe',1400],['eier',4],['pakchoi',300],['pilze',200],['fruehlingszwiebeln',1],['sesamoel',10]],['Eier 6½ Minuten kochen, abschrecken und pellen.','Brühe erhitzen, Miso darin auflösen (nicht mehr kochen lassen).','Pilze und Pak Choi 3 Minuten in der Brühe garen, Nudeln kurz mit erwärmen.','In Schalen anrichten, halbierte Eier, Frühlingszwiebeln und ein paar Tropfen Sesamöl darauf.'],'p'],
+['padthai','Pad Thai mit Garnelen','MA',25,[['reisnudeln',250],['garnelen',300],['eier',2],['erdnuesse',40],['limette',1],['sojasauce',40],['honig',20],['fruehlingszwiebeln',1],['karotten',150],['olivenoel',20]],['Reisnudeln nach Packung einweichen.','Garnelen in Öl braten, an den Rand schieben, Eier hineinschlagen und stocken lassen.','Nudeln, Karottenstreifen, Sojasauce, Honig und Limettensaft dazu und gut durchschwenken.','Mit gehackten Erdnüssen, Frühlingszwiebeln und Limette servieren.'],'p'],
+['padthaitofu','Pad Thai mit Tofu','MA',25,[['reisnudeln',250],['tofu',300],['eier',2],['erdnuesse',40],['limette',1],['sojasauce',40],['honig',20],['fruehlingszwiebeln',1],['karotten',150],['olivenoel',20]],['Reisnudeln nach Packung einweichen.','Tofu würfeln und knusprig braten, an den Rand schieben, Eier hineinschlagen und stocken lassen.','Nudeln, Karottenstreifen, Sojasauce, Honig und Limettensaft dazu und durchschwenken.','Mit Erdnüssen, Frühlingszwiebeln und Limette servieren.'],'p'],
+['bibimbap','Bibimbap mit Rindfleisch','MA',35,[['reis',250],['rindersteak',300],['spinat',200],['karotten',150],['eier',4],['gochujang',40],['sojasauce',30],['sesamoel',15],['kimchi',150]],['Reis kochen. Steak in feine Streifen schneiden, mit Sojasauce und Sesamöl marinieren.','Spinat kurz dünsten, Karotten in Streifen braten, Fleisch scharf anbraten.','Spiegeleier braten.','Reis in Schalen, Gemüse, Fleisch, Kimchi und Ei darauf anrichten, mit Gochujang servieren.'],''],
+['bibimbaptofu','Bibimbap mit Tofu und Kimchi','MA',30,[['reis',250],['tofu',400],['spinat',200],['karotten',150],['eier',4],['gochujang',40],['sojasauce',30],['sesamoel',15],['kimchi',150]],['Reis kochen. Tofu würfeln, in Sojasauce wenden und knusprig braten.','Spinat kurz dünsten, Karotten in Streifen braten.','Spiegeleier braten.','Reis in Schalen, Gemüse, Tofu, Kimchi und Ei darauf, mit Gochujang servieren.'],''],
+['butterchicken','Butter Chicken mit Naan','MA',40,[['haehnchenschenkel',600],['joghurt',150],['passata',400],['sahne',150],['butter',30],['zwiebel',1],['knoblauch',3],['ingwer',20],['reis',200],['naan',2]],['Hähnchen in Stücke schneiden, mit Joghurt, Garam Masala und Salz marinieren.','Zwiebel, Knoblauch und Ingwer in Butter weich dünsten, 2 TL Garam Masala, Kurkuma und Paprikapulver mitrösten.','Passata dazu, 10 Minuten köcheln, Hähnchen samt Marinade dazu und 15 Minuten garen.','Sahne einrühren, mit Reis und warmem Naan servieren.'],''],
+['palakpaneer','Palak mit Halloumi (wie Palak Paneer)','MA',30,[['halloumi',225],['spinat',600],['zwiebel',1],['knoblauch',3],['ingwer',15],['sahne',100],['tomaten',200],['reis',250]],['Reis kochen. Halloumi würfeln und in einer Pfanne goldbraun braten.','Zwiebel, Knoblauch, Ingwer anschwitzen, Kreuzkümmel und Garam Masala mitrösten.','Spinat und gewürfelte Tomaten dazu, 5 Minuten garen, dann pürieren und Sahne einrühren.','Halloumi unterheben, mit Reis servieren.'],'p'],
+['chanamasala','Chana Masala mit Naan','MA',30,[['kichererbsen',480],['passata',400],['zwiebel',1],['knoblauch',3],['ingwer',20],['spinat',150],['joghurt',150],['naan',2],['olivenoel',15]],['Zwiebel fein hacken und in Öl goldbraun braten, Knoblauch und Ingwer dazu.','Je 1 TL Kreuzkümmel, Koriander, Garam Masala und Kurkuma kurz mitrösten.','Passata und Kichererbsen dazu, 15 Minuten köcheln, Spinat unterrühren.','Mit Joghurt und warmem Naan servieren.'],'pm'],
+['thaigruen','Grünes Thai-Curry mit Hähnchen','MA',30,[['haehnchen',500],['kokosmilch',400],['currypaste',40],['gruenebohnen',200],['paprika',1],['reis',250],['limette',1],['olivenoel',10]],['Reis kochen.','Currypaste (grün oder rot) in Öl anrösten, Kokosmilch angießen.','Hähnchenstreifen, Bohnen und Paprika dazu, 10 Minuten köcheln.','Mit Limettensaft, Sojasauce und Thai-Basilikum abschmecken.'],'p'],
+['massaman','Erdnuss-Kokos-Curry mit Süßkartoffel','MA',35,[['suesskartoffel',600],['kichererbsen',240],['kokosmilch',400],['currypaste',40],['erdnussmus',40],['spinat',150],['reis',250],['limette',1]],['Reis kochen.','Currypaste kurz anrösten, Kokosmilch und Erdnussmus einrühren.','Süßkartoffelwürfel und Kichererbsen dazu, 15 Minuten köcheln.','Spinat unterheben, mit Limette abschmecken.'],'pm'],
+['teriyakilachs','Teriyaki-Lachs mit Sesam-Brokkoli','MA',25,[['lachs',500],['reis',250],['brokkoli',400],['sojasauce',50],['honig',30],['ingwer',10],['sesam',15]],['Reis kochen, Brokkoli dämpfen.','Sojasauce, Honig, geriebenen Ingwer und 3 EL Wasser verrühren.','Lachs auf der Hautseite knusprig braten, wenden, Soße dazu und einkochen lassen, bis sie glänzt.','Mit Reis und Brokkoli servieren, mit Sesam bestreuen.'],''],
+['dumplingsuppe','Wan-Tan-Suppe mit Pak Choi','MA',20,[['tortellini',300],['gemuesebruehe',1500],['pakchoi',300],['pilze',150],['ingwer',15],['sojasauce',30],['fruehlingszwiebeln',1],['sesamoel',10]],['Brühe mit Ingwerscheiben und Sojasauce aufkochen.','Pilze und Pak Choi 3 Minuten darin garen.','Teigtaschen (Dumplings oder Tortellini) in der Brühe garziehen lassen.','Mit Frühlingszwiebeln und Sesamöl servieren.'],'p'],
+['kimchireis','Kimchi Fried Rice mit Spiegelei','MA',20,[['reis',250],['kimchi',250],['eier',4],['fruehlingszwiebeln',1],['sojasauce',20],['gochujang',20],['sesamoel',10],['olivenoel',15]],['Reis kochen und abkühlen lassen (ideal: vom Vortag).','Kimchi klein schneiden und in Öl anbraten, Reis dazu und knusprig braten.','Mit Sojasauce, Gochujang und Sesamöl würzen.','Mit Spiegeleiern und Frühlingszwiebeln servieren.'],'p'],
+['udonwok','Udon-Wok mit Gemüse und Erdnusssoße','MA',20,[['udon',600],['paprika',1],['brokkoli',300],['karotten',150],['erdnussmus',60],['sojasauce',40],['limette',1],['olivenoel',15]],['Gemüse klein schneiden und im Wok 5 Minuten scharf braten.','Udon dazu und lockern.','Erdnussmus mit Sojasauce, Limettensaft und etwas Wasser glatt rühren.','Soße dazu und alles gut durchschwenken.'],'p'],
+['sushibowl','Sushi-Bowl mit Lachs und Avocado','MA',25,[['reis',250],['lachs',300],['avocado',2],['gurke',300],['edamame',200],['sojasauce',40],['sesam',15],['karotten',100]],['Reis kochen, mit etwas Reisessig, Zucker und Salz würzen.','Lachs in Würfel schneiden (Sushi-Qualität roh oder kurz angebraten).','Avocado, Gurke und Karotte schneiden, Edamame garen.','Bowls anrichten, mit Sojasauce und Sesam servieren.'],'m'],
+['bulgogi','Bulgogi-Hack-Bowl','MA',25,[['hack_rind',400],['reis',250],['gurke',300],['karotten',150],['sojasauce',50],['honig',20],['knoblauch',2],['ingwer',10],['sesamoel',10],['sesam',10]],['Reis kochen.','Hack in Sesamöl krümelig braten.','Sojasauce, Honig, Knoblauch und Ingwer dazu und einkochen lassen.','Mit Reis, Gurke, Karotte und Sesam servieren.'],'m'],
+['chickentikka','Hähnchen-Tikka-Spieße mit Joghurt-Dip','MA',35,[['haehnchen',600],['joghurt',300],['zitrone',1],['knoblauch',2],['ingwer',10],['reis',250],['gurke',200]],['Hähnchen würfeln, mit 150 g Joghurt, Zitronensaft, Knoblauch, Ingwer, Garam Masala und Paprikapulver 15 Minuten marinieren.','Reis kochen.','Hähnchen auf Spieße stecken und in der Pfanne oder im Ofen bei 220 °C 15 Minuten garen.','Restlichen Joghurt mit Gurke und Minze verrühren und dazu servieren.'],''],
+// ---- Orientalisch & Griechisch ----
+['halloumibowl','Halloumi-Bowl mit Bulgur und Granatapfel','MA',25,[['halloumi',225],['bulgur',200],['gurke',300],['tomaten',300],['granatapfel',100],['hummus',150],['zitrone',1],['olivenoel',20]],['Bulgur mit doppelter Menge kochendem Salzwasser übergießen und 10 Minuten quellen lassen.','Halloumi in Scheiben schneiden und in einer trockenen Pfanne goldbraun braten.','Gurke und Tomaten würfeln, mit Zitronensaft, Öl, Salz und Minze mischen.','Bowls mit Bulgur, Salat, Hummus, Halloumi und Granatapfelkernen anrichten.'],'m'],
+['shawarma','Hähnchen-Shawarma mit Pita und Knoblauchsoße','MA',35,[['haehnchenschenkel',600],['pita',4],['joghurt',250],['knoblauch',3],['zitrone',1],['tomaten',300],['gurke',300],['zwiebel',1],['olivenoel',30]],['Hähnchen in Streifen schneiden, mit Öl, Zitronensaft, Knoblauch, Kreuzkümmel, Paprika, Kurkuma und Zimt marinieren.','In einer heißen Pfanne in Portionen kräftig braten, bis es Röstaromen hat.','Joghurt mit gepresstem Knoblauch und Salz verrühren.','Pita erwärmen und mit Hähnchen, Tomate, Gurke, roten Zwiebeln und Soße füllen.'],''],
+['falafelbowl','Falafel-Bowl mit Hummus und Tahin','MA',35,[['kichererbsen',480],['zwiebel',1],['knoblauch',2],['haferflocken',40],['hummus',150],['bulgur',150],['gurke',300],['tomaten',300],['tahin',40],['olivenoel',30]],['Ofen auf 200 °C vorheizen. Kichererbsen mit Zwiebel, Knoblauch, Haferflocken, Kreuzkümmel, Koriander und Petersilie grob pürieren.','Bällchen formen, mit Öl bepinseln und 25 Minuten backen.','Bulgur quellen lassen, Gemüse würfeln.','Bowls anrichten, mit Tahin-Zitronen-Soße beträufeln.'],'om'],
+['shakshukagr','Shakshuka mit Feta und Fladenbrot','FMA',30,[['eier',6],['passata',500],['paprika',2],['zwiebel',1],['knoblauch',2],['feta',100],['pita',2],['olivenoel',20]],['Zwiebel und Paprika in Streifen schneiden und in Öl 8 Minuten weich braten, Knoblauch dazu.','Passata, Kreuzkümmel, Paprikapulver und Chili dazu, 10 Minuten dick einköcheln.','Mulden formen, Eier hineingleiten lassen, zugedeckt 6–8 Minuten stocken lassen.','Feta und Petersilie darüber, mit warmem Fladenbrot servieren.'],'p'],
+['gyrospfanne','Gyros-Pfanne mit Tzatziki und Ofenkartoffeln','MA',40,[['schweinefilet',500],['kartoffeln',800],['zwiebel',1],['joghurt',300],['gurke',200],['knoblauch',3],['olivenoel',30]],['Ofen auf 220 °C vorheizen. Kartoffeln in Spalten schneiden, mit Öl und Oregano 30 Minuten backen.','Fleisch in Streifen schneiden, mit Gyrosgewürz marinieren und mit Zwiebelringen scharf braten.','Gurke reiben, ausdrücken, mit Joghurt, Knoblauch und Salz verrühren.','Alles zusammen anrichten.'],'o'],
+['moussakabowl','Griechischer Orzo-Salat mit Feta','M',20,[['orzo',250],['feta',150],['gurke',300],['tomaten',300],['oliven',80],['zwiebel',1],['zitrone',1],['olivenoel',30]],['Orzo kochen und abschrecken.','Gurke, Tomaten und rote Zwiebel würfeln, Oliven halbieren.','Mit Zitronensaft, Öl, Oregano, Salz und Pfeffer mischen.','Feta darüber bröseln.'],'m'],
+['harissahuhn','Harissa-Ofenhähnchen mit Kichererbsen','MA',45,[['haehnchenschenkel',600],['kichererbsen',480],['kuerbis',400],['zwiebel',1],['harissa',40],['joghurt',200],['zitrone',1],['olivenoel',20]],['Ofen auf 210 °C vorheizen.','Harissa mit Öl und Zitronensaft verrühren, Hähnchen, Kichererbsen, Kürbiswürfel und Zwiebelspalten damit mischen.','Auf einem Blech 35 Minuten rösten.','Mit Joghurt und Petersilie servieren.'],'o'],
+['harissatofu','Harissa-Ofengemüse mit Tofu und Joghurt','MA',40,[['tofu',400],['kichererbsen',240],['kuerbis',400],['zucchini',300],['zwiebel',1],['harissa',40],['joghurt',200],['olivenoel',25]],['Ofen auf 210 °C vorheizen.','Harissa mit Öl verrühren, Tofuwürfel, Kichererbsen und Gemüse damit mischen.','35 Minuten rösten, einmal wenden.','Mit Joghurt, Minze und Zitrone servieren.'],'o'],
+['mujaddara','Linsen-Reis mit Röstzwiebeln (Mujaddara)','MA',40,[['linsen',200],['reis',200],['zwiebel',3],['joghurt',250],['gurke',200],['olivenoel',40]],['Zwiebeln in Ringe schneiden und in Öl 20 Minuten langsam goldbraun und knusprig braten.','Linsen (braune oder rote) mit Reis, Kreuzkümmel und 900 ml Wasser 18 Minuten garen.','Die Hälfte der Zwiebeln unterheben.','Mit den restlichen Röstzwiebeln und Gurken-Joghurt servieren.'],'pm'],
+['menemen','Menemen (türkisches Rührei)','FM',20,[['eier',8],['tomaten',400],['paprika',2],['zwiebel',1],['feta',80],['vollkornbrot',300],['olivenoel',20]],['Zwiebel und Paprika fein würfeln und in Öl weich braten.','Tomaten würfeln, dazu und 5 Minuten köcheln.','Eier verquirlen, unterrühren und cremig stocken lassen.','Mit Feta, Chiliflocken und Brot servieren.'],'p'],
+// ---- Mexikanisch ----
+['chilitacos','Knusprige Hähnchen-Tacos mit Mango-Salsa','MA',30,[['tortilla',8],['haehnchen',500],['mango',1],['avocado',1],['tomaten',200],['limette',2],['rotkohl',150],['joghurt',150]],['Hähnchen mit Paprikapulver, Kreuzkümmel und Salz würzen und braten, dann zerzupfen.','Mango, Tomaten und rote Zwiebel würfeln, mit Limettensaft und Koriander mischen.','Rotkohl fein hobeln, mit Limette und Salz verkneten.','Tortillas in der Pfanne knusprig erwärmen und füllen.'],''],
+['enchiladas','Bohnen-Enchiladas aus dem Ofen','MA',45,[['tortilla',8],['schwarzebohnen',500],['mais',285],['paprika',1],['passata',500],['reibekaese',150],['zwiebel',1],['joghurt',150]],['Ofen auf 200 °C vorheizen. Zwiebel und Paprika anbraten, Bohnen und Mais dazu, mit Kreuzkümmel und Chili würzen.','Die Hälfte der Passata würzen und in eine Form streichen.','Tortillas füllen, aufrollen, in die Form legen, restliche Passata und Käse darüber.','25 Minuten backen, mit Joghurt servieren.'],'o'],
+['quesadillas','Quesadillas mit Bohnen und Käse','MA',20,[['tortilla',8],['kidneybohnen',250],['mais',140],['reibekaese',200],['paprika',1],['avocado',1],['limette',1]],['Bohnen grob zerdrücken, mit Mais, Paprikawürfeln und Gewürzen mischen.','Tortillas zur Hälfte mit Bohnenmasse und Käse belegen, zuklappen.','In einer Pfanne von beiden Seiten knusprig braten.','Mit schneller Guacamole (Avocado + Limette) servieren.'],''],
+['burritobowl2','Chipotle-Burrito-Bowl mit Rindfleisch','MA',35,[['rindersteak',400],['reis',250],['schwarzebohnen',250],['mais',140],['avocado',1],['tomaten',200],['limette',2],['cremefraiche',100]],['Reis kochen, mit Limettensaft und Koriander mischen.','Steak mit geräuchertem Paprika, Kreuzkümmel und Salz würzen, scharf braten und in Streifen schneiden.','Bohnen und Mais erwärmen, Tomaten-Salsa anrühren.','Bowls anrichten, mit Avocado und Crème fraîche toppen.'],'m'],
+['chiliveg','Süßkartoffel-Chili mit Schokolade','MA',45,[['suesskartoffel',500],['kidneybohnen',500],['passata',500],['paprika',2],['zwiebel',1],['knoblauch',2],['mais',140],['olivenoel',15]],['Zwiebel, Knoblauch und Paprika anbraten, Kreuzkümmel, Chili und Paprikapulver mitrösten.','Süßkartoffelwürfel, Passata und 300 ml Wasser dazu, 20 Minuten köcheln.','Bohnen und Mais dazu, mit 1 Stück dunkler Schokolade und etwas Zimt abschmecken.','Mit Joghurt und Limette servieren.'],'pm'],
+// ---- Bowls & Salate ----
+['buddhatahini','Rote-Bete-Bowl mit Ziegenkäse und Walnüssen','MA',25,[['quinoa',200],['rotebete',300],['ziegenkaese',100],['nuesse',40],['salat',100],['honig',15],['olivenoel',25],['zitrone',1]],['Quinoa kochen.','Rote Bete in Spalten schneiden.','Dressing aus Öl, Zitrone, Honig, Senf und Salz rühren.','Bowls mit Salat, Quinoa, Rote Bete, Ziegenkäse und Walnüssen anrichten.'],'m'],
+['caesar','Chicken Caesar Salad','MA',25,[['haehnchen',500],['salat',250],['parmesan',50],['vollkornbrot',150],['joghurt',150],['zitrone',1],['knoblauch',1],['olivenoel',30]],['Brot würfeln und in Öl knusprig rösten.','Hähnchen würzen, braten und in Streifen schneiden.','Joghurt mit Parmesan, Zitrone, Knoblauch, Senf und Pfeffer zum Dressing rühren.','Römersalat mit Dressing mischen, Hähnchen, Croûtons und Parmesan darauf.'],''],
+['asiasalat','Glasnudelsalat mit Erdnüssen und Hähnchen','MA',25,[['reisnudeln',200],['haehnchen',400],['gurke',300],['karotten',150],['paprika',1],['erdnuesse',40],['limette',2],['sojasauce',40],['honig',15]],['Nudeln einweichen bzw. garen und abschrecken.','Hähnchen braten und in Streifen schneiden.','Gemüse in feine Streifen schneiden.','Mit Limettensaft, Sojasauce, Honig, Chili und Koriander mischen, mit Erdnüssen bestreuen.'],'m'],
+['linsenhalloumi','Warmer Linsensalat mit Halloumi','MA',30,[['linsen',250],['halloumi',225],['spinat',100],['tomaten',300],['zwiebel',1],['zitrone',1],['olivenoel',25]],['Linsen (Beluga oder Teller) 20 Minuten garen.','Halloumi in Scheiben goldbraun braten.','Linsen noch warm mit Zitronensaft, Öl, Senf, Zwiebelwürfeln und Tomaten mischen.','Baby-Spinat unterheben, mit Halloumi servieren.'],'m'],
+['pokebowl','Poke-Bowl mit Tofu und Mango','MA',25,[['reis',250],['tofu',400],['mango',1],['avocado',1],['edamame',200],['gurke',200],['sojasauce',40],['sesam',15]],['Reis kochen.','Tofu würfeln, mit Sojasauce und etwas Honig marinieren und knusprig braten.','Mango, Avocado und Gurke würfeln, Edamame garen.','Bowls anrichten, mit Sesam und Sojasauce servieren.'],'m'],
+['steaksalat','Steak-Salat mit Ofenkartoffeln','MA',35,[['rindersteak',400],['kartoffeln',600],['salat',150],['tomaten',300],['zwiebel',1],['olivenoel',30]],['Ofen auf 220 °C vorheizen, Kartoffelspalten 25 Minuten backen.','Steak von jeder Seite 2–3 Minuten braten, 5 Minuten ruhen lassen und in Streifen schneiden.','Salat mit Tomaten, roten Zwiebeln und Senf-Vinaigrette mischen.','Mit Steak und Kartoffeln anrichten.'],'o'],
+// ---- Ofen & Schmorgerichte ----
+['ofenkabeljau','Kabeljau aus dem Ofen mit Tomaten und Oliven','MA',30,[['kabeljau',500],['tomaten',400],['oliven',60],['kapern',15],['kartoffeln',800],['zitrone',1],['olivenoel',30]],['Ofen auf 200 °C vorheizen. Kartoffeln in Scheiben schneiden, mit Öl und Salz 15 Minuten vorbacken.','Tomaten, Oliven und Kapern dazugeben, Fisch salzen und darauf legen.','Mit Zitronenscheiben belegen und 15 Minuten backen.','Mit Petersilie servieren.'],'o'],
+['ofenfeta','Ofenfeta mit Paprika und Fladenbrot','MA',30,[['feta',400],['paprika',2],['tomaten',300],['zwiebel',1],['oliven',60],['pita',4],['olivenoel',30]],['Ofen auf 200 °C vorheizen.','Paprika, Zwiebel und Tomaten schneiden, in eine Form geben, Feta-Blöcke darauf.','Mit Öl, Oregano und Chili würzen und 25 Minuten backen.','Mit warmem Fladenbrot zum Dippen servieren.'],'o'],
+['quiche','Lauch-Quiche mit Speck','MA',55,[['blaetterteig',275],['lauch',400],['speck',100],['eier',4],['cremefraiche',150],['reibekaese',100]],['Ofen auf 200 °C vorheizen, Teig in eine Form legen.','Lauch in Ringe schneiden und mit Speck 5 Minuten braten.','Eier mit Crème fraîche, Käse, Salz, Pfeffer und Muskat verquirlen.','Lauch auf dem Teig verteilen, Eiermasse darüber, 35 Minuten backen.'],'om'],
+['spinatquiche','Spinat-Feta-Quiche','MA',55,[['blaetterteig',275],['spinat',450],['feta',150],['eier',4],['cremefraiche',150],['zwiebel',1]],['Ofen auf 200 °C vorheizen, Teig in eine Form legen.','Zwiebel und Spinat dünsten, gut ausdrücken.','Eier mit Crème fraîche, Salz und Muskat verquirlen, Spinat und Feta unterheben.','Auf den Teig geben und 35 Minuten backen.'],'om'],
+['ofenkuerbis','Ofenkürbis mit Burrata und Pesto','MA',40,[['kuerbis',1000],['burrata',250],['pesto',80],['nuesse',40],['salat',80],['olivenoel',25],['vollkornbrot',200]],['Ofen auf 210 °C vorheizen. Kürbis in Spalten schneiden, mit Öl, Salz und Chili 30 Minuten rösten.','Nüsse grob hacken und kurz rösten.','Kürbis auf Rucola anrichten, Burrata aufreißen und darauf geben.','Mit Pesto und Nüssen toppen, mit Brot servieren.'],'o'],
+['hackbaellchen','Hackbällchen in Tomatensoße mit Kartoffelpüree','MA',45,[['hack_rind',500],['eier',1],['haferflocken',40],['passata',700],['zwiebel',1],['kartoffeln',900],['milch',150],['butter',20],['parmesan',30]],['Hack mit Ei, Haferflocken, gehackter Zwiebel, Salz und Pfeffer verkneten und zu Bällchen formen.','In einer Pfanne rundum anbraten, Passata dazu und 20 Minuten köcheln.','Kartoffeln kochen und mit Milch und Butter zu Püree stampfen.','Mit Parmesan und Basilikum servieren.'],'m'],
+['schmorhuhn','Zitronen-Ofenhähnchen mit Kartoffeln und Oliven','MA',50,[['haehnchenschenkel',700],['kartoffeln',800],['zitrone',2],['oliven',80],['knoblauch',6],['olivenoel',30]],['Ofen auf 200 °C vorheizen.','Kartoffeln vierteln, mit Knoblauch, Zitronenscheiben, Oliven, Öl, Thymian, Salz und Pfeffer aufs Blech geben.','Hähnchen würzen und darauf legen.','45 Minuten backen, bis die Haut knusprig ist.'],'o'],
+// ---- Suppen ----
+['tomkha','Tom-Kha-Suppe mit Hähnchen','MA',25,[['haehnchen',400],['kokosmilch',400],['gemuesebruehe',600],['pilze',200],['ingwer',20],['limette',2],['currypaste',20],['reisnudeln',100]],['Brühe mit Ingwer, Currypaste und Kokosmilch aufkochen.','Hähnchen in dünne Streifen und Pilze in Scheiben schneiden, 8 Minuten darin garen.','Reisnudeln in der Suppe garen.','Mit Limettensaft, Sojasauce und Koriander abschmecken.'],'p'],
+['minestrone','Minestrone mit Pesto','MA',40,[['nudeln',120],['weissebohnen',250],['zucchini',300],['karotten',200],['lauch',150],['passata',300],['gemuesebruehe',1200],['pesto',60]],['Gemüse würfeln und in etwas Öl anschwitzen.','Passata und Brühe dazu, 15 Minuten köcheln.','Nudeln und Bohnen dazu, 10 Minuten weiter köcheln.','Mit einem Löffel Pesto pro Teller servieren.'],'pm'],
+['kuerbissuppe','Kürbissuppe mit Kokos und Ingwer','MA',35,[['kuerbis',1000],['zwiebel',1],['ingwer',20],['kokosmilch',400],['gemuesebruehe',700],['vollkornbrot',200]],['Kürbis würfeln, Zwiebel und Ingwer hacken und anschwitzen.','Kürbis und Brühe dazu, 20 Minuten weich köcheln.','Kokosmilch dazu und fein pürieren, mit Salz, Chili und Limette abschmecken.','Mit Brot servieren.'],'pm'],
+['linsensuppe2','Türkische Linsensuppe mit Zitrone','MA',35,[['linsen',250],['zwiebel',1],['karotten',200],['kartoffeln',200],['tomatenmark',30],['gemuesebruehe',1300],['zitrone',1],['butter',20]],['Zwiebel, Karotte und Kartoffel würfeln und in Butter anschwitzen, Tomatenmark und Kreuzkümmel mitrösten.','Linsen und Brühe dazu, 20 Minuten köcheln.','Fein pürieren.','Mit Zitronensaft, Chiliflocken in Butter und Minze servieren.'],'pm'],
+// ---- Klassiker ----
+['schnitzel','Hähnchenschnitzel mit Kartoffelsalat','MA',45,[['haehnchen',600],['eier',2],['vollkornbrot',100],['kartoffeln',900],['gurke',300],['gemuesebruehe',200],['zwiebel',1],['olivenoel',50]],['Kartoffeln kochen, pellen, in Scheiben schneiden und mit warmer Brühe, Zwiebel, Essig, Öl, Senf und Gurke marinieren.','Hähnchen flach klopfen, salzen, durch Ei und Paniermehl ziehen.','In reichlich Öl von jeder Seite 3–4 Minuten goldbraun braten.','Mit Kartoffelsalat und Zitrone servieren.'],''],
+['kaesespaetzle','Käsespätzle mit Röstzwiebeln','MA',30,[['nudeln',500],['reibekaese',200],['zwiebel',3],['butter',30],['salat',150]],['Zwiebeln in Ringe schneiden und in Butter langsam goldbraun braten.','Spätzle (Kühlregal oder Nudeln) kochen.','Lagenweise mit Käse in einer Form oder Pfanne schichten und schmelzen lassen.','Mit Röstzwiebeln und grünem Salat servieren.'],''],
+['ofenlachsgruen','Lachs mit grünem Spargel und Zitronen-Kartoffeln','MA',35,[['lachs',500],['spargel',500],['kartoffeln',800],['zitrone',1],['cremefraiche',100],['olivenoel',25]],['Ofen auf 210 °C vorheizen. Kartoffeln halbieren, mit Öl und Salz 20 Minuten backen.','Spargel und Lachs dazulegen, mit Zitronenscheiben belegen, 12 Minuten backen.','Crème fraîche mit Zitronenabrieb und Dill verrühren.','Alles zusammen servieren.'],'o'],
+['spitzkohl','Gebratener Spitzkohl mit Speck und Kartoffeln','MA',35,[['spitzkohl',800],['speck',125],['kartoffeln',800],['zwiebel',1],['cremefraiche',100]],['Kartoffeln kochen.','Speck und Zwiebel anbraten, Spitzkohl in Streifen dazu und 10 Minuten braten, bis er Farbe hat.','Mit Kümmel, Salz und Pfeffer würzen, Crème fraîche unterrühren.','Mit Kartoffeln servieren.'],'p'],
+['gemuesegulasch','Geschmortes Gemüse-Gulasch mit Kartoffeln','MA',45,[['paprika',3],['zwiebel',2],['kartoffeln',800],['pilze',300],['tomatenmark',40],['gemuesebruehe',800],['cremefraiche',100],['olivenoel',20]],['Zwiebeln, Paprika und Pilze in grobe Stücke schneiden und kräftig anbraten.','Tomatenmark und 2 EL Paprikapulver mitrösten.','Kartoffelwürfel und Brühe dazu, 25 Minuten schmoren.','Mit Crème fraîche und Petersilie servieren.'],'pm'],
+// ---- Frühstück ----
+['bakedoats','Baked Oats mit Blaubeeren','F',30,[['haferflocken',200],['banane',2],['eier',2],['milch',250],['beeren',200],['skyr',200],['honig',20]],['Ofen auf 180 °C vorheizen.','Haferflocken, Bananen, Eier, Milch und 1 TL Backpulver fein pürieren.','In kleine Formen füllen, Beeren hineindrücken.','20 Minuten backen, mit Skyr und Honig servieren.'],'om'],
+['applecrumbleoats','Apple-Crumble-Porridge','F',15,[['haferflocken',240],['milch',900],['apfel',2],['nuesse',40],['butter',15],['honig',30]],['Äpfel würfeln und mit Butter, Zimt und Honig 5 Minuten karamellisieren.','Haferflocken mit Milch 5 Minuten zu Porridge kochen.','Nüsse grob hacken und anrösten.','Porridge mit den Zimtäpfeln und Nüssen servieren.'],'p'],
+['proteinbowl','Proteinreiche Skyr-Bowl mit Granola','F',5,[['skyr',800],['beeren',300],['haferflocken',80],['nuesse',40],['honig',30],['chiasamen',20]],['Haferflocken mit gehackten Nüssen, Honig und Zimt in einer Pfanne 4 Minuten goldbraun rösten (schnelles Granola).','Skyr cremig rühren und auf Schalen verteilen.','Beeren darauf geben.','Mit Granola und Chiasamen toppen.'],'k'],
+['avocadoei','Avocado-Brot mit pochiertem Ei und Chili','F',15,[['vollkornbrot',400],['avocado',2],['eier',4],['zitrone',1],['fruehlingszwiebeln',1]],['Wasser mit einem Schuss Essig zum Sieden bringen, Eier einzeln hineingleiten lassen und 3–4 Minuten pochieren.','Avocado mit Zitronensaft, Salz und Chiliflocken zerdrücken.','Brot rösten und mit der Avocado bestreichen.','Ei darauf setzen, mit Frühlingszwiebeln und Pfeffer bestreuen.'],''],
+['frenchtoast','French Toast mit Beeren und Skyr','F',20,[['vollkornbrot',400],['eier',4],['milch',200],['beeren',300],['skyr',250],['butter',20],['honig',30]],['Eier mit Milch, Zimt und einer Prise Salz verquirlen.','Brotscheiben darin wenden und in Butter von beiden Seiten goldbraun braten.','Beeren kurz in der Pfanne erwärmen.','Mit Skyr, Beeren und Honig servieren.'],'p'],
+['ruehreilachs','Rührei mit Lachs, Frischkäse und Schnittlauch','F',15,[['eier',8],['lachs',200],['frischkaese',100],['vollkornbrot',300],['butter',10]],['Lachs in kleine Stücke schneiden und kurz anbraten (oder Räucherlachs verwenden).','Eier mit Salz und Pfeffer verquirlen und in Butter langsam cremig stocken lassen.','Frischkäse in Flöckchen unterziehen.','Mit Lachs und Schnittlauch auf Brot servieren.'],'p'],
+['breakfastburrito','Breakfast Burrito mit Ei und Bohnen','FM',20,[['tortilla',4],['eier',6],['schwarzebohnen',250],['reibekaese',80],['avocado',1],['tomaten',200]],['Bohnen mit Kreuzkümmel und Salz erwärmen und leicht zerdrücken.','Rührei braten.','Tortillas mit Bohnen, Ei, Käse, Tomaten und Avocado füllen.','Fest einrollen und in der Pfanne kurz anrösten.'],''],
+['chiabowl2','Kokos-Chia-Pudding mit Mango','F',10,[['chiasamen',100],['kokosmilch',400],['haferdrink',300],['mango',1],['kokosflocken',20],['honig',20]],['Chiasamen mit Kokosmilch, Haferdrink und Honig verrühren, nach 10 Minuten nochmal umrühren.','Über Nacht kalt stellen.','Mango pürieren oder würfeln.','Pudding mit Mango und gerösteten Kokosraspeln servieren.'],'km'],
+['pancakes2','Fluffige Buttermilch-Pancakes mit Banane','F',25,[['haferflocken',100],['milch',300],['eier',2],['banane',2],['butter',20],['honig',30],['beeren',200]],['Haferflocken fein mahlen (oder 150 g Mehl nehmen), mit 2 TL Backpulver mischen.','Milch, Eier und geschmolzene Butter unterrühren.','Kleine Pancakes in einer Pfanne goldbraun backen.','Mit Bananenscheiben, Beeren und Honig stapeln.'],''],
+['tofuscr','Herzhafter Tofu-Scramble mit Pilzen und Spinat','FM',15,[['tofu',400],['pilze',200],['spinat',150],['tomaten',200],['vollkornbrot',300],['olivenoel',15]],['Pilze in Öl kräftig anbraten.','Tofu hineinbröseln, mit Kurkuma, Paprika, Salz und Pfeffer würzen.','Spinat und Tomaten kurz mitgaren.','Auf geröstetem Brot servieren.'],'p'],
+['birnenporridge','Birnen-Ingwer-Porridge mit Walnüssen','F',12,[['haferflocken',240],['haferdrink',900],['birne',2],['ingwer',10],['nuesse',40],['honig',20]],['Haferflocken mit Haferdrink und geriebenem Ingwer aufkochen und 5 Minuten köcheln.','Birnen würfeln und unterheben.','Mit Zimt und Honig abschmecken.','Mit gehackten Walnüssen servieren.'],'p'],
+['eggmuffins2','Eier-Muffins mit Feta und getrockneten Tomaten','FM',30,[['eier',10],['feta',100],['getrtomaten',60],['spinat',150],['fruehlingszwiebeln',1]],['Ofen auf 180 °C vorheizen, Muffinblech einfetten.','Spinat, Tomaten und Frühlingszwiebeln klein schneiden und verteilen.','Eier verquirlen, würzen, darüber gießen, Feta darauf bröseln.','20 Minuten backen. Hält sich 3 Tage im Kühlschrank.'],'om'],
+// ---- Schnelle Mittagessen ----
+['hummuswrap','Hummus-Wraps mit Ofengemüse','M',25,[['tortilla',4],['hummus',200],['zucchini',300],['paprika',1],['salat',80],['feta',80],['olivenoel',15]],['Zucchini und Paprika in Streifen schneiden und in einer Pfanne kräftig braten.','Tortillas mit Hummus bestreichen.','Mit Gemüse, Salat und Feta belegen.','Fest einrollen und halbieren.'],'m'],
+['tunamelt','Thunfisch-Melt-Toast','M',15,[['vollkornbrot',400],['thunfisch',300],['joghurt',80],['mais',100],['reibekaese',120],['tomaten',200]],['Thunfisch mit Joghurt, Mais, Salz, Pfeffer und etwas Senf mischen.','Auf Brotscheiben streichen, Tomatenscheiben und Käse darauf.','Bei 220 °C Grill 6–8 Minuten überbacken.','Mit Salat servieren.'],'o'],
+['couscousbowl2','Couscous-Salat mit Halloumi und Minze','M',20,[['couscous',250],['halloumi',225],['gurke',300],['tomaten',300],['granatapfel',80],['zitrone',1],['olivenoel',30]],['Couscous mit kochendem Salzwasser übergießen und 5 Minuten quellen lassen.','Halloumi würfeln und goldbraun braten.','Gemüse würfeln, mit Zitrone, Öl und Minze mischen.','Mit Couscous, Halloumi und Granatapfel anrichten.'],'m'],
+['ramennudelsalat','Kalter Soba-Salat mit Edamame und Sesam','M',20,[['nudeln',250],['edamame',250],['gurke',300],['karotten',150],['sojasauce',40],['sesamoel',15],['limette',1],['sesam',15]],['Nudeln (Soba oder Spaghetti) kochen und kalt abspülen, Edamame mitgaren.','Gurke und Karotte in Streifen schneiden.','Sojasauce, Sesamöl, Limettensaft und etwas Honig verrühren.','Alles mischen und mit Sesam bestreuen.'],'m'],
+['ofensuesskartoffel2','Gefüllte Süßkartoffel mit Bohnen-Salsa','MA',45,[['suesskartoffel',1000],['schwarzebohnen',250],['mais',140],['tomaten',200],['avocado',1],['limette',1],['cremefraiche',100]],['Ofen auf 200 °C vorheizen. Süßkartoffeln längs halbieren und 35–40 Minuten weich backen.','Bohnen, Mais, Tomaten und Avocado würfeln und mit Limette, Salz und Koriander mischen.','Süßkartoffeln aufdrücken und mit der Salsa füllen.','Mit Crème fraîche servieren.'],'o'],
+['eggfriedrice','Egg Fried Rice mit Erbsen','MA',15,[['reis',250],['eier',4],['erbsen',200],['fruehlingszwiebeln',1],['sojasauce',40],['sesamoel',10],['olivenoel',20]],['Reis kochen und auskühlen lassen (ideal: vom Vortag).','Eier im heißen Öl verrühren, bis sie fast gestockt sind.','Reis und Erbsen dazu und unter Rühren knusprig braten.','Mit Sojasauce, Sesamöl und Frühlingszwiebeln abschmecken.'],'p'],
 ];
 
-// ================= Rezept-Baukasten: Grundrezept × Eiweiß × Gemüse =================
-(function(){
-const P={
-  haehnchen:{n:'Hähnchen',a:500,prep:'Hähnchen in mundgerechte Stücke schneiden und in etwas Öl rundum goldbraun braten, herausnehmen.'},
-  putenhack:{n:'Putenhack',a:450,prep:'Putenhack in etwas Öl krümelig braten, herausnehmen.'},
-  hack_rind:{n:'Hackfleisch',a:400,prep:'Hackfleisch in etwas Öl krümelig braten, herausnehmen.'},
-  lachs:{n:'Lachs',a:400,prep:'Lachs würfeln, salzen und 2–3 Minuten vorsichtig anbraten, herausnehmen.'},
-  garnelen:{n:'Garnelen',a:400,prep:'Garnelen auftauen lassen und 2–3 Minuten braten, bis sie rosa sind, herausnehmen.'},
-  thunfisch:{n:'Thunfisch',a:300,prep:'Thunfisch abtropfen lassen und grob zerpflücken.'},
-  tofu:{n:'Tofu',a:400,prep:'Tofu trocken tupfen, würfeln und in Öl rundum knusprig braten, herausnehmen.'},
-  raeuchertofu:{n:'Räuchertofu',a:400,prep:'Räuchertofu würfeln und in Öl knusprig braten, herausnehmen.'},
-  kichererbsen:{n:'Kichererbsen',a:480,prep:'Kichererbsen abgießen, abspülen und gut abtropfen lassen.'},
-  weissebohnen:{n:'weißen Bohnen',a:500,prep:'Weiße Bohnen abgießen und abspülen.'},
-  linsen:{n:'roten Linsen',a:200,prep:'Rote Linsen in Wasser 10–12 Minuten bissfest kochen und abgießen.'},
-  edamame:{n:'Edamame',a:400,prep:'Edamame 3 Minuten in kochendem Wasser garen.'},
-};
-const V={
-  brokkoli:{n:'Brokkoli',i:[['brokkoli',400]],prep:'Brokkoli in kleine Röschen teilen.'},
-  paprika:{n:'Paprika',i:[['paprika',2]],prep:'Paprika in Streifen schneiden.'},
-  zucchini:{n:'Zucchini',i:[['zucchini',400]],prep:'Zucchini würfeln.'},
-  spinat:{n:'Spinat',i:[['spinat',300]],prep:'Spinat bereitstellen (TK kurz antauen lassen).'},
-  pilze:{n:'Pilzen',i:[['pilze',400]],prep:'Pilze in Scheiben schneiden.'},
-  erbsen:{n:'Erbsen',i:[['erbsen',300]],prep:'Erbsen bereitstellen.'},
-  karotten:{n:'Karotten',i:[['karotten',300]],prep:'Karotten schälen und in dünne Scheiben schneiden.'},
-  aubergine:{n:'Aubergine',i:[['aubergine',400]],prep:'Aubergine würfeln.'},
-  blumenkohl:{n:'Blumenkohl',i:[['blumenkohl',500]],prep:'Blumenkohl in kleine Röschen teilen.'},
-  suesskartoffel:{n:'Süßkartoffel',i:[['suesskartoffel',500]],prep:'Süßkartoffel schälen und klein würfeln.'},
-  tomaten:{n:'Tomaten',i:[['tomaten',400]],prep:'Tomaten halbieren oder würfeln.'},
-  mais:{n:'Mais',i:[['mais',285]],prep:'Mais abtropfen lassen.'},
-};
-const ALLP=Object.keys(P),FISHMEAT=['haehnchen','putenhack','hack_rind','lachs','garnelen'];
-// [key, Name, Mahlzeiten, Minuten, Flags, Grundzutaten, erlaubte Eiweiße, erlaubte Gemüse, Schritte(p,v)]
-const T=[
- ['curry','Kokos-Curry','MA',30,'pm',[['kokosmilch',400],['zwiebel',1],['knoblauch',2],['ingwer',15],['reis',250],['olivenoel',15],['limette',1]],ALLP.filter(x=>x!=='thunfisch'),['brokkoli','spinat','paprika','blumenkohl','suesskartoffel','erbsen','zucchini'],
-   (p,v)=>['Reis nach Packung kochen.',p.prep,v.prep,'Zwiebel, Knoblauch und Ingwer in Öl anschwitzen, 1–2 EL Currypulver oder -paste kurz mitrösten.',`Kokosmilch und ${v.n} dazu, 10 Minuten köcheln.`,`${p.n} unterheben, kurz erhitzen und mit Limettensaft und Salz abschmecken.`]],
- ['tompasta','Tomaten-Pasta','MA',30,'',[['nudeln',400],['tomaten_dose',800],['zwiebel',1],['knoblauch',2],['olivenoel',20],['parmesan',30]],['haehnchen','putenhack','hack_rind','thunfisch','garnelen','kichererbsen','weissebohnen','linsen','raeuchertofu'],['zucchini','aubergine','paprika','spinat','pilze','karotten'],
-   (p,v)=>['Nudeln in Salzwasser kochen.',p.prep,v.prep,`Zwiebel und Knoblauch in Öl anschwitzen, ${v.n} 5 Minuten mitbraten.`,'Tomaten dazu, mit Salz, Pfeffer und Oregano würzen und 10 Minuten köcheln.',`${p.n} unterheben, mit den Nudeln mischen und mit Parmesan servieren.`]],
- ['creampasta','Cremige Pasta','MA',25,'',[['nudeln',400],['sahne',200],['knoblauch',2],['parmesan',40],['olivenoel',15],['zitrone',1]],['haehnchen','lachs','garnelen','raeuchertofu','weissebohnen','kichererbsen'],['spinat','pilze','brokkoli','erbsen','zucchini'],
-   (p,v)=>['Nudeln in Salzwasser kochen.',p.prep,v.prep,`Knoblauch in Öl anschwitzen, ${v.n} 4 Minuten mitgaren.`,'Sahne und Parmesan dazu, kurz köcheln lassen, mit Zitronenabrieb, Salz und Pfeffer würzen.',`${p.n} und Nudeln unterheben.`]],
- ['pestopasta','Pesto-Pasta','MA',20,'',[['nudeln',400],['pesto',150],['tomaten',250],['olivenoel',10]],['haehnchen','lachs','garnelen','thunfisch','weissebohnen','kichererbsen','tofu'],['zucchini','brokkoli','spinat','erbsen','paprika'],
-   (p,v)=>['Nudeln in Salzwasser kochen, '+v.n+' die letzten 3 Minuten mitgaren.',p.prep,'Tomaten halbieren.',`Nudeln und ${v.n} abgießen, mit Pesto, Tomaten und ${p.n} mischen.`]],
- ['bowl','Teriyaki-Reis-Bowl','MA',30,'m',[['reis',250],['sojasauce',50],['honig',20],['sesam',15],['gurke',300],['olivenoel',15]],['haehnchen','lachs','garnelen','tofu','raeuchertofu','edamame','putenhack'],['brokkoli','paprika','karotten','suesskartoffel','mais','zucchini'],
-   (p,v)=>['Reis nach Packung kochen.',p.prep,v.prep+` ${v.n} in einer Pfanne 5–6 Minuten braten.`,`Sojasauce, Honig und 2 EL Wasser aufkochen, ${p.n} darin schwenken, bis es glänzt.`,'Gurke in Scheiben schneiden.','Bowls mit Reis, Gemüse, Gurke und Teriyaki anrichten, mit Sesam bestreuen.']],
- ['wok','Asia-Nudelpfanne','MA',25,'p',[['nudeln',300],['sojasauce',60],['ingwer',15],['knoblauch',2],['fruehlingszwiebeln',1],['olivenoel',20]],['haehnchen','garnelen','tofu','raeuchertofu','edamame','putenhack'],['brokkoli','paprika','karotten','pilze','zucchini','erbsen'],
-   (p,v)=>['Nudeln kochen und abgießen.',p.prep,v.prep,`Ingwer, Knoblauch und ${v.n} im Wok 4–5 Minuten scharf braten.`,`Nudeln, ${p.n} und Sojasauce dazu und gut durchschwenken.`,'Mit Frühlingszwiebeln bestreuen.']],
- ['blech','Ofenblech','MA',45,'o',[['kartoffeln',900],['zwiebel',1],['olivenoel',30],['joghurt',200]],['haehnchen','lachs','kichererbsen','raeuchertofu','tofu','weissebohnen'],['brokkoli','paprika','zucchini','karotten','blumenkohl','aubergine'],
-   (p,v)=>['Ofen auf 200 °C vorheizen. Kartoffeln vierteln, mit Zwiebelspalten, Öl, Salz und Paprikapulver aufs Blech geben, 20 Minuten backen.',v.prep,`${v.n} und ${p.n} (roh, gewürzt) dazulegen und weitere 20 Minuten backen.`,'Joghurt mit Salz, Knoblauch und Kräutern verrühren und dazu servieren.']],
- ['wraps','Wraps','MA',20,'',[['tortilla',8],['joghurt',200],['salat',100],['tomaten',250],['olivenoel',15]],['haehnchen','putenhack','hack_rind','garnelen','thunfisch','kichererbsen','tofu','weissebohnen'],['paprika','mais','zucchini','pilze'],
-   (p,v)=>[p.prep,v.prep+` ${v.n} kurz in der Pfanne braten und würzen.`,'Joghurt mit Salz, Knoblauch und Zitrone verrühren.',`Tortillas erwärmen, mit Salat, Tomaten, ${v.n}, ${p.n} und Soße füllen und einrollen.`]],
- ['quinoa','Quinoa-Bowl','MA',30,'m',[['quinoa',250],['zitrone',1],['olivenoel',30],['gurke',300],['salat',100]],['haehnchen','lachs','kichererbsen','raeuchertofu','edamame','weissebohnen','garnelen'],['suesskartoffel','brokkoli','paprika','tomaten','mais'],
-   (p,v)=>['Quinoa nach Packung kochen.',p.prep,v.prep+` ${v.n} in Öl braten oder im Ofen rösten.`,'Zitronensaft, Öl, Salz und Pfeffer zu einem Dressing verrühren.',`Bowls mit Quinoa, Salat, Gurke, ${v.n} und ${p.n} anrichten, Dressing darüber.`]],
- ['eintopf','Tomaten-Eintopf','MA',40,'pm',[['tomaten_dose',800],['kartoffeln',500],['gemuesebruehe',500],['zwiebel',1],['knoblauch',2],['olivenoel',15],['vollkornbrot',200]],['haehnchen','putenhack','hack_rind','kichererbsen','weissebohnen','linsen'],['zucchini','paprika','karotten','spinat','aubergine'],
-   (p,v)=>['Zwiebel, Knoblauch und gewürfelte Kartoffeln in Öl anschwitzen.',v.prep,`Tomaten, Brühe und ${v.n} dazu, 20 Minuten köcheln.`,p.prep,`${p.n} dazu, 5 Minuten ziehen lassen, kräftig abschmecken. Mit Brot servieren.`]],
- ['erdnuss','Erdnuss-Pfanne','MA',30,'p',[['erdnussmus',60],['sojasauce',40],['reis',250],['limette',1],['olivenoel',15]],['haehnchen','tofu','raeuchertofu','garnelen','edamame','kichererbsen'],['brokkoli','paprika','karotten','zucchini','suesskartoffel'],
-   (p,v)=>['Reis kochen.',p.prep,v.prep+` ${v.n} in Öl 6 Minuten braten.`,'Erdnussmus mit Sojasauce, Limettensaft und 100 ml warmem Wasser glatt rühren.',`Soße und ${p.n} in die Pfanne geben, kurz köcheln. Mit Reis servieren.`]],
- ['gnocchi','Gnocchi-Pfanne','MA',20,'p',[['gnocchi',800],['tomaten',300],['knoblauch',2],['olivenoel',20],['parmesan',30]],['haehnchen','garnelen','weissebohnen','raeuchertofu','kichererbsen'],['spinat','zucchini','pilze','paprika','erbsen'],
-   (p,v)=>[p.prep,'Gnocchi in Öl goldbraun braten.',v.prep+` ${v.n}, Knoblauch und Tomaten 4 Minuten mitbraten.`,`${p.n} unterheben, mit Parmesan servieren.`]],
- ['burrito','Burrito-Bowl','MA',30,'m',[['reis',250],['tomaten',300],['avocado',1],['limette',1],['joghurt',150]],['haehnchen','hack_rind','putenhack','garnelen','tofu','kichererbsen'],['mais','paprika','zucchini','suesskartoffel'],
-   (p,v)=>['Reis kochen, mit Limettensaft und Salz würzen.',p.prep+' Mit Kreuzkümmel und Paprikapulver würzen.',v.prep+` ${v.n} kurz braten.`,'Tomaten und Avocado würfeln.',`Bowls mit Reis, ${v.n}, ${p.n}, Tomaten, Avocado und Joghurt anrichten.`]],
- ['risotto','Risotto','MA',40,'p',[['reis',300],['gemuesebruehe',1000],['zwiebel',1],['parmesan',50],['butter',20]],['haehnchen','garnelen','lachs','weissebohnen','raeuchertofu'],['pilze','spinat','erbsen','zucchini','karotten'],
-   (p,v)=>[p.prep,'Zwiebel in Butter anschwitzen, Reis kurz mitrösten.',v.prep,`Nach und nach heiße Brühe angießen und 20 Minuten unter Rühren garen, ${v.n} nach 10 Minuten dazugeben.`,`Parmesan und ${p.n} unterrühren, abschmecken.`]],
- ['auflauf','Nudelauflauf','MA',45,'o',[['nudeln',300],['tomaten_dose',400],['sahne',100],['reibekaese',125],['zwiebel',1]],['haehnchen','putenhack','hack_rind','thunfisch','weissebohnen','linsen'],['brokkoli','zucchini','spinat','paprika','blumenkohl'],
-   (p,v)=>['Ofen auf 200 °C vorheizen. Nudeln 3 Minuten kürzer als angegeben kochen.',p.prep,v.prep,`Zwiebel anschwitzen, Tomaten und Sahne dazu, würzen. Mit Nudeln, ${v.n} und ${p.n} mischen.`,'In eine Form geben, mit Käse bestreuen und 20 Minuten überbacken.']],
- ['friedrice','Gebratener Reis','MA',25,'m',[['reis',250],['eier',3],['sojasauce',50],['fruehlingszwiebeln',1],['olivenoel',20]],['haehnchen','garnelen','tofu','raeuchertofu','edamame','putenhack'],['erbsen','karotten','paprika','brokkoli','mais'],
-   (p,v)=>['Reis kochen und abkühlen lassen (am besten vom Vortag).',p.prep,v.prep+` ${v.n} in Öl 4 Minuten braten.`,'Reis dazu und anbraten, Eier hineinschlagen und unterrühren.',`${p.n} und Sojasauce dazu, mit Frühlingszwiebeln servieren.`]],
- ['masala','Joghurt-Masala','MA',35,'',[['joghurt',200],['tomaten_dose',400],['zwiebel',1],['knoblauch',2],['ingwer',15],['reis',250],['olivenoel',15]],['haehnchen','kichererbsen','linsen','tofu','garnelen','weissebohnen'],['spinat','blumenkohl','erbsen','suesskartoffel','paprika'],
-   (p,v)=>['Reis kochen.',p.prep,v.prep,'Zwiebel, Knoblauch und Ingwer anschwitzen, 2 TL Garam Masala und Kurkuma kurz mitrösten.',`Tomaten und ${v.n} dazu, 12 Minuten köcheln.`,`${p.n} dazu, vom Herd nehmen und Joghurt einrühren.`]],
- ['suppe','Nudelsuppe','MA',30,'pm',[['nudeln',150],['gemuesebruehe',1500],['zwiebel',1],['ingwer',10],['fruehlingszwiebeln',1]],['haehnchen','tofu','garnelen','kichererbsen','weissebohnen'],['karotten','brokkoli','pilze','erbsen','spinat'],
-   (p,v)=>['Brühe mit Zwiebel und Ingwer aufkochen.',v.prep+` ${v.n} 8 Minuten darin garen.`,'Nudeln dazu und weich kochen.',p.prep,`${p.n} hineingeben, mit Frühlingszwiebeln servieren.`]],
- ['salat','Warmer Salat','MA',20,'',[['salat',150],['tomaten',300],['gurke',300],['olivenoel',30],['zitrone',1],['vollkornbrot',200]],['haehnchen','lachs','garnelen','raeuchertofu','kichererbsen','thunfisch','weissebohnen'],['zucchini','paprika','pilze','suesskartoffel','mais'],
-   (p,v)=>[p.prep,v.prep+` ${v.n} in Öl braten, bis es Farbe hat.`,'Salat, Tomaten und Gurke schneiden, mit Zitronensaft, Öl, Salz und Pfeffer anmachen.',`Warme ${v.n} und ${p.n} darauf verteilen, mit Brot servieren.`]],
- ['couscous','Orientalische Couscous-Pfanne','MA',25,'pm',[['couscous',250],['zitrone',1],['olivenoel',25],['tahin',40],['gurke',300],['zwiebel',1]],['haehnchen','putenhack','kichererbsen','lachs','garnelen','tofu','weissebohnen'],['zucchini','aubergine','paprika','blumenkohl','suesskartoffel','tomaten'],
-   (p,v)=>['Couscous mit gleicher Menge kochendem Salzwasser übergießen und 5 Minuten quellen lassen.',p.prep+' Mit Kreuzkümmel und Paprikapulver würzen.',v.prep+` ${v.n} mit Zwiebel in Öl 6–8 Minuten braten.`,'Tahin mit Zitronensaft, Salz und Wasser zu einer Soße rühren.',`Couscous mit ${v.n}, ${p.n} und Gurke mischen, Tahinsoße darüber.`]],
- ['griech','Griechischer Teller','MA',30,'m',[['reis',250],['joghurt',250],['gurke',300],['feta',120],['zwiebel',1],['knoblauch',2],['olivenoel',20]],['haehnchen','putenhack','hack_rind','lachs','garnelen','kichererbsen','weissebohnen'],['zucchini','paprika','aubergine','tomaten','spinat'],
-   (p,v)=>['Reis kochen.',p.prep+' Mit Oregano und Knoblauch würzen.',v.prep+` ${v.n} mit Zwiebel in Öl braten.`,'Für das Tzatziki Gurke reiben und mit Joghurt, Knoblauch und Salz verrühren.',`Reis, ${v.n} und ${p.n} anrichten, Feta darüber bröseln, Tzatziki dazu.`]],
- ['cremesuppe','Cremesuppe','MA',30,'pm',[['gemuesebruehe',1000],['zwiebel',1],['kartoffeln',300],['sahne',100],['olivenoel',15],['vollkornbrot',200]],['kichererbsen','weissebohnen','linsen','haehnchen','garnelen','raeuchertofu'],['brokkoli','blumenkohl','karotten','suesskartoffel','zucchini','erbsen'],
-   (p,v)=>['Zwiebel und gewürfelte Kartoffeln in Öl anschwitzen.',v.prep,`${v.n} und Brühe dazu, 15–20 Minuten köcheln, dann fein pürieren und Sahne einrühren.`,p.prep,`${p.n} als Einlage dazu, abschmecken und mit Brot servieren.`]],
- ['lcpfanne','Gemüsepfanne','MA',20,'p',[['olivenoel',20],['zwiebel',1],['knoblauch',2],['tomaten',200],['feta',80]],['haehnchen','putenhack','hack_rind','lachs','garnelen','tofu','raeuchertofu'],['brokkoli','zucchini','paprika','pilze','spinat','blumenkohl','aubergine'],
-   (p,v)=>[p.prep,v.prep,`Zwiebel und Knoblauch in Öl anschwitzen, ${v.n} 6–8 Minuten braten.`,`Tomaten und ${p.n} dazu, kräftig würzen, Feta darüber bröseln. Ohne Beilage, schön leicht.`]],
-];
-const F=[];
-let n=0;
-T.forEach(([k,name,meals,min,flags,base,ps,vs,steps])=>ps.forEach(pk=>vs.forEach(vk=>{
-  const p=P[pk],v=V[vk];if(!p||!v)return;
-  const ings=base.filter(([id])=>!v.i.some(([x])=>x===id)&&id!==pk).concat([[pk,p.a]],v.i);
-  REC_RAW.push(['g_'+k+'_'+pk+'_'+vk,`${name} mit ${p.n.replace(/^weißen Bohnen$/,'weißen Bohnen')} und ${v.n}`.replace('mit roten Linsen','mit roten Linsen'),meals,min,ings,steps(p,v),flags]);n++;})));
-// Frühstück
-const DAIRY={skyr:['Skyr',450],joghurt:['Joghurt',450],sojajoghurt:['Sojajoghurt',450],magerquark:['Quark',450]};
-const FRUIT={beeren:['Beeren',[['beeren',300]]],banane:['Banane',[['banane',3]]],apfel:['Apfel',[['apfel',2]]],mango:['Mango',[['mango',1]]]};
-const TOP={nuesse:['Nüssen',[['nuesse',40]]],chiasamen:['Chia',[['chiasamen',30]]],erdnussmus:['Erdnussmus',[['erdnussmus',40]]]};
-Object.entries(DAIRY).forEach(([dk,[dn,da]])=>Object.entries(FRUIT).forEach(([fk,[fn,fi]])=>Object.entries(TOP).forEach(([tk,[tn,ti]])=>{
-  REC_RAW.push(['g_oats_'+dk+'_'+fk+'_'+tk,`Overnight Oats mit ${dn}, ${fn} und ${tn}`,'F',5,[['haferflocken',200],[dk,da],[dk==='sojajoghurt'?'haferdrink':'milch',300]].concat(fi,ti),
-   [`Haferflocken mit ${dn} und ${dk==='sojajoghurt'?'Haferdrink':'Milch'} verrühren.`,`${fn} klein schneiden und darauf geben.`,`Mit ${tn} toppen und über Nacht kalt stellen.`],'km']);
-  REC_RAW.push(['g_qbowl_'+dk+'_'+fk+'_'+tk,`${dn}-Bowl mit ${fn} und ${tn}`,'F',5,[[dk,700]].concat(fi,ti,[['haferflocken',80]]),
-   [`${dn} cremig rühren und auf Schalen verteilen.`,`${fn} klein schneiden und darauf geben.`,`Mit Haferflocken und ${tn} toppen.`],'k']);})));
-const MILK={milch:['Milch'],haferdrink:['Haferdrink']};
-Object.entries(MILK).forEach(([mk,[mn]])=>Object.entries(FRUIT).forEach(([fk,[fn,fi]])=>Object.entries(TOP).forEach(([tk,[tn,ti]])=>{
-  REC_RAW.push(['g_porr_'+mk+'_'+fk+'_'+tk,`Porridge mit ${fn} und ${tn}${mk==='haferdrink'?' (mit Haferdrink)':''}`,'F',10,[['haferflocken',240],[mk,900]].concat(fi,ti),
-   [`Haferflocken mit ${mn} aufkochen und 5 Minuten unter Rühren köcheln.`,`${fn} klein schneiden und unterheben oder darauf geben.`,`Mit ${tn} toppen.`],'p']);})));
-const SV={spinat:['Spinat',[['spinat',200]]],tomaten:['Tomaten',[['tomaten',300]]],pilze:['Pilzen',[['pilze',250]]],paprika:['Paprika',[['paprika',1]]],zucchini:['Zucchini',[['zucchini',300]]]};
-const ST={avocado:['Avocado',[['avocado',1]]],fruehlingszwiebeln:['Frühlingszwiebeln',[['fruehlingszwiebeln',1]]],edamame:['Edamame',[['edamame',150]]]};
-Object.entries(SV).forEach(([vk,[vn,vi]])=>Object.entries(ST).forEach(([tk,[tn,ti]])=>{
-  REC_RAW.push(['g_scr_'+vk+'_'+tk,`Tofu-Scramble mit ${vn} und ${tn}`,'FM',15,[['tofu',400],['olivenoel',15],['vollkornbrot',300]].concat(vi,ti),
-   ['Tofu mit den Händen in die Pfanne zerbröseln und in Öl anbraten, mit Kurkuma, Salz und Pfeffer würzen.',`${vn} klein schneiden und 3 Minuten mitbraten.`,`Mit ${tn} toppen und mit Brot servieren.`],'p']);}));
-const EV={spinat:['Spinat',[['spinat',200]]],tomaten:['Tomaten',[['tomaten',300]]],pilze:['Pilzen',[['pilze',250]]],paprika:['Paprika',[['paprika',1]]],zucchini:['Zucchini',[['zucchini',300]]]};
-const EC={feta:['Feta',[['feta',100]]],reibekaese:['Käse',[['reibekaese',80]]],huettenkaese:['Hüttenkäse',[['huettenkaese',200]]]};
-Object.entries(EV).forEach(([vk,[vn,vi]])=>Object.entries(EC).forEach(([ck,[cn,ci]])=>{
-  REC_RAW.push(['g_ruehrei_'+vk+'_'+ck,`Rührei mit ${vn} und ${cn}`,'FM',15,[['eier',8],['butter',10],['vollkornbrot',300]].concat(vi,ci),
-   [`${vn} klein schneiden und in Butter 3 Minuten anbraten.`,'Eier verquirlen, salzen, pfeffern und bei mittlerer Hitze unter Rühren stocken lassen.',`${cn} darüber geben, mit Brot servieren.`],'p']);
-  REC_RAW.push(['g_omelett_'+vk+'_'+ck,`Omelett mit ${vn} und ${cn}`,'FMA',15,[['eier',8],['olivenoel',10],['salat',100]].concat(vi,ci),
-   [`${vn} klein schneiden und in Öl anbraten.`,'Eier verquirlen, würzen und darüber gießen, zugedeckt stocken lassen.',`${cn} darauf verteilen, zusammenklappen und mit Salat servieren.`],'p']);}));
-})();
 
 </script>
 <script>
@@ -554,13 +588,13 @@ function setSync(s){if(SYNC===s)return;SYNC=s;if(ui.tab==='ich')render();}
 // ================= recipes =================
 let RECIPES=[],CUSTOM={};
 function nutrOf(i,amt){const f=i.u==='Stk'?amt:amt/100;return{k:i.k*f,p:i.p*f,c:i.c*f,f:i.f*f};}
-function buildRecipe(id,n,meals,min,ings,steps,flags,own){
+function buildRecipe(id,n,meals,min,ings,steps,flags,own,extra){
   const tot={k:0,p:0,c:0,f:0},tags=new Set();
   ings.forEach(([iid,a])=>{const i=ING[iid];if(!i)return;const x=nutrOf(i,a);for(const k in tot)tot[k]+=x[k];i.tags.forEach(t=>tags.add(t));});
   const per={k:tot.k/BASE,p:tot.p/BASE,c:tot.c/BASE,f:tot.f/BASE};
   const diet=tags.has('meat')?'meat':tags.has('fish')?'fish':(tags.has('dairy')||tags.has('egg')||tags.has('nonvegan'))?'veg':'vegan';
   const kc=per.k||1;
-  return{id,n,meals,min,ings,steps,flags:flags||'',per,tags,diet,own:!!own,
+  return{id,n,meals,min,ings,steps,flags:flags||'',per,tags,diet,own:!!own,src:extra&&extra.src||'',img:extra&&extra.img||'',
     hp:per.p>=25||per.p*4/kc>=0.3,lowfat:per.f<=12,lowcarb:per.c<=30,light:per.k<=500};
 }
 function rebuildRecipes(){
@@ -574,7 +608,7 @@ function rebuildRecipes(){
         ING[id]={id,n:x.name||'Zutat',u,k:+x.k||0,p:+x.p||0,c:+x.c||0,f:+x.f||0,tags:Array.isArray(x.tags)?x.tags.filter(t=>CATS[t]||t==='nonvegan'):[],pack:u==='Stk'?1:(u==='ml'?500:250),pantry:false,subs:[],custom:true,nonut:!(+x.k)};}
       ings.push([id,(+x.amt||0)*f]);
     });
-    RECIPES.push(buildRecipe(rid,c.n,(c.meals||['A']).filter(m=>MEALS[m]),+c.min||30,ings,c.steps||[],c.flags||'',true));
+    RECIPES.push(buildRecipe(rid,c.n,(c.meals||['A']).filter(m=>MEALS[m]),+c.min||30,ings,c.steps||[],c.flags||'',true,{src:c.src,img:c.img}));
   });
 }
 const R=id=>RECIPES.find(r=>r.id===id);
@@ -688,9 +722,9 @@ const FG=[
  ['Ernährung','any',[['veg','Vegetarisch',r=>r.diet==='veg'||r.diet==='vegan'],['vegan','Vegan',r=>r.diet==='vegan'],['pesc','Pescetarisch',r=>r.diet!=='meat'],['meat','Fleisch',r=>r.diet==='meat'],['fish','Fisch',r=>r.diet==='fish']]],
  ['Unverträglichkeiten','all',[['gf','Glutenfrei',r=>!r.tags.has('gluten')],['lf','Laktosefrei',r=>!r.tags.has('dairy')],['nf','Ohne Nüsse',r=>!r.tags.has('nuts')],['sf','Ohne Soja',r=>!r.tags.has('soy')],['ef','Ohne Ei',r=>!r.tags.has('egg')]]],
  ['Nährwerte pro Portion','all',[['hp','High Protein',r=>r.hp],['lowcarb','Low Carb',r=>r.lowcarb],['lowfat','Low Fat',r=>r.lowfat],['light','Unter 500 kcal',r=>r.light],['big','Sättigend (ab 650 kcal)',r=>r.per.k>=650]]],
- ['Gerichtart','any',[['pasta','Pasta',r=>hasI(r,'nudeln','gnocchi')],['rice','Reis',r=>hasI(r,'reis')],['potato','Kartoffeln',r=>hasI(r,'kartoffeln','suesskartoffel')],['curry','Curry & Dal',r=>nmR(r,/curry|dal|masala/i)],['soup','Suppe',r=>nmR(r,/suppe/i)],['salad','Salat',r=>nmR(r,/salat/i)],['bowl','Bowl',r=>nmR(r,/bowl/i)],['wrap','Wraps & Tacos',r=>hasI(r,'tortilla')],['oven','Ofengericht',r=>r.flags.includes('o')],['pan','Pfanne',r=>nmR(r,/pfanne|wok|scramble|rührei|omelett|shakshuka|frittata/i)],['bread','Brot & Toast',r=>hasI(r,'vollkornbrot')],['sweet','Süß',r=>r.meals.includes('F')&&hasI(r,'honig','banane','beeren','mango','apfel')]]],
+ ['Gerichtart','any',[['pasta','Pasta',r=>hasI(r,'nudeln','gnocchi')],['rice','Reis',r=>hasI(r,'reis')],['potato','Kartoffeln',r=>hasI(r,'kartoffeln','suesskartoffel')],['curry','Curry & Dal',r=>nmR(r,/curry|dal|masala|tikka|butter chicken|palak|chana/i)],['soup','Suppe',r=>nmR(r,/suppe|ramen|minestrone|tom-kha/i)],['salad','Salat',r=>nmR(r,/salat|caesar|caprese/i)],['bowl','Bowl',r=>nmR(r,/bowl|bibimbap/i)],['wrap','Wraps & Tacos',r=>hasI(r,'tortilla','pita')],['oven','Ofengericht',r=>r.flags.includes('o')],['pan','Pfanne',r=>nmR(r,/pfanne|wok|scramble|rührei|omelett|shakshuka|frittata|pad thai|fried rice|menemen|gnocchi/i)],['bread','Brot & Toast',r=>hasI(r,'vollkornbrot')],['sweet','Süß',r=>r.meals.includes('F')&&hasI(r,'honig','banane','beeren','mango','apfel')]]],
  ['Hauptzutat','any',[['chicken','Hähnchen & Pute',r=>hasI(r,'haehnchen','putenhack')],['mince','Hackfleisch',r=>hasI(r,'hack_rind','putenhack')],['salmon','Lachs & Fisch',r=>hasI(r,'lachs','thunfisch')],['shrimp','Garnelen',r=>hasI(r,'garnelen')],['tofu','Tofu',r=>hasI(r,'tofu','raeuchertofu')],['legume','Hülsenfrüchte',r=>hasI(r,'kichererbsen','linsen','kidneybohnen','schwarzebohnen','weissebohnen','edamame')],['eggs','Eier',r=>hasI(r,'eier')],['cheese','Käse',r=>hasI(r,'feta','parmesan','reibekaese','huettenkaese')]]],
- ['Küche','any',[['it','Italienisch',r=>nmR(r,/pasta|spaghetti|bolognese|pesto|risotto|lasagne|gnocchi|frittata|rahm-nudeln/i)],['asia','Asiatisch',r=>hasI(r,'sojasauce','sesam','edamame')||nmR(r,/thai|teriyaki|wok/i)],['ind','Indisch',r=>nmR(r,/dal|masala|tikka|kichererbsen-spinat-curry|hähnchen-curry|kokos-curry/i)],['mex','Mexikanisch',r=>hasI(r,'tortilla','kidneybohnen','schwarzebohnen')||nmR(r,/chili|burrito|taco/i)],['orient','Orientalisch',r=>hasI(r,'tahin','couscous')||nmR(r,/shakshuka|falafel/i)],['greek','Griechisch',r=>nmR(r,/gyros|griech|feta/i)],['classic','Klassiker',r=>nmR(r,/kartoffelsuppe|pellkartoffel|rührei|omelett|bircher|porridge|bolognese|linsensuppe|pancakes|eiersalat/i)]]],
+ ['Küche','any',[['it','Italienisch',r=>nmR(r,/pasta|spaghetti|bolognese|pesto|risotto|lasagne|gnocchi|frittata|rahm-nudeln|pizza|carbonara|arrabbiata|caprese|burrata|tortellini|minestrone|penne/i)],['asia','Asiatisch',r=>hasI(r,'sojasauce','sesam','edamame','miso','gochujang','kimchi','reisnudeln','udon','pakchoi','sesamoel')||nmR(r,/thai|teriyaki|wok|ramen|bibimbap|bulgogi|sushi|poke|tom-kha|wan-tan/i)],['ind','Indisch',r=>nmR(r,/dal|masala|tikka|butter chicken|palak|chana|kichererbsen-spinat-curry|hähnchen-curry/i)||hasI(r,'naan')],['mex','Mexikanisch',r=>hasI(r,'tortilla','kidneybohnen','schwarzebohnen')||nmR(r,/chili|burrito|taco|quesadilla|enchilada/i)],['orient','Orientalisch',r=>hasI(r,'tahin','couscous','hummus','harissa','halloumi','bulgur','granatapfel')||nmR(r,/shakshuka|falafel|shawarma|mujaddara|menemen|türkisch/i)],['greek','Griechisch',r=>nmR(r,/gyros|griech|feta/i)],['classic','Klassiker',r=>nmR(r,/kartoffelsuppe|pellkartoffel|rührei|omelett|bircher|porridge|bolognese|linsensuppe|pancakes|eiersalat|schnitzel|spätzle|gulasch|quiche|spitzkohl|hackbällchen|french toast/i)]]],
  ['Zubereitung','all',[['o','Ofen',r=>r.flags.includes('o')],['p','Ein Topf / eine Pfanne',r=>r.flags.includes('p')],['m','Meal-Prep',r=>r.flags.includes('m')],['k','Ohne Kochen',r=>r.flags.includes('k')],['few','Wenige Zutaten (max. 6)',r=>r.ings.length<=6]]],
 ];
 const FKEY={};FG.forEach(([g,mode,items])=>items.forEach(([k,l,fn])=>FKEY[k]={g,mode,l,fn}));
@@ -1018,7 +1052,9 @@ function drawRecipe(){
   const r=cur.r,f=cur.serv/BASE,av=recipeAvoid(r);
   const wk=ui.week,W=weekDoc(wk);
   const html=`<div class="sheet-head"><div>${dietTag(r)}<h2>${esc(r.n)}</h2></div><div class="row" style="flex-wrap:nowrap"><button class="x-btn" data-r="heart" aria-pressed="${hearted(r.id)}" aria-label="${hearted(r.id)?'Herz entfernen':'Mit Herz speichern'}" style="color:var(--pink)">${hearted(r.id)?'♥':'♡'}</button><button class="x-btn" data-close aria-label="Schließen">×</button></div></div>
+  ${r.img?`<img src="${esc(r.img)}" alt="" style="width:100%;max-height:240px;object-fit:cover;border-radius:14px;margin:4px 0 10px" onerror="this.remove()">`:''}
   <p class="small muted">${r.meals.map(m=>MEALS[m]).join(', ')} · ${r.min} Min.${r.flags?' · '+r.flags.split('').map(x=>FLAGS[x]).join(', '):''}</p>
+  <div class="row" style="gap:16px;margin:2px 0 6px">${r.src?`<a class="link" href="${esc(r.src)}" target="_blank" rel="noopener">Original-Rezept öffnen ↗</a>`:`<a class="link" href="https://www.chefkoch.de/rs/s0/${encodeURIComponent(r.n.replace(/\s*\(.*\)/,''))}/Rezepte.html" target="_blank" rel="noopener">Ähnliche bei Chefkoch ↗</a><a class="link" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(r.n+' Rezept')}" target="_blank" rel="noopener">Fotos ansehen ↗</a>`}</div>
   <div class="facts4"><div><b>${r0(r.per.k)}</b><small>kcal</small></div><div><b>${r0(r.per.p)}</b><small>g Protein</small></div><div><b>${r0(r.per.c)}</b><small>g Kohlenh.</small></div><div><b>${r0(r.per.f)}</b><small>g Fett</small></div></div>
   <p class="small muted">Pro Portion, aus Richtwerten je Zutat berechnet${r.ings.some(([id])=>ING[id].nonut)?'. Für manche eigene Zutaten fehlen Nährwerte':''}.</p>
   <div class="panel"><div class="spread"><h3>Zutaten</h3><span class="stepper"><button data-r="s-">−</button><span>${cur.serv}</span><button data-r="s+">+</button></span></div>
@@ -1054,7 +1090,7 @@ const TAG_OPTS=[['','–'],['meat','Fleisch'],['fish','Fisch'],['dairy','Milchpr
 function newRecipeSheet(){nr={n:'',serv:4,min:'',meals:['A'],flags:'',steps:'',rows:[{id:'',amt:''},{id:'',amt:''},{id:'',amt:''}]};drawNew();}
 function readNew(){
   const g=id=>document.getElementById(id);if(!g('nrName'))return;
-  nr.n=g('nrName').value;if(g('impText'))nr.pasteText=g('impText').value;if(g('impMsg'))nr.msg=g('impMsg').innerHTML;nr.serv=g('nrServ').value;nr.min=g('nrMin').value;nr.steps=g('nrSteps').value;
+  nr.n=g('nrName').value;if(g('impUrl'))nr.url=g('impUrl').value;if(g('impText'))nr.pasteText=g('impText').value;if(g('impMsg'))nr.msg=g('impMsg').innerHTML;nr.serv=g('nrServ').value;nr.min=g('nrMin').value;nr.steps=g('nrSteps').value;
   nr.meals=[...document.querySelectorAll('[data-nrm]')].filter(c=>c.checked).map(c=>c.dataset.nrm);
   nr.flags=[...document.querySelectorAll('[data-nrf]')].filter(c=>c.checked).map(c=>c.dataset.nrf).join('');
   nr.rows.forEach((x,i)=>{const el=s=>document.querySelector(`[data-nr${s}="${i}"]`);x.id=el('i').value;x.amt=el('a').value;
@@ -1071,6 +1107,9 @@ function drawNew(){
       <div class="small muted" style="grid-column:1/-1">Nährwerte optional, pro 100 g/ml bzw. pro Stück (steht auf der Packung).</div></div>`:''}</div>`;};
   const html=`<div class="sheet-head"><h2>Eigenes Rezept</h2><button class="x-btn" data-close aria-label="Schließen">×</button></div>
   <p class="small muted">Eigene Rezepte seht ihr beide und könnt darüber abstimmen. Nährwerte werden aus den Zutaten berechnet.</p>
+  <div class="panel"><h3>Aus dem Netz übernehmen</h3><p class="small muted" style="margin:4px 0 8px">Link zu einem Rezept einfügen (z. B. Chefkoch, Lecker, ein Food-Blog). Zutaten, Schritte und Foto werden übernommen.</p>
+   <div class="row" style="flex-wrap:nowrap"><input type="text" id="impUrl" inputmode="url" placeholder="https://…" value="${esc(nr.url||'')}" autocapitalize="none" autocorrect="off"><button class="btn sm" data-n="url" style="flex:none">Übernehmen</button></div>
+   <p class="small" id="urlMsg" style="margin:8px 0 0">${nr.urlMsg||''}</p></div>
   <div class="panel"><h3>Aus Screenshots übernehmen</h3><p class="small muted" style="margin:4px 0 10px">Ein oder mehrere Screenshots (z. B. Zutaten und Zubereitung). Die App liest den Text und trägt die Zutaten unten ein.</p>
    <label class="btn" style="display:block;text-align:center;cursor:pointer">Screenshots auswählen<input type="file" id="impFiles" accept="image/*" multiple style="display:none"></label>
    <details style="margin-top:10px"><summary style="padding:4px 0;text-transform:none;font-size:15px;color:var(--accent)">Oder Text einfügen</summary>
@@ -1092,6 +1131,7 @@ function drawNew(){
     if(a==='add'){nr.rows.push({id:'',amt:''});drawNew();}
     if(a==='rm'){nr.rows.splice(+b.dataset.i,1);if(!nr.rows.length)nr.rows.push({id:'',amt:''});drawNew();}
     if(a==='save')saveNew();
+    if(a==='url')importUrl();
     if(a==='parse'){const t=(nr.pasteText||'').trim();if(t)applyParsed(parseRecipeText(t));}};
   s2.onchange=e=>{if(e.target.matches('[data-nri]')){readNew();drawNew();}if(e.target.id==='impFiles'&&e.target.files.length)runOCR(Array.from(e.target.files).slice(0,6));};
 }
@@ -1116,9 +1156,10 @@ const SYN={haehnchen:['hähnchen','huhn','hühnchen','chicken'],hack_rind:['hack
   sojajoghurt:['sojajoghurt'],haferdrink:['haferdrink','hafermilch'],tahin:['tahin','tahini','sesammus'],sesam:['sesam'],chiasamen:['chia'],mango:['mango'],ingwer:['ingwer'],rotkohl:['rotkohl','blaukraut']};
 const SYN_LIST=Object.entries(SYN).flatMap(([id,ks])=>ks.map(k=>[k,id])).sort((a,b)=>b[0].length-a[0].length);
 const PIECE_G={tomaten:80,karotten:80,kartoffeln:120,suesskartoffel:300,zucchini:250,aubergine:300,gurke:400,brokkoli:400,blumenkohl:800,pilze:20,apfel:150,banane:120};
-const SKIP=/^(salz|pfeffer|wasser|gewürz|chili|zimt|kreuzkümmel|kurkuma|paprikapulver|oregano|basilikum|petersilie|koriander|schnittlauch|thymian|rosmarin|muskat|curry|garam|zucker|prise)/i;
+const SKIP=/^(salz|pfeffer|wasser|gewürz|chili|zimt|kreuzkümmel|kurkuma|paprikapulver|edelsüß|rosenscharf|cayenne|oregano|basilikum|petersilie|koriander|schnittlauch|thymian|rosmarin|majoran|dill|minze|lorbeer|nelke|kardamom|muskat|curry|garam|zucker|prise|mehl|speisestärke|stärke|backpulver|natron|hefe|essig|senf|brühwürfel|vanill|zitronenabrieb|eis)/i;
+const TL_OK=['sojasauce','honig','olivenoel','sesamoel','tomatenmark','harissa','currypaste','miso','gochujang','erdnussmus','tahin','pesto'];
 const NUM='(\\d+(?:[.,]\\d+)?(?:\\s*-\\s*\\d+(?:[.,]\\d+)?)?|\\d+\\s*\\/\\s*\\d+|½|¼|¾|⅓|eine?n?|zwei|drei|vier|halbe?)';
-const UNIT='(kg|g|gr|gramm|ml|l|liter|el|tl|esslöffel|teelöffel|stk|stück|dosen?|bund|pck|päckchen|packung(?:en)?|zehen?|becher|tassen?|cups?|handvoll|scheiben?|prisen?)\\.?';
+const UNIT='(stiele?|zweige?|stängel|blätter|blatt|kg|g|gr|gramm|ml|l|liter|el|tl|esslöffel|teelöffel|stk|stück|dosen?|bund|pck|päckchen|packung(?:en)?|zehen?|becher|tassen?|cups?|handvoll|scheiben?|prisen?)\\.?';
 const ING_RE=new RegExp('^'+NUM+'\\s*(?:'+UNIT+')?\\s+(.+)$','i');
 function numOf(s){s=s.toLowerCase().replace(',','.');if(s==='½'||/^halbe?$/.test(s))return .5;if(s==='¼')return .25;if(s==='¾')return .75;if(s==='⅓')return 1/3;if(/^eine?n?$/.test(s))return 1;const w={zwei:2,drei:3,vier:4}[s];if(w)return w;
   if(s.includes('/')){const [a,b]=s.split('/');return +a/+b;}if(s.includes('-')){const [a,b]=s.split('-');return(+a + +b)/2;}return +s;}
@@ -1141,7 +1182,7 @@ function toUnit(id,amt,unit){
   return{amt:val,unit:target};
 }
 function parseRecipeText(raw){
-  const lines=raw.replace(/\r/g,'').split('\n').filter(l=>!/^\s*[#@]/.test(l)).map(l=>l.replace(/\s+/g,' ').trim().replace(/^[^\p{L}\p{N}½¼¾⅓]+/u,'').trim()).filter(Boolean);
+  const lines=raw.replace(/\r/g,'').split('\n').filter(l=>!/^\s*[#@]/.test(l)).map(l=>l.replace(/\(n\)/g,'').replace(/\([^)]*\)/g,' ').replace(/\b(gestr\.?|gestrichene?|gehäufte?|knapp|ca\.?|etwa|etwas|evtl\.?)\s+/gi,'').replace(/\s+/g,' ').trim().replace(/^[^\p{L}\p{N}½¼¾⅓]+/u,'').trim()).filter(Boolean);
   const rows=[],steps=[];let name='',serv=null,min=null,inSteps=false;
   for(const l of lines){
     const sv=l.match(/(\d+)\s*(portionen|personen|pers\.|servings)/i);if(sv&&!serv)serv=+sv[1];
@@ -1153,7 +1194,9 @@ function parseRecipeText(raw){
     const m=!inSteps&&l.match(ING_RE);
     if(m){const what=m[3].replace(/^(von|vom|der|die|das)\s+/i,'').replace(/[,(].*$/,'').trim();
       if(!what||SKIP.test(what))continue;
-      const id=matchIng(what),cv=toUnit(id,numOf(m[1]),m[2]);
+      if(/^(stiele?|zweige?|stängel|blätter|blatt)$/i.test(m[2]||''))continue;
+      if(SKIP.test(what.replace(/^(frische?n?|glatte?n?|getrocknete?n?|gemahlene?n?|geräuchert\w*|gehackte?n?)\s+/i,'')))continue;
+      let id=matchIng(what);if(id==='tomaten'&&/^dosen?$/i.test(m[2]||''))id='tomaten_dose';if(/^(tl|teelöffel|prisen?|msp)$/i.test(m[2]||'')&&!TL_OK.includes(id))continue;const cv=toUnit(id,numOf(m[1]),m[2]);
       if(!(cv.amt>0))continue;
       if(id){const ex=rows.find(r=>r.id===id);if(ex){ex.amt=+(+ex.amt+cv.amt).toFixed(1);continue;}rows.push({id,amt:cv.amt});}
       else rows.push({id:'_other',name:what.charAt(0).toUpperCase()+what.slice(1),unit:cv.unit,amt:cv.amt,tag:''});
@@ -1169,7 +1212,7 @@ function applyParsed(p){
   if(p.serv)nr.serv=p.serv;if(p.min&&!nr.min)nr.min=p.min;
   const kept=nr.rows.filter(x=>x.id&&x.amt);
   nr.rows=kept.concat(p.rows.map(x=>Object.assign({},x,{amt:String(x.amt)})));if(!nr.rows.length)nr.rows=[{id:'',amt:''}];
-  if(p.steps.length&&!nr.steps.trim())nr.steps=p.steps.join('\n');
+  if(p.steps.length&&(!nr.steps.trim()||nr.src))nr.steps=p.steps.join('\n');
   drawNew();
   const el=document.getElementById('impMsg');
   if(el)el.innerHTML=p.rows.length?`<span style="color:var(--basil)">${p.rows.length} Zutaten erkannt${p.steps.length?` und ${p.steps.length} Schritte`:''}.</span> Bitte kurz prüfen, besonders die Mengen.`:'<span class="warn">Keine Zutaten mit Mengen gefunden. Versuch einen schärferen Screenshot oder füg den Text ein.</span>';
@@ -1186,6 +1229,31 @@ async function runOCR(files){
   }catch(e){console.warn(e);set('Das hat nicht geklappt. Prüf die Internetverbindung oder füg den Text ein.');}
   finally{const b=document.getElementById('impFiles');if(b)b.disabled=false;}
 }
+// Rezept aus einem Link: Seite über r.jina.ai holen, strukturierte Rezeptdaten (schema.org) auslesen
+function isoMin(t){const m=String(t||'').match(/P(?:\d+D)?T?(?:(\d+)H)?(?:(\d+)M)?/i);return m?((+m[1]||0)*60+(+m[2]||0))||null:null;}
+function findRecipe(o){if(!o||typeof o!=='object')return null;if(Array.isArray(o)){for(const x of o){const r=findRecipe(x);if(r)return r;}return null;}
+  const t=o['@type'];if((Array.isArray(t)?t:[t]).includes('Recipe')&&o.recipeIngredient)return o;
+  for(const k of ['@graph','mainEntity','itemListElement']){if(o[k]){const r=findRecipe(o[k]);if(r)return r;}}return null;}
+function stepsOf(ins){const out=[];const walk=x=>{if(!x)return;if(typeof x==='string'){x.split(/\n+/).map(s=>s.trim()).filter(Boolean).forEach(s=>out.push(s));return;}
+  if(Array.isArray(x)){x.forEach(walk);return;}if(x.itemListElement){walk(x.itemListElement);return;}if(x.text)out.push(String(x.text).replace(/<[^>]+>/g,'').trim());};walk(ins);return out.filter(Boolean);}
+async function importUrl(){
+  readNew();const url=(nr.url||'').trim();const msg=t=>{nr.urlMsg=t;const e=document.getElementById('urlMsg');if(e)e.innerHTML=t;};
+  if(!/^https?:\/\//i.test(url)){msg('<span class="warn">Bitte einen vollständigen Link einfügen (beginnt mit https://).</span>');return;}
+  msg('Rezept wird geholt …');
+  try{
+    const res=await fetch('https://r.jina.ai/'+url,{headers:{'X-Return-Format':'html'}});if(!res.ok)throw new Error('http '+res.status);
+    const html=await res.text();const doc=new DOMParser().parseFromString(html,'text/html');let rec=null;
+    doc.querySelectorAll('script[type="application/ld+json"]').forEach(sc=>{if(rec)return;try{rec=findRecipe(JSON.parse(sc.textContent));}catch(e){}});
+    let p;
+    if(rec){p=parseRecipeText('Zutaten:\n'+(rec.recipeIngredient||[]).join('\n'));p.steps=stepsOf(rec.recipeInstructions);p.name=String(rec.name||'').replace(/\s+Rezept$/i,'').trim();
+      const y=String(Array.isArray(rec.recipeYield)?rec.recipeYield[0]:rec.recipeYield||'').match(/\d+/);p.serv=y?+y[0]:null;p.min=isoMin(rec.totalTime)||isoMin(rec.cookTime)||null;
+      let img=rec.image;if(Array.isArray(img))img=img[0];if(img&&typeof img==='object')img=img.url;nr.img=typeof img==='string'?img:'';}
+    else{const txt=await (await fetch('https://r.jina.ai/'+url)).text();p=parseRecipeText(txt);nr.img='';}
+    nr.src=url;nr.urlMsg='';
+    if(p.name)nr.n=p.name;applyParsed(p);
+    msg(p.rows.length?`<span style="color:var(--basil)">Übernommen: ${p.rows.length} Zutaten${p.steps.length?`, ${p.steps.length} Schritte`:''}${nr.img?', Foto':''}.</span> Bitte Mengen kurz prüfen.`:'<span class="warn">Auf der Seite wurde kein Rezept gefunden. Kopier den Text und nutz „Oder Text einfügen“.</span>');
+  }catch(e){console.warn(e);msg('<span class="warn">Die Seite konnte nicht geladen werden. Kopier den Rezepttext und nutz „Oder Text einfügen“.</span>');}
+}
 function saveNew(){
   const err=t=>{document.getElementById('nrErr').textContent=t;};
   const name=nr.n.trim();if(!name)return err('Bitte einen Namen eintragen.');
@@ -1195,7 +1263,7 @@ function saveNew(){
   const ings=rows.map(x=>x.id==='_other'
     ?{id:null,name:x.name.trim(),amt:+x.amt,unit:x.unit||'g',k:+x.k||0,p:+x.p||0,c:+x.c||0,f:+x.f||0,tags:x.tag?[x.tag]:[]}
     :{id:x.id,name:ING[x.id].n,amt:+x.amt,unit:ING[x.id].u});
-  const doc={n:name,serv:+nr.serv||4,min:+nr.min||30,meals:nr.meals.length?nr.meals:['A'],flags:nr.flags,ings,
+  const doc={n:name,serv:+nr.serv||4,min:+nr.min||30,meals:nr.meals.length?nr.meals:['A'],flags:nr.flags,ings,src:nr.src||'',img:nr.img||'',
     steps:nr.steps.split('\n').map(s=>s.trim()).filter(Boolean),created:Date.now(),by:myId};
   const rid='own_'+uid();CUSTOM[rid]=doc;persistLocal();rebuildRecipes();
   if(db)write('rec'+rid,()=>db.doc('recipes/'+rid).set(clone(doc)));
