@@ -1146,11 +1146,13 @@ function drawRecipe(){
   <div class="panel"><h3>Einplanen</h3><p class="small muted">Ersetzt das Gericht an diesem Tag (${ui.week===THIS_WEEK?'diese':'nächste'} Woche).${recentRids(wk).has(r.id)?' Gab es in den letzten Wochen schon, pausiert eigentlich.':''}</p>
    <div class="row" style="flex-wrap:nowrap"><select id="planDay">${weekDates(wk).map((d,i)=>{const x=W.days[d];const rr=x&&x.rid&&R(x.rid);return`<option value="${d}">${WD[i]} ${fmtD(d,{day:'numeric',month:'numeric'})}${rr?' – statt '+esc(rr.n):''}</option>`}).join('')}</select><button class="btn sm" data-r="plan">Einplanen</button></div></div>
   <div class="panel"><h3>Gegessen?</h3><div class="row" style="margin-top:8px"><span class="stepper"><button data-r="e-">−</button><span>${String(cur.eat).replace('.',',')}</span><button data-r="e+">+</button></span><span class="small muted">Portion(en)</span><select id="eatSlot" style="width:auto">${SLOTS.map(s=>`<option ${s===cur.slot?'selected':''}>${s}</option>`).join('')}</select><button class="btn basil sm" data-r="eat">Eintragen</button></div></div>
-  ${r.own?`<button class="link warn" data-r="del" style="color:var(--warn)">Eigenes Rezept löschen</button>`:''}`;
+  ${r.own&&CUSTOM[r.id]?`<div class="row" style="gap:18px;margin-top:6px"><label class="link" style="cursor:pointer">${r.img?'Foto ändern':'Foto hinzufügen'}<input type="file" id="recPhoto" accept="image/*" style="display:none"></label><button class="link warn" data-r="del" style="color:var(--warn)">Eigenes Rezept löschen</button></div>`:''}`;
   const sc=document.querySelector('.sheet');const top=sc?sc.scrollTop:0;
   if(!sc)openSheet(html);else sc.innerHTML=html;
   const s2=document.querySelector('.sheet');s2.scrollTop=top;s2.onclick=onRecipeClick;s2.onchange=null;
   const sel=document.getElementById('eatSlot');if(sel)sel.onchange=e=>cur.slot=e.target.value;
+  const rp=document.getElementById('recPhoto');if(rp)rp.onchange=e=>{const f=e.target.files[0];if(!f)return;const id=cur.r.id;
+    shrinkPhoto(f).then(u=>{CUSTOM[id].img=u;persistLocal();if(db)write('rec'+id,()=>db.doc('recipes/'+id).update({img:u}));rebuildRecipes();cur.r=R(id);drawRecipe();render();toast('Foto gespeichert');}).catch(()=>toast('Das Foto konnte nicht gelesen werden'));};
 }
 async function onRecipeClick(e){
   const b=e.target.closest('[data-r]');if(!b)return;const a=b.dataset.r,r=cur.r;
@@ -1197,6 +1199,9 @@ function drawNew(){
     <textarea id="impText" placeholder="Rezepttext hier einfügen, z. B. aus der Insta-Beschreibung" style="min-height:110px;margin-top:6px">${esc(nr.pasteText||'')}</textarea>
     <button class="btn sm" data-n="parse" style="margin-top:8px">Zutaten erkennen</button></details>
    <p class="small" id="impMsg" style="margin:10px 0 0">${nr.msg||''}</p></div>
+  <div class="panel"><h3>Foto</h3>
+   ${nr.img?`<img src="${esc(nr.img)}" alt="" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin:8px 0">`:'<p class="small muted" style="margin:4px 0 8px">Optional, z. B. ein Foto von deinem fertigen Gericht.</p>'}
+   <div class="row"><label class="btn sm" style="cursor:pointer">${nr.img?'Foto ändern':'Foto hinzufügen'}<input type="file" id="nrPhoto" accept="image/*" style="display:none"></label>${nr.img?'<button class="link" data-n="rmPhoto" style="color:var(--muted)">Foto entfernen</button>':''}</div></div>
   <div class="formg"><label style="grid-column:1/-1">Name<input type="text" id="nrName" value="${esc(nr.n)}" placeholder="z. B. Omas Linsensuppe"></label>
    <label>Portionen<input type="number" inputmode="numeric" id="nrServ" value="${esc(nr.serv)}" min="1"></label><label>Minuten<input type="number" inputmode="numeric" id="nrMin" value="${esc(nr.min)}" min="1" placeholder="30"></label></div>
   <div class="row" style="margin:12px 0 4px">${Object.entries(MEALS).map(([k,l])=>`<label class="row" style="gap:4px"><input type="checkbox" data-nrm="${k}" ${nr.meals.includes(k)?'checked':''}> ${l}</label>`).join('')}</div>
@@ -1213,8 +1218,9 @@ function drawNew(){
     if(a==='rm'){nr.rows.splice(+b.dataset.i,1);if(!nr.rows.length)nr.rows.push({id:'',amt:''});drawNew();}
     if(a==='save')saveNew();
     if(a==='url')importUrl();
+    if(a==='rmPhoto'){nr.img='';drawNew();}
     if(a==='parse'){const t=(nr.pasteText||'').trim();if(t)applyParsed(parseRecipeText(t));}};
-  s2.onchange=e=>{if(e.target.matches('[data-nri]')){readNew();drawNew();}if(e.target.id==='impFiles'&&e.target.files.length)runOCR(Array.from(e.target.files).slice(0,6));};
+  s2.onchange=e=>{if(e.target.matches('[data-nri]')){readNew();drawNew();}if(e.target.id==='nrPhoto'&&e.target.files[0]){readNew();shrinkPhoto(e.target.files[0]).then(u=>{nr.img=u;drawNew();}).catch(()=>toast('Das Foto konnte nicht gelesen werden'));}if(e.target.id==='impFiles'&&e.target.files.length)runOCR(Array.from(e.target.files).slice(0,6));};
 }
 // ---------- Rezept aus Screenshot / Text erkennen (läuft komplett auf dem Gerät) ----------
 const OCR_SRC='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
@@ -1335,6 +1341,13 @@ async function importUrl(){
     msg(p.rows.length?`<span style="color:var(--basil)">Übernommen: ${p.rows.length} Zutaten${p.steps.length?`, ${p.steps.length} Schritte`:''}${nr.img?', Foto':''}.</span> Bitte Mengen kurz prüfen.`:'<span class="warn">Auf der Seite wurde kein Rezept gefunden. Kopier den Text und nutz „Oder Text einfügen“.</span>');
   }catch(e){console.warn(e);msg('<span class="warn">Die Seite konnte nicht geladen werden. Kopier den Rezepttext und nutz „Oder Text einfügen“.</span>');}
 }
+// Foto verkleinern und als Bild-Daten speichern (kein extra Speicherdienst nötig)
+function shrinkPhoto(file,max=1000){return new Promise((res,rej)=>{const url=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{let w=img.naturalWidth,h=img.naturalHeight;const f=Math.min(1,max/Math.max(w,h));w=Math.round(w*f);h=Math.round(h*f);
+    const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+    let q=0.75,d=c.toDataURL('image/jpeg',q);while(d.length>330000&&q>0.35){q-=0.1;d=c.toDataURL('image/jpeg',q);}
+    if(d.length>330000)return shrinkPhoto(file,Math.round(max*0.7)).then(res,rej);res(d);};
+  img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('img'));};img.src=url;});}
 function saveNew(){
   const err=t=>{document.getElementById('nrErr').textContent=t;};
   const name=nr.n.trim();if(!name)return err('Bitte einen Namen eintragen.');
