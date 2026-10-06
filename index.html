@@ -206,6 +206,25 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .rcard .rimg{display:block;width:calc(100% + 28px);margin:-14px -14px 10px;height:130px;object-fit:cover;border-radius:16px 16px 0 0}
 .vote .vimg{display:block;width:calc(100% + 40px);height:200px;object-fit:cover;margin:-22px -20px 14px;border-radius:24px 24px 0 0}
 .vthumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:none;cursor:pointer}
+.plan{display:flex;flex-direction:column;gap:8px}
+.pday{background:var(--card);border-radius:14px;overflow:hidden;transition:transform .15s,box-shadow .15s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.pday.past{opacity:.55}.pday.empty .pname{color:var(--muted)}
+.pday.dragging{transform:scale(1.03);box-shadow:0 12px 30px rgba(0,0,0,.5);outline:2px solid var(--accent);opacity:1}
+.pday.dropover{outline:2px dashed var(--accent)}
+.phead{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer}
+.pthumb{width:52px;height:52px;border-radius:11px;object-fit:cover;flex:none}
+.pthumb.ph{display:flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent);font-weight:700}
+.pinfo{flex:1;min-width:0}.pday-l{font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.02em}
+.pname{font-weight:600;font-size:16px;line-height:1.25;margin-top:1px}
+.pchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}.chip{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--fill)}
+.chip.ok{background:var(--basil-soft);color:var(--basil)}.chip.warn2{background:var(--accent-soft);color:var(--accent)}
+.pgrip{color:var(--muted);font-size:14px;letter-spacing:-2px;padding:0 2px}
+.pday.open{box-shadow:0 0 0 1px var(--line)}.pday.open .pthumb{display:none}
+.pbody{padding:0 12px 14px}.pbig{display:block;width:100%;height:190px;object-fit:cover;border-radius:12px;margin-bottom:10px}
+.pmeta{font-size:13px;color:var(--muted)}.pbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pprop{margin-top:10px;font-size:13px;background:var(--accent-soft);color:var(--ink);padding:8px 10px;border-radius:10px}
+.mrow{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px 16px;background:none;border:0;text-align:left;font-size:16px;position:relative}
+.mrow+.mrow::before{content:"";position:absolute;top:0;left:16px;right:0;border-top:.5px solid var(--line)}
 .vrow{display:flex;gap:12px;align-items:center;padding:12px 14px;position:relative}
 .vrow+.vrow::before{content:"";position:absolute;top:0;left:14px;right:0;border-top:.5px solid var(--line)}
 .vtop{flex:1;min-width:0;cursor:pointer}
@@ -277,7 +296,8 @@ const ING_RAW=[
 ['zucchini','Zucchini','g',20,1.5,2.5,0.4,[],500,0,[SB('Aubergine'),SB('Paprika')]],
 ['karotten','Karotten','g',40,0.9,8,0.2,[],1000,0,[SB('Pastinaken'),SB('Paprika')]],
 ['gurke','Gurke','g',13,0.6,2,0.2,[],400,0,[SB('Paprika'),SB('Radieschen')]],
-['salat','Blattsalat/Rucola','g',20,2,2,0.4,[],150,0,[SB('Junger Spinat'),SB('Feldsalat')]],
+['salat','Blattsalat','g',15,1.3,1.5,0.2,[],200,0,[SB('Feldsalat'),SB('Rucola')]],
+['rucola','Rucola','g',25,2.6,2,0.7,[],125,0,[SB('Feldsalat'),SB('Junger Spinat')]],
 ['avocado','Avocado','Stk',240,3,3,22,[],2,0,[SB('Hummus'),SB('Frischkäse',['dairy'])]],
 ['banane','Banane','Stk',105,1.3,25,0.4,[],5,0,[SB('Apfel'),SB('Beeren')]],
 ['beeren','Beeren (TK)','g',45,1,8,0.3,[],500,0,[SB('Apfel'),SB('Banane')]],
@@ -463,10 +483,10 @@ const REC_RAW=[
 ['tortellinipfanne','Tortellini in Tomaten-Sahne mit Spinat','MA',15,[['tortellini',500],['passata',400],['sahne',150],['spinat',200],['knoblauch',2],['parmesan',30]],['Tortellini nach Packung garen.','Knoblauch anschwitzen, Passata und Sahne dazu, kurz köcheln.','Spinat unterrühren, bis er zusammenfällt.','Tortellini in der Soße schwenken, mit Parmesan servieren.'],'p'],
 ['gnocchiburrata','Knusprige Gnocchi mit Pesto und Burrata','MA',20,[['gnocchi',800],['pesto',120],['tomaten',300],['burrata',250],['olivenoel',20]],['Gnocchi in Öl ohne Vorkochen 8–10 Minuten goldbraun und knusprig braten.','Halbierte Kirschtomaten 2 Minuten mitbraten.','Vom Herd nehmen, Pesto unterschwenken.','Mit aufgerissener Burrata und Pfeffer servieren.'],'p'],
 ['orzopfanne','Zitronen-Orzo mit Hähnchen und Spinat','MA',30,[['orzo',300],['haehnchen',500],['spinat',200],['zitrone',1],['gemuesebruehe',800],['parmesan',40],['knoblauch',2],['olivenoel',15]],['Hähnchen würfeln, würzen und in Öl goldbraun braten, herausnehmen.','Knoblauch und Orzo kurz anrösten, Brühe angießen und 10 Minuten unter Rühren köcheln wie ein Risotto.','Spinat, Zitronenabrieb und -saft und Parmesan einrühren.','Hähnchen unterheben und abschmecken.'],'p'],
-['pizza','Pizza vom Blech mit Mozzarella und Gemüse','MA',35,[['pizzateig',400],['passata',250],['mozzarella',250],['paprika',1],['pilze',200],['zwiebel',1],['olivenoel',15]],['Ofen auf 230 °C (Umluft 210 °C) vorheizen.','Teig auf dem Blech ausrollen, Passata mit Salz und Oregano darauf streichen.','Mit Gemüse und zerrupftem Mozzarella belegen, mit Öl beträufeln.','12–15 Minuten backen, bis der Rand knusprig ist. Mit Rucola servieren.'],'o'],
+['pizza','Pizza vom Blech mit Mozzarella und Gemüse','MA',35,[['pizzateig',400],['passata',250],['mozzarella',250],['paprika',1],['pilze',200],['zwiebel',1],['olivenoel',15],['rucola',60]],['Ofen auf 230 °C (Umluft 210 °C) vorheizen.','Teig auf dem Blech ausrollen, Passata mit Salz und Oregano darauf streichen.','Mit Gemüse und zerrupftem Mozzarella belegen, mit Öl beträufeln.','12–15 Minuten backen, bis der Rand knusprig ist. Mit Rucola servieren.'],'o'],
 ['risottokuerbis','Kürbisrisotto mit Ziegenkäse','MA',40,[['reis',300],['kuerbis',500],['zwiebel',1],['gemuesebruehe',1000],['ziegenkaese',100],['parmesan',40],['butter',20]],['Kürbis klein würfeln, Zwiebel hacken.','Zwiebel in Butter anschwitzen, Reis und Kürbis kurz mitrösten.','Heiße Brühe nach und nach angießen und 20 Minuten unter Rühren garen.','Parmesan einrühren, mit Ziegenkäse-Klecksen und Pfeffer servieren.'],'p'],
 ['ofengnocchichorizo','Ofen-Gnocchi mit Chorizo und Paprika','MA',30,[['gnocchi',800],['chorizo',150],['paprika',2],['zwiebel',1],['passata',300],['mozzarella',125]],['Ofen auf 200 °C vorheizen.','Chorizo in Scheiben, Paprika und Zwiebel in Streifen schneiden.','Mit Gnocchi und Passata in einer Form mischen, würzen, Mozzarella darauf.','25 Minuten backen.'],'o'],
-['caprese','Caprese-Salat mit Pasta','M',20,[['nudeln',300],['mozzarella',250],['tomaten',500],['pesto',80],['salat',60],['olivenoel',20]],['Nudeln kochen und abschrecken.','Tomaten und Mozzarella würfeln.','Alles mit Pesto, Öl, Salz und Pfeffer mischen.','Rucola unterheben und gut durchziehen lassen.'],'m'],
+['caprese','Caprese-Salat mit Pasta','M',20,[['nudeln',300],['mozzarella',250],['tomaten',500],['pesto',80],['rucola',60],['olivenoel',20]],['Nudeln kochen und abschrecken.','Tomaten und Mozzarella würfeln.','Alles mit Pesto, Öl, Salz und Pfeffer mischen.','Rucola unterheben und gut durchziehen lassen.'],'m'],
 // ---- Asiatisch ----
 ['bangbang','Bang-Bang-Tofu mit Reis und Gurke','MA',30,[['tofu',400],['reis',250],['gurke',300],['joghurt',100],['honig',20],['sojasauce',20],['fruehlingszwiebeln',1],['olivenoel',30]],['Reis kochen. Tofu gut ausdrücken, würfeln und in 2 EL Speisestärke wälzen.','In Öl rundum knusprig braten.','Für die Bang-Bang-Soße Joghurt (oder Mayo), Sriracha, Honig und Sojasauce verrühren.','Tofu in der Soße schwenken, mit Reis, Gurke und Frühlingszwiebeln servieren.'],''],
 ['bangbangchicken','Bang-Bang-Chicken mit Reis','MA',30,[['haehnchen',600],['reis',250],['gurke',300],['joghurt',100],['honig',20],['sojasauce',20],['fruehlingszwiebeln',1],['olivenoel',30]],['Reis kochen. Hähnchen würfeln, salzen und in Speisestärke wälzen.','In Öl rundum knusprig braten.','Joghurt (oder Mayo), Sriracha, Honig und Sojasauce zur Soße verrühren.','Hähnchen in der Soße schwenken, mit Reis, Gurke und Frühlingszwiebeln servieren.'],''],
@@ -516,7 +536,7 @@ const REC_RAW=[
 ['ofenfeta','Ofenfeta mit Paprika und Fladenbrot','MA',30,[['feta',400],['paprika',2],['tomaten',300],['zwiebel',1],['oliven',60],['pita',4],['olivenoel',30]],['Ofen auf 200 °C vorheizen.','Paprika, Zwiebel und Tomaten schneiden, in eine Form geben, Feta-Blöcke darauf.','Mit Öl, Oregano und Chili würzen und 25 Minuten backen.','Mit warmem Fladenbrot zum Dippen servieren.'],'o'],
 ['quiche','Lauch-Quiche mit Speck','MA',55,[['blaetterteig',275],['lauch',400],['speck',100],['eier',4],['cremefraiche',150],['reibekaese',100]],['Ofen auf 200 °C vorheizen, Teig in eine Form legen.','Lauch in Ringe schneiden und mit Speck 5 Minuten braten.','Eier mit Crème fraîche, Käse, Salz, Pfeffer und Muskat verquirlen.','Lauch auf dem Teig verteilen, Eiermasse darüber, 35 Minuten backen.'],'om'],
 ['spinatquiche','Spinat-Feta-Quiche','MA',55,[['blaetterteig',275],['spinat',450],['feta',150],['eier',4],['cremefraiche',150],['zwiebel',1]],['Ofen auf 200 °C vorheizen, Teig in eine Form legen.','Zwiebel und Spinat dünsten, gut ausdrücken.','Eier mit Crème fraîche, Salz und Muskat verquirlen, Spinat und Feta unterheben.','Auf den Teig geben und 35 Minuten backen.'],'om'],
-['ofenkuerbis','Ofenkürbis mit Burrata und Pesto','MA',40,[['kuerbis',1000],['burrata',250],['pesto',80],['nuesse',40],['salat',80],['olivenoel',25],['vollkornbrot',200]],['Ofen auf 210 °C vorheizen. Kürbis in Spalten schneiden, mit Öl, Salz und Chili 30 Minuten rösten.','Nüsse grob hacken und kurz rösten.','Kürbis auf Rucola anrichten, Burrata aufreißen und darauf geben.','Mit Pesto und Nüssen toppen, mit Brot servieren.'],'o'],
+['ofenkuerbis','Ofenkürbis mit Burrata und Pesto','MA',40,[['kuerbis',1000],['burrata',250],['pesto',80],['nuesse',40],['rucola',80],['olivenoel',25],['vollkornbrot',200]],['Ofen auf 210 °C vorheizen. Kürbis in Spalten schneiden, mit Öl, Salz und Chili 30 Minuten rösten.','Nüsse grob hacken und kurz rösten.','Kürbis auf Rucola anrichten, Burrata aufreißen und darauf geben.','Mit Pesto und Nüssen toppen, mit Brot servieren.'],'o'],
 ['hackbaellchen','Hackbällchen in Tomatensoße mit Kartoffelpüree','MA',45,[['hack_rind',500],['eier',1],['haferflocken',40],['passata',700],['zwiebel',1],['kartoffeln',900],['milch',150],['butter',20],['parmesan',30]],['Hack mit Ei, Haferflocken, gehackter Zwiebel, Salz und Pfeffer verkneten und zu Bällchen formen.','In einer Pfanne rundum anbraten, Passata dazu und 20 Minuten köcheln.','Kartoffeln kochen und mit Milch und Butter zu Püree stampfen.','Mit Parmesan und Basilikum servieren.'],'m'],
 ['schmorhuhn','Zitronen-Ofenhähnchen mit Kartoffeln und Oliven','MA',50,[['haehnchenschenkel',700],['kartoffeln',800],['zitrone',2],['oliven',80],['knoblauch',6],['olivenoel',30]],['Ofen auf 200 °C vorheizen.','Kartoffeln vierteln, mit Knoblauch, Zitronenscheiben, Oliven, Öl, Thymian, Salz und Pfeffer aufs Blech geben.','Hähnchen würzen und darauf legen.','45 Minuten backen, bis die Haut knusprig ist.'],'o'],
 // ---- Suppen ----
@@ -602,7 +622,7 @@ const WEB_RAW=[
 ['w_massaman','Massaman-Curry mit Tofu','MA',30,[['tofu',400],['zwiebel',1],['kartoffeln',250],['currypaste',15],['karotten',200],['kokosmilch',400],['gemuesebruehe',120],['sojasauce',15],['erdnussmus',15],['erdnuesse',40],['reis',250]],['Reis kochen. Tofu würfeln, in Stärke wälzen und knusprig braten.','Zwiebel anschwitzen, Massaman-Currypaste kurz mitrösten.','Kartoffeln, Karotten, Kokosmilch, Brühe, Sojasauce und Erdnussmus dazu, 15 Minuten köcheln.','Tofu unterheben, mit Erdnüssen und Koriander servieren.'],'p',WX('Vegan Heaven','https://veganheaven.de/rezepte/massaman-curry/','https://veganheaven.de/wp-content/uploads/2022/02/Massaman-Curry-7.jpg',W4,1)],
 ['w_crispypasta','Crispy-Pasta-Salat mit Joghurt-Dressing','MA',60,[['nudeln',300],['olivenoel',30],['parmesan',50],['gurke',300],['paprika',1],['tomaten',250],['fruehlingszwiebeln',1],['joghurt',250],['zitrone',1],['knoblauch',1]],['Nudeln kochen, abtropfen lassen, mit Öl, Parmesan und Paprikapulver mischen und bei 200 °C 25 Minuten knusprig backen.','Gurke, Paprika, Tomaten und Frühlingszwiebeln klein schneiden.','Griechischen Joghurt mit Zitronensaft, Knoblauch und Kräutern verrühren.','Gemüse mit dem Dressing mischen und die knusprigen Nudeln kurz vor dem Servieren darüber geben.'],'om',WX('Gaumenfreundin','https://www.gaumenfreundin.de/crispy-pasta-salat/','https://www.gaumenfreundin.de/wp-content/uploads/2026/07/Crispy-Pasta-Salat-Rezept.jpg',W4)],
 ['w_gruenebohnen','Grüne-Bohnen-Eintopf mit Tomaten','MA',50,[['kartoffeln',750],['gruenebohnen',500],['zwiebel',1],['knoblauch',2],['olivenoel',45],['tomatenmark',15],['tomaten_dose',400],['gemuesebruehe',500]],['Zwiebel und Knoblauch in Öl anschwitzen, Tomatenmark, Oregano und eine Prise Zimt kurz mitrösten.','Kartoffelwürfel, Bohnen, Tomaten und Brühe dazu.','Zugedeckt 30 Minuten köcheln, bis alles weich ist.','Mit Dill, Salz und Pfeffer abschmecken.'],'pm',WX('Kochkarussell','https://kochkarussell.com/gruene-bohnen-eintopf/','https://kochkarussell.com/wp-content/uploads/2025/07/Gruene-Bohnen-Eintopf-Rezept.webp',W4,1)],
-['w_pinsalachs','Pinsa mit Lachs, Frischkäse und Rucola','MA',15,[['pinsa',2],['frischkaese',200],['milch',30],['tomaten',300],['raeucherlachs',160],['salat',60],['zitrone',1]],['Pinsaböden nach Packung im Ofen knusprig backen.','Frischkäse mit Milch, Dill, Zitronenabrieb, Salz und Pfeffer glatt rühren.','Böden mit der Creme bestreichen, halbierte Tomaten darauf.','Mit Räucherlachs und Rucola belegen und sofort servieren.'],'o',WX('Einfach Malene','https://www.einfachmalene.de/pinsa-belegen-mit-lachs-frischkaese-und-rucola/','https://www.einfachmalene.de/wp-content/uploads/2026/09/Pinsa-mit-Lachs-14.jpg',W4)],
+['w_pinsalachs','Pinsa mit Lachs, Frischkäse und Rucola','MA',15,[['pinsa',2],['frischkaese',200],['milch',30],['tomaten',300],['raeucherlachs',160],['rucola',60],['zitrone',1]],['Pinsaböden nach Packung im Ofen knusprig backen.','Frischkäse mit Milch, Dill, Zitronenabrieb, Salz und Pfeffer glatt rühren.','Böden mit der Creme bestreichen, halbierte Tomaten darauf.','Mit Räucherlachs und Rucola belegen und sofort servieren.'],'o',WX('Einfach Malene','https://www.einfachmalene.de/pinsa-belegen-mit-lachs-frischkaese-und-rucola/','https://www.einfachmalene.de/wp-content/uploads/2026/09/Pinsa-mit-Lachs-14.jpg',W4)],
 ['w_zucchinierdnuss','Cremige Zucchini-Bohnen-Pfanne mit Erdnussbutter','MA',25,[['zucchini',800],['kokosmilch',500],['zwiebel',2],['knoblauch',6],['tomaten_dose',400],['erdnussmus',30],['kidneybohnen',480],['zitrone',1],['reis',250]],['Reis kochen. Zucchini würfeln und in Kokosöl mit Salz anbraten.','Zwiebel und Knoblauch mitbraten.','Tomaten, Kokosmilch, Erdnussmus, Sambal Oelek und Bohnen dazu und 10 Minuten köcheln.','Mit Zitronensaft, Pfeffer und Petersilie abschmecken.'],'p',WX('Eat This!','https://www.eat-this.org/cremige-zucchini-bohnenpfanne-mit-erdnussbutter/','https://www.eat-this.org/wp-content/uploads/2023/08/eat_this_cremige_zucchini-bohnenpfanne_mit_erdnussbutter_004.jpg',W4,1)],
 ['w_gefzucchini','Gefüllte Zucchini mit Hackfleisch','MA',50,[['hack_rind',400],['zucchini',800],['zwiebel',1],['knoblauch',1],['tomatenmark',30],['tomaten_dose',400],['schmand',100],['reibekaese',100]],['Ofen auf 200 °C vorheizen. Zucchini längs halbieren und aushöhlen, das Innere hacken.','Hack mit Zwiebel, Knoblauch und dem Zucchini-Innern braten, Tomatenmark, Oregano und Tomaten dazu und 10 Minuten köcheln.','Zucchini füllen, Schmand und Käse darauf.','25 Minuten backen.'],'o',WX('Kochkarussell','https://kochkarussell.com/gefuellte-zucchini-mit-hackfleisch/','https://kochkarussell.com/wp-content/uploads/2026/07/Gefuellte-Zucchini-mit-Hackfleisch-Rezept.webp',W4)],
 ['w_linseneintopfkuerbis','Linseneintopf mit Kürbis und Curry','MA',40,[['kuerbis',1000],['linsen',300],['spinat',250],['zwiebel',2],['ingwer',20],['knoblauch',2],['olivenoel',20],['currypaste',30],['gemuesebruehe',500],['kokosmilch',500],['tomaten_dose',400],['limette',1]],['Zwiebeln, Ingwer und Knoblauch in Kokosöl anschwitzen, Currypaste kurz mitrösten.','Kürbiswürfel, Linsen, Brühe, Kokosmilch und Tomaten dazu und 25 Minuten köcheln.','Spinat unterrühren, bis er zusammenfällt.','Mit Limettensaft, Salz und Pfeffer abschmecken.'],'pm',WX('Kitchen Stories','https://www.kitchenstories.com/linseneintopf-mit-kurbis-a-b/174333','https://www.kitchenstories.com/wp-content/uploads/sites/13/2026/09/r2549-photo-final-1.jpg',W4,1)],
@@ -1062,7 +1082,10 @@ function render(force){
   pending=false;renderTabs();const m=document.getElementById('app');
   if(!SETUP){m.innerHTML=vSetup();return;}
   if(ui.tab==='woche'||ui.tab==='favoriten')maintainSugg(ui.week);
+  // seitliche Scroll-Position von Chip- und Karten-Reihen merken (sonst springt die Leiste beim Filtern nach links)
+  const keepX=m.dataset.tab===ui.tab?[...m.querySelectorAll('.chips,.hscroll')].map(e=>e.scrollLeft):[];m.dataset.tab=ui.tab;
   m.innerHTML=({woche:vWeek,favoriten:vFav,einkauf:vShop,rezepte:vRecipes,tracker:vTracker,ich:vMe})[ui.tab]();
+  if(keepX.length)[...m.querySelectorAll('.chips,.hscroll')].forEach((e,i)=>{if(keepX[i])e.scrollLeft=keepX[i];});
   if(ui.tab==='tracker'&&!LOGS[ui.date])loadLog(ui.date).then(()=>render());
 }
 document.getElementById('app').addEventListener('focusout',()=>{if(pending)setTimeout(()=>{if(pending)render();},50);});
@@ -1099,7 +1122,7 @@ function vWeek(){
   let h=mast('Woche',asideTxt)+weekSeg();
   const favBtn=`<button class="btn" data-a="favpick" style="width:100%;margin-bottom:6px">${ICON.favoriten}<span>Favorit einplanen</span></button>`;
   if(W&&W.finalized){
-    h+=favBtn+`<h2>Euer Plan</h2>${dayList(w)}<div class="row" style="margin-top:14px"><button class="btn ghost sm" data-a="unfinal">Nochmal abstimmen</button></div>`;
+    h+=`<h2>Euer Plan</h2>${dayList(w)}<div style="margin-top:16px">${favBtn}</div><p style="margin:14px 4px 0"><button class="link" data-a="unfinal" style="color:var(--muted)">Plan aufheben und neu abstimmen</button></p>`;
     return h;
   }
   const fo=focusOf(w),picks=picksOf(w),pool=dinnerPool(w),sids=suggIds(w),need=Math.max(0,HH.dinners-picks.length);
@@ -1189,13 +1212,79 @@ function favPicker(){
   ${list.length?`<div class="group">${list.map(favRow).join('')}</div>`:`<div class="empty">Noch keine Favoriten. Tippe bei einem Rezept auf ♡, dann landet es hier.</div>`}`);
   document.querySelector('.sheet').onclick=e=>{const b=e.target.closest('[data-pick]');if(b){pickFavorite(ui.week,b.dataset.pick);closeSheet();return;}const o=e.target.closest('[data-open]');if(o){closeSheet();openRecipe(o.dataset.open);}};
 }
+// ---------- Plan (festgelegte Woche) ----------
+const WDL=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+const others1=()=>participants().filter(v=>v!==myId);
+function propText(p){if(!p)return'';const r=p.rid&&R(p.rid);return p.type==='free'?'Tag frei lassen':`→ ${r?esc(r.n):'?'}`;}
 function dayList(w){
-  const W=weekDoc(w);
-  return`<div class="group">${weekDates(w).map((d,i)=>{const x=W.days[d]||{};const r=x.rid&&R(x.rid);
-   return`<div class="day ${x.skip?'skip':''}"><div class="dn">${WD[i]}<small>${fmtD(d,{day:'numeric',month:'numeric'})}</small></div><div>
-    ${r?`<div class="t"><button class="link" style="color:var(--ink);font-size:16px;font-weight:600;text-align:left" data-open="${r.id}">${esc(r.n)}</button></div><div class="small muted">${x.serv||HH.serv} Portionen · ${r.min} Min.${swapText(r)?` · <span style="color:var(--accent)">${swapText(r)}</span>`:''}${x.cooked?' · <span style="color:var(--basil)">✓ gekocht</span>':''}</div>`:`<div class="t muted">${x.skip?'Nicht geplant':'Noch offen'}</div>`}
-    <div class="acts">${r&&!x.skip?(x.ate&&x.ate[myId]?'<span class="small muted">✓ in deinem Tracker</span>':`<button class="link" data-a="ate" data-d="${d}" style="font-weight:600">In meinen Tracker</button>`):''}${x.cooked&&r?`<button class="link" data-a="uncook" data-d="${d}">Doch nicht gekocht</button>`:`${r||!x.skip?`<button class="link" data-a="swap" data-d="${d}">${r?'Austauschen':'Rezept vorschlagen'}</button>`:''}${r?`<button class="link" data-a="skip" data-d="${d}">${x.skip?'Doch kochen':'Doch nicht'}</button>`:x.skip?`<button class="link" data-a="unskip" data-d="${d}">Einplanen</button>`:''}`}</div></div></div>`;}).join('')}</div>`;
+  const W=weekDoc(w),ds=weekDates(w),today=dkey(),open=ui.openDay&&ds.includes(ui.openDay)?ui.openDay:(ds.includes(today)?today:null);
+  const pend=ds.filter(d=>{const p=W.days[d]&&W.days[d].prop;return p&&p.by!==myId;});
+  let h=pend.length?`<div class="panel" style="border:1px solid var(--accent);margin-top:0">${pend.map(d=>{const x=W.days[d],r=x.rid&&R(x.rid);return`<p style="margin:0 0 8px"><b>${esc(nameOf(x.prop.by))}</b> möchte am <b>${WDL[ds.indexOf(d)]}</b> ${r?esc(r.n)+' ':''}${propText(x.prop)}</p><div class="row" style="margin-bottom:6px"><button class="btn basil sm" data-a="propOk" data-d="${d}">Annehmen</button><button class="btn sm" data-a="propNo" data-d="${d}">Ablehnen</button></div>`;}).join('')}</div>`:'';
+  h+=`<div class="plan" data-w="${w}">${ds.map((d,i)=>{const x=W.days[d]||{},r=x.rid&&!x.skip&&R(x.rid),isOpen=d===open,past=d<today,isToday=d===today;
+    const ate=x.ate&&x.ate[myId],p=x.prop;
+    const status=[x.cooked&&r?'<span class="chip ok">✓ gekocht</span>':'',ate?'<span class="chip ok">✓ in deinem Tracker</span>':'',p?`<span class="chip warn2">${p.by===myId?'Vorschlag wartet':'Vorschlag'}</span>`:''].join('');
+    const thumb=r&&r.img?`<img class="pthumb" src="${esc(r.img)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'pthumb ph',textContent:'${WD[i]}'}))">`:`<div class="pthumb ph">${WD[i]}</div>`;
+    const head=`<div class="phead" data-a="dayToggle" data-d="${d}">${thumb}<div class="pinfo"><div class="pday-l">${isToday?'Heute · ':''}${WDL[i]} <span class="muted">${fmtD(d,{day:'numeric',month:'numeric'})}</span></div><div class="pname">${r?esc(r.n):(x.skip?'Frei':'Noch offen')}</div>${status?`<div class="pchips">${status}</div>`:''}</div><div class="pgrip" aria-hidden="true">⋮⋮</div></div>`;
+    if(!isOpen)return`<div class="pday ${past?'past':''} ${!r?'empty':''}" data-day="${d}">${head}</div>`;
+    const body=r?`${r.img?`<img class="pbig" src="${esc(r.img)}" alt="" onerror="this.remove()">`:''}
+      <div class="pmeta">${x.serv||HH.serv} Portionen · ${r.min} Min. · ${r0(perFor(r).k)} kcal pro Portion</div>
+      ${swapText(r)?`<div class="small" style="color:var(--accent);margin-top:4px">${swapText(r)}</div>`:''}
+      ${p?`<div class="pprop">${p.by===myId?`Dein Vorschlag: ${propText(p)} · wartet auf ${others1().map(v=>esc(nameOf(v))).join(', ')||'die andere Person'} <button class="link" data-a="propCancel" data-d="${d}">zurückziehen</button>`:`${esc(nameOf(p.by))} schlägt vor: ${propText(p)}`}</div>`:''}
+      <div class="pbtns"><button class="btn sm" data-open="${r.id}">Rezept</button>${ate?'':`<button class="btn sm" data-a="ate" data-d="${d}">In meinen Tracker</button>`}<button class="btn ghost sm" data-a="dayMenu" data-d="${d}">Ändern …</button></div>`
+     :`<div class="pbtns"><button class="btn sm" data-a="propose" data-d="${d}">Gericht wählen</button>${p?`<span class="small muted">${p.by===myId?'Vorschlag wartet':'Es gibt einen Vorschlag'}</span>`:''}</div>`;
+    return`<div class="pday open ${past?'past':''}" data-day="${d}">${head}<div class="pbody">${body}</div></div>`;}).join('')}</div>
+  <p class="small muted" style="margin:8px 4px 0">Tipp: Einen Tag lange gedrückt halten und auf einen anderen Tag ziehen, um die Gerichte zu tauschen.</p>`;
+  return h;
 }
+// Änderungen: tauschen/freilassen braucht die Zustimmung der anderen Person (Verschieben nicht)
+function applyProp(w,d,p){const x=weekDoc(w).days[d]||{};
+  if(p.type==='free')patchWeek(w,{days:{[d]:{skip:true,prop:null}}});
+  else patchWeek(w,{days:{[d]:{rid:p.rid,skip:false,cooked:false,serv:x.serv||HH.serv,prop:null}}});}
+function proposeChange(w,d,p){p.by=myId;p.t=Date.now();if(!others1().length){applyProp(w,d,p);toast('Geändert');return;}
+  patchWeek(w,{days:{[d]:{prop:p}}});toast(`Vorschlag gesendet – ${others1().map(v=>nameOf(v)).join(', ')} muss bestätigen`);}
+function moveDay(w,a,b){if(a===b)return;const W=weekDoc(w),A=clone(W.days[a]||{}),B=clone(W.days[b]||{});
+  const pack=(x,other)=>{const ate={};Object.keys(Object.assign({},x.ate||{},other.ate||{})).forEach(k=>ate[k]=!!(x.ate&&x.ate[k]));
+    return{rid:x.rid||null,serv:x.serv||HH.serv,skip:!!x.skip,cooked:x.cooked||false,ate,prop:x.prop||null};};
+  patchWeek(w,{days:{[a]:pack(B,A),[b]:pack(A,B)}});ui.openDay=b;toast(`${WDL[weekDates(w).indexOf(a)]} ↔ ${WDL[weekDates(w).indexOf(b)]} getauscht`);}
+function dayMenu(w,d){const x=weekDoc(w).days[d]||{},r=x.rid&&R(x.rid);
+  openSheet(`<div class="sheet-head"><h2>${WDL[weekDates(w).indexOf(d)]}</h2><button class="x-btn" data-close aria-label="Schließen">×</button></div>
+  <p class="small muted">${r?esc(r.n):''}</p><div class="group">
+   <button class="mrow" data-m="swap">Anderes Gericht vorschlagen<span class="muted">›</span></button>
+   <button class="mrow" data-m="free">Tag frei lassen<span class="muted">›</span></button>
+   ${x.cooked?'<button class="mrow" data-m="uncook">„Gekocht“ zurücknehmen<span class="muted">›</span></button>':''}
+  </div><p class="small muted" style="margin-top:10px">${others1().length?'Tauschen und Freilassen muss die andere Person bestätigen. Verschieben auf einen anderen Tag geht direkt: Tag im Plan lange drücken und ziehen.':'Verschieben auf einen anderen Tag: Tag im Plan lange drücken und ziehen.'}</p>`);
+  document.querySelector('.sheet').onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;const m=b.dataset.m;
+    if(m==='swap'){closeSheet();swapPicker(w,d);}
+    if(m==='free'){closeSheet();proposeChange(w,d,{type:'free'});}
+    if(m==='uncook'){closeSheet();patchWeek(w,{days:{[d]:{cooked:false}}});}};}
+function swapPicker(w,d){const W=weekDoc(w),used=new Set(Object.values(W.days||{}).map(x=>x&&x.rid).filter(Boolean));
+  const fav=favList().filter(r=>!used.has(r.id)&&(r.meals.includes('A')||r.meals.includes('M')));
+  const top=ranking(w).filter(x=>!used.has(x.r.id)&&x.voted).map(x=>x.r).filter(r=>!fav.includes(r)).slice(0,12);
+  const row=r=>`<button class="lrow" data-pick2="${r.id}"><div class="min">${r.img?`<img src="${esc(r.img)}" alt="" style="width:44px;height:44px;border-radius:11px;object-fit:cover">`:r.min+'<small>Min.</small>'}</div><div><div class="t">${esc(r.n)}</div><div class="s">${dietTag(r)}${r.min} Min. · ${r0(r.per.k)} kcal</div></div><div class="k"></div></button>`;
+  const draw=q=>{const ql=(q||'').trim().toLowerCase();const all=ql?RECIPES.filter(r=>!used.has(r.id)&&r.n.toLowerCase().includes(ql)).slice(0,30):[];
+    return`${ql?`<h2>Suche</h2>${all.length?`<div class="ledger">${all.map(row).join('')}</div>`:'<p class="small muted">Nichts gefunden.</p>'}`:''}
+    ${!ql&&fav.length?`<h2>Deine Favoriten</h2><div class="ledger">${fav.map(row).join('')}</div>`:''}
+    ${!ql&&top.length?`<h2>Gut bewertet</h2><div class="ledger">${top.map(row).join('')}</div>`:''}`;};
+  openSheet(`<div class="sheet-head"><h2>Gericht vorschlagen</h2><button class="x-btn" data-close aria-label="Schließen">×</button></div>
+   <p class="small muted">Für ${WDL[weekDates(w).indexOf(d)]}.${others1().length?' Die andere Person muss bestätigen.':''}</p>
+   <input type="search" id="swapQ" placeholder="Rezept suchen"><div id="swapList">${draw('')}</div>`);
+  const sh=document.querySelector('.sheet');
+  document.getElementById('swapQ').oninput=e=>{document.getElementById('swapList').innerHTML=draw(e.target.value);};
+  sh.onclick=e=>{const b=e.target.closest('[data-pick2]');if(b){closeSheet();proposeChange(w,d,{type:'swap',rid:b.dataset.pick2});}};}
+// Lange drücken und ziehen zum Verschieben
+(function(){let st=null;
+  const end=()=>{if(!st)return;clearTimeout(st.timer);document.querySelectorAll('.pday.dragging,.pday.dropover').forEach(e=>e.classList.remove('dragging','dropover'));
+    if(st.drag&&st.over&&st.over!==st.d)moveDay(st.w,st.d,st.over);if(st.drag)st.blockClick=Date.now();st=null;window.__dragBlock=Date.now();};
+  document.addEventListener('pointerdown',e=>{const el=e.target.closest('.plan .pday');if(!el||e.target.closest('button,a'))return;const plan=el.closest('.plan');
+    st={el,d:el.dataset.day,w:plan.dataset.w,x:e.clientX,y:e.clientY,drag:false,over:null};
+    st.timer=setTimeout(()=>{if(!st)return;st.drag=true;el.classList.add('dragging');if(navigator.vibrate)navigator.vibrate(15);},380);});
+  document.addEventListener('pointermove',e=>{if(!st)return;if(!st.drag){if(Math.abs(e.clientY-st.y)>8||Math.abs(e.clientX-st.x)>8){clearTimeout(st.timer);st=null;}return;}
+    const t=document.elementFromPoint(e.clientX,e.clientY),o=t&&t.closest('.plan .pday');document.querySelectorAll('.pday.dropover').forEach(x=>x.classList.remove('dropover'));
+    st.over=o?o.dataset.day:null;if(o&&o.dataset.day!==st.d)o.classList.add('dropover');});
+  document.addEventListener('touchmove',e=>{if(st&&st.drag)e.preventDefault();},{passive:false});
+  document.addEventListener('pointerup',end);document.addEventListener('pointercancel',()=>{if(st&&!st.drag){clearTimeout(st.timer);st=null;}else end();});
+  document.addEventListener('contextmenu',e=>{if(e.target.closest('.plan .pday'))e.preventDefault();});
+})();
 
 // ---------- Einkauf ----------
 // Einkaufsmengen: wer eine Zutat nicht isst, bekommt seinen Anteil als Ersatz (z. B. Tofu statt Hähnchen)
@@ -1453,7 +1542,7 @@ const SYN={haehnchen:['hähnchen','huhn','hühnchen','chicken'],hack_rind:['hack
   haferflocken:['haferflocken','hafer'],reis:['reis','basmati','jasmin'],nudeln:['nudeln','pasta','spaghetti','penne','fusilli','tagliatelle','linguine','rigatoni','farfalle'],vollkornbrot:['brot','toast'],tortilla:['tortilla','wrap'],
   suesskartoffel:['süßkartoffel','süsskartoffel'],kartoffeln:['kartoffel'],couscous:['couscous','bulgur'],gnocchi:['gnocchi'],zwiebel:['zwiebel','schalotte'],fruehlingszwiebeln:['frühlingszwiebel','lauchzwiebel'],knoblauch:['knoblauch'],paprika:['paprikaschote','paprika'],
   tomatenmark:['tomatenmark'],tomaten_dose:['gehackte tomaten','passierte tomaten','passata','dosentomaten','stückige tomaten','tomaten aus der dose'],tomaten:['tomate','cherrytomate','kirschtomate'],brokkoli:['brokkoli','broccoli'],spinat:['spinat','babyspinat'],zucchini:['zucchini','zucchino'],
-  karotten:['karotte','möhre','möhren'],gurke:['gurke'],salat:['salat','rucola','rauke','feldsalat'],avocado:['avocado'],banane:['banane'],beeren:['beeren','himbeere','heidelbeere','blaubeere','erdbeere'],apfel:['apfel','äpfel'],zitrone:['zitrone'],limette:['limette'],
+  karotten:['karotte','möhre','möhren'],gurke:['gurke'],salat:['blattsalat','kopfsalat','römersalat','eisbergsalat','feldsalat','salat'],rucola:['rucola','rauke'],avocado:['avocado'],banane:['banane'],beeren:['beeren','himbeere','heidelbeere','blaubeere','erdbeere'],apfel:['apfel','äpfel'],zitrone:['zitrone'],limette:['limette'],
   erbsen:['erbsen'],mais:['mais'],pilze:['champignon','pilze'],olivenoel:['olivenöl','öl','rapsöl','sesamöl'],erdnussmus:['erdnussmus','erdnussbutter'],nuesse:['nüsse','mandeln','walnüsse','cashew'],honig:['honig','ahornsirup','agavendicksaft'],
   sojasauce:['sojasauce','sojasoße','soja sauce','tamari'],kokosmilch:['kokosmilch'],pesto:['pesto'],gemuesebruehe:['brühe','fond','bouillon'],quinoa:['quinoa'],aubergine:['aubergine'],blumenkohl:['blumenkohl'],edamame:['edamame'],
   sojajoghurt:['sojajoghurt'],haferdrink:['haferdrink','hafermilch'],tahin:['tahin','tahini','sesammus'],sesam:['sesam'],chiasamen:['chia'],mango:['mango'],ingwer:['ingwer'],rotkohl:['rotkohl','blaukraut']};
@@ -1713,6 +1802,12 @@ app.addEventListener('click',e=>{
   else if(a==='srv-'||a==='srv+'){HH.serv=Math.max(1,Math.min(12,HH.serv+(a==='srv+'?1:-1)));saveHH();render();}
   else if(a==='undo'&&ui.undo){const v=myVotes();if(v.w[ui.undo.w])delete v.w[ui.undo.w][ui.undo.r];ui.undo=null;saveVotes();render();}
   else if(a==='swap'){replaceDay(w,t.dataset.d);}
+  else if(a==='dayToggle'){if(window.__dragBlock&&Date.now()-window.__dragBlock<400)return;const d=t.dataset.d;ui.openDay=(ui.openDay===d||(!ui.openDay&&d===dkey()))?'none':d;render();}
+  else if(a==='dayMenu'){dayMenu(w,t.dataset.d);}
+  else if(a==='propose'){swapPicker(w,t.dataset.d);}
+  else if(a==='propOk'){const x=weekDoc(w).days[t.dataset.d];if(x&&x.prop){applyProp(w,t.dataset.d,x.prop);toast('Angenommen');}}
+  else if(a==='propNo'){patchWeek(w,{days:{[t.dataset.d]:{prop:null}}});toast('Abgelehnt');}
+  else if(a==='propCancel'){patchWeek(w,{days:{[t.dataset.d]:{prop:null}}});}
   else if(a==='favpick'){favPicker();}
   else if(a==='moreSugg'){if(extendSugg(w))toast('10 neue Vorschläge – auch für die andere Person');}
   else if(a==='keepVoting'){ui.keepVoting=true;render();}
