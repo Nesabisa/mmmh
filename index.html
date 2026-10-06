@@ -666,7 +666,7 @@ const NUTRI_DB=[
 ['Ei',140,12.5,0.7,10,'e',60,'g'],['Milch 3,5 %',64,3.4,4.8,3.5,'d',0,'ml'],['Milch 1,5 %',47,3.4,4.9,1.5,'d',0,'ml'],['Buttermilch',37,3.5,4,0.5,'d',0,'ml'],
 ['Sahne 30 %',290,2.4,3,30,'d',0,'ml'],['Kochsahne 15 %',170,3,4,15,'d',0,'ml'],['Schmand',240,2.7,4,24,'d',0,'g'],['Crème fraîche',290,2.5,3,30,'d',0,'g'],
 ['Saure Sahne',115,3,4,10,'d',0,'g'],['Joghurt 3,5 %',65,4,5,3.5,'d',0,'g'],['Griechischer Joghurt',120,5,4,10,'d',0,'g'],['Skyr',63,11,4,0.2,'d',0,'g'],
-['Magerquark',67,12,4,0.3,'d',0,'g'],['Quark 20 %',110,12,3,5,'d',0,'g'],['Hüttenkäse',100,12,3,4.5,'d',0,'g'],['Frischkäse',230,6,3,22,'d',0,'g'],
+['Magerquark',67,12,4,0.3,'d',0,'g'],['Quark 20 %',110,12,3,5,'d',0,'g'],['Hüttenkäse',100,12,3,4.5,'d',0,'g'],['Frischkäse',230,6,3,22,'d',0,'g'],['Boursin',404,7,3,40,'d',0,'g'],['Kräuterfrischkäse',250,6,3,24,'d',0,'g'],['Kirschtomaten',20,1,3,0.2,'',15,'g'],
 ['Ricotta',150,9,3,11,'d',0,'g'],['Mascarpone',435,4.5,4,44,'d',0,'g'],['Mozzarella',250,18,1,19,'d',125,'g'],['Burrata',300,15,1,26,'d',125,'g'],
 ['Feta',265,17,1,21,'d',0,'g'],['Halloumi',320,22,2,25,'d',0,'g'],['Parmesan',390,35,0,28,'d',0,'g'],['Gouda',360,25,0,28,'d',0,'g'],['Emmentaler',380,29,0,30,'d',0,'g'],
 ['Bergkäse',400,28,0,32,'d',0,'g'],['Cheddar',400,25,1,33,'d',0,'g'],['Camembert',300,20,0,24,'d',0,'g'],['Ziegenkäse',270,16,2,22,'d',0,'g'],['Gorgonzola',350,19,0,31,'d',0,'g'],
@@ -1169,7 +1169,7 @@ function filtered(){
   return RECIPES.filter(r=>{
     if(!passes(r,f.keys))return false;
     if(f.fav&&!likeScore(r))return false;
-    if(f.own&&!r.own)return false;
+    if(f.own&&!(r.own&&!r.web&&CUSTOM[r.id]))return false;
     if(f.heart&&!hearted(r.id))return false;
     if(qq&&!(r.n.toLowerCase().includes(qq)||r.ings.some(([id])=>ING[id].n.toLowerCase().includes(qq))))return false;
     const av=recipeAvoid(r);if(!av.ok&&!(ME.showSubs&&av.fixable))return false;
@@ -1185,15 +1185,16 @@ function vRecipes(){
   const list=filtered(),f=ui.f,ex=activeExtras(),nonQuick=f.keys.filter(k=>!QUICK.includes(k)&&k!=='F'&&k!=='A'),any=f.keys.length||ex.length||ui.q.trim();
   const qk=['F','A'].concat(QUICK);
   let h=mast('Rezepte',`<b>${list.length}</b>von ${RECIPES.length}`)+
+  `<button class="btn basil" data-a="newRec" style="width:100%;margin:0 0 12px">+ Eigenes Rezept anlegen</button>`+
   `<div class="row" style="flex-wrap:nowrap;margin-bottom:10px"><input type="search" id="q" placeholder="Rezept oder Zutat suchen" value="${esc(ui.q)}"><button class="btn" data-a="filters" style="flex:none">Alle Filter${f.keys.length+ex.length?` (${f.keys.length+ex.length})`:''}</button></div>
-  <div class="chips"><button class="pill" data-a="heartf" aria-pressed="${f.heart}">♥ Favoriten</button>${qk.map(k=>`<button class="pill" data-fk="${k}" aria-pressed="${f.keys.includes(k)}">${FKEY[k].l}</button>`).join('')}</div>
+  <div class="chips"><button class="pill" data-a="heartf" aria-pressed="${f.heart}">♥ Favoriten</button><button class="pill" data-a="ownf" aria-pressed="${f.own}">Eigene (${RECIPES.filter(r=>r.own&&!r.web&&CUSTOM[r.id]).length})</button>${qk.map(k=>`<button class="pill" data-fk="${k}" aria-pressed="${f.keys.includes(k)}">${FKEY[k].l}</button>`).join('')}</div>
   ${nonQuick.length||ex.length?`<div class="row" style="margin-bottom:12px">${nonQuick.map(k=>`<button class="pill x" data-fk="${k}">${FKEY[k].l}</button>`).join('')}${ex.map(([k,l])=>`<button class="pill x" data-a="rmx" data-k="${k}">${l}</button>`).join('')}<button class="link" data-a="clearf">Alle entfernen</button></div>`:''}`;
   if(!any){const nw=RECIPES.filter(isNewWeb);
     h+=`<h2>Neu aus dem Netz</h2>${nw.length?`<div class="hscroll">${nw.map(rcard).join('')}</div>`:'<p class="small muted" style="margin:0 4px">Diese Woche noch keine neuen.</p>'}
     <p class="small muted" style="margin:8px 4px 0">Von Food-Blogs, von mir geprüft (Mengen und Nährwerte). Jeden Montag kommen neue dazu.</p>`;
     h+=NEWCATS.map(([t,keys])=>{const g=FG.map(x=>x[2]).flat();const sel=RECIPES.filter(r=>{const by={};keys.forEach(k=>{(by[FKEY[k].g]=by[FKEY[k].g]||[]).push(FKEY[k].fn(r));});return Object.values(by).every(v=>v.some(Boolean));});
       const pick=rotate(sel,4);return pick.length?`<h2>Neu diese Woche · ${t}</h2><div class="hscroll">${pick.map(rcard).join('')}</div>`:'';}).join('');}
-  h+=`<button class="btn" data-a="newRec" style="width:100%;margin:${any?'0':'22px'} 0 14px">+ Eigenes Rezept anlegen</button>
+  h+=`<div style="height:${any?0:18}px"></div>
   ${any?'':'<h2>Alle Rezepte</h2>'}${list.length?`<div class="ledger">${list.slice(0,ui.lim||60).map(lrow).join('')}</div>${list.length>(ui.lim||60)?`<button class="btn ghost" data-a="more" style="width:100%;margin-top:10px">Weitere ${Math.min(60,list.length-(ui.lim||60))} von ${list.length-(ui.lim||60)} anzeigen</button>`:''}`:`<div class="empty">Nichts passt zu allen Filtern gleichzeitig. Entferne einen Filter.</div>`}
   <p class="small muted" style="margin-top:14px">Balken unter jedem Rezept: Anteil der Kalorien aus <span style="color:var(--basil)">Protein</span>, <span style="color:var(--saffron)">Kohlenhydraten</span> und <span style="color:var(--plum)">Fett</span>.</p>`;
   return h;
@@ -1288,7 +1289,7 @@ async function offLookup(term,tries=2){const key=term.toLowerCase();if(key in of
     const d=await r.json();const bad=/chips|praline|pesto|sauce|soße|mayo|creme|riegel|keks|schoko|eis|getränk|drink|aufstrich|dip|pizza|snack/i;
     const best=(d.products||[]).map(p=>{const n=p.nutriments||{},name=String(p.product_name||'').trim();const k=+n['energy-kcal_100g'];if(!name||!(k>=0))return null;
       const ln=name.toLowerCase();let sc=0;if(ln.startsWith(key))sc+=4;if(ln.includes(key))sc+=2;if(bad.test(ln)&&!bad.test(key))sc-=5;sc-=name.split(/\s+/).length*0.3;
-      return{sc,name,k:+k,p:+(n.proteins_100g||0),c:+(n.carbohydrates_100g||0),f:+(n.fat_100g||0)};}).filter(Boolean).sort((a,b)=>b.sc-a.sc)[0];
+      const r={sc,name,k:+k,p:+(n.proteins_100g||0),c:+(n.carbohydrates_100g||0),f:+(n.fat_100g||0)};if(nutOdd(r))r.sc-=3;return r;}).filter(Boolean).sort((a,b)=>b.sc-a.sc)[0];
     offCache[key]=best&&best.sc>0?best:null;}catch(e){console.warn(e);if(tries>1){await new Promise(r=>setTimeout(r,1500));return offLookup(term,tries-1);}return null;}return offCache[key];}
 // Menge in g/ml (bzw. Stück bei Stück-Zutaten der App) umrechnen
 function rowBase(x){const a=+x.amt||0,m=x.m;if(!m||!a)return null;let base=m.base||'g';
@@ -1303,6 +1304,7 @@ function readNew(){
   nr.rows.forEach((x,i)=>{const el=s=>document.querySelector(`[data-nr${s}="${i}"]`);if(!el('n'))return;x.name=el('n').value;x.amt=numStr(el('a').value);x.unit=el('u').value;
     if(x.edit&&el('k')){x.m={type:'manual',name:x.name,k:num(el('k').value)||0,p:num(el('p').value)||0,c:num(el('c').value)||0,f:num(el('f').value)||0,base:x.m&&x.m.base==='ml'?'ml':'g',pg:el('pg')?num(el('pg').value)||0:(x.m&&x.m.pg)||0,tags:x.m&&x.m.tags||[]};}});
 }
+const nutOdd=m=>m&&m.k>20&&Math.abs((m.p*4+m.c*4+m.f*9)-m.k)/m.k>0.3;
 function nutTxt(m){if(!m)return'';const per=m.base==='Stk'?'Stück':m.base==='ml'?'100 ml':'100 g';return`${r0(m.k)} kcal · P ${r0(m.p)} · K ${r0(m.c)} · F ${r0(m.f)} pro ${per}`;}
 function drawNew(){
   const row=(x,i)=>{const m=x.m;let st='';
@@ -1310,7 +1312,10 @@ function drawNew(){
     else if(!m||m.type==='pending')st='<span class="muted">Suche Nährwerte …</span>';
     else if(m.type==='none')st=`<span class="warn">Keine Nährwerte gefunden.</span> <button class="link" data-n="retry" data-i="${i}">Nochmal suchen</button> · <button class="link" data-n="edit" data-i="${i}">Selbst eintragen</button>`;
     else{const n=rowNutr(x),b=rowBase(x);const conv=b&&x.unit!=='g'&&x.unit!=='ml'&&b.unit!=='Stk'?` (${fmtP(+x.amt)} ${UNIT_L[x.unit]} ≈ ${r0(b.amt)} ${b.unit==='ml'?'ml':'g'})`:'';
-      st=`<span style="color:var(--basil)">✓ ${esc(m.name)}</span> <span class="muted">· ${n?r0(n.k)+' kcal'+conv:nutTxt(m)}${m.type==='off'?' · Open Food Facts':''}</span> ${x.edit?'':`<button class="link" data-n="edit" data-i="${i}">ändern</button>`}`;}
+      const huge=b&&((b.unit==='Stk'&&b.amt>25)||(b.unit!=='Stk'&&b.amt>2500));
+      st=`<span style="color:var(--basil)">✓ ${esc(m.name)}</span> <span class="muted">· ${n?r0(n.k)+' kcal'+conv:nutTxt(m)}${m.type==='off'?' · Open Food Facts':''}</span> ${x.edit?'':`<button class="link" data-n="edit" data-i="${i}">ändern</button>`}`
+        +(huge?`<br><span class="warn">⚠ Ungewöhnlich viel (${r0(b.amt)} ${b.unit==='Stk'?'Stück':b.unit}) – stimmt die Einheit?</span>`:'')
+        +(nutOdd(m)&&!x.edit?`<br><span class="warn">⚠ Die Nährwerte passen nicht zusammen (${r0(m.k)} kcal, aber P ${r0(m.p)} · K ${r0(m.c)} · F ${r0(m.f)}). Bitte über „ändern“ prüfen.</span>`:'');}
     const pgNeeded=false;
     return`<div class="nrow"><div class="top3"><input type="text" list="ingAll" data-nrn="${i}" value="${esc(x.name)}" placeholder="Zutat, z. B. Rucola" autocomplete="off">
      <input type="text" inputmode="decimal" autocomplete="off" data-nra="${i}" value="${esc(fmtP(x.amt))}" placeholder="Menge" min="0" step="any">
@@ -1499,6 +1504,8 @@ function saveNew(){
   if(!rows.length)return err('Bitte mindestens eine Zutat eintragen.');
   if(rows.some(x=>!(+x.amt>0)))return err('Bitte bei allen Zutaten eine Menge eintragen.');
   if(rows.some(x=>x.m&&x.m.type==='pending'))return err('Einen Moment, die Nährwerte werden noch gesucht …');
+  const huge=rows.filter(x=>{const b=rowBase(x);return b&&((b.unit==='Stk'&&b.amt>25)||(b.unit!=='Stk'&&b.amt>2500));}).map(x=>x.name.trim());
+  if(huge.length&&!confirm(`Sehr große Menge bei ${huge.join(', ')} – stimmt die Einheit (Gramm/Stück)? Trotzdem speichern?`))return;
   const noNut=rows.filter(x=>!x.m||x.m.type==='none').map(x=>x.name.trim());
   if(noNut.length&&!confirm(`Für ${noNut.join(', ')} fehlen Nährwerte – die Kalorien werden dann zu niedrig berechnet. Trotzdem speichern?`))return;
   const ings=rows.map(x=>{const m=x.m||{},b=rowBase(x)||{amt:+x.amt,unit:x.unit==='ml'?'ml':'g'};
@@ -1654,6 +1661,7 @@ app.addEventListener('click',e=>{
   else if(a==='more'){ui.lim=(ui.lim||60)+60;render();}
   else if(a==='rmx'){ui.f[t.dataset.k]=false;render();}
   else if(a==='rmMeh'){ME.meh=(ME.meh||[]).filter(x=>x!==t.dataset.v);saveMe();render();}
+  else if(a==='ownf'){ui.f.own=!ui.f.own;render();}
   else if(a==='heartf'){ui.f.heart=!ui.f.heart;render();}
   else if(a==='rmf_old'){const g=t.dataset.g,val=t.dataset.v;if(Array.isArray(ui.f[g]))ui.f[g]=ui.f[g].filter(x=>x!==val);else ui.f[g]=g==='time'?0:false;render();}
   else if(a==='clearf'){ui.f={keys:[],fav:false,own:false,heart:false};render();}
