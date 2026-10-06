@@ -204,6 +204,8 @@ ol.steps{padding-left:22px;margin:0}ol.steps li{margin-bottom:10px;line-height:1
 .prog{background:var(--card);border-radius:14px;padding:14px 16px}
 .fold{margin-top:18px}.fold summary{padding:8px 4px;font-size:13px}
 .rcard .rimg{display:block;width:calc(100% + 28px);margin:-14px -14px 10px;height:130px;object-fit:cover;border-radius:16px 16px 0 0}
+.vote .vimg{display:block;width:calc(100% + 40px);height:200px;object-fit:cover;margin:-22px -20px 14px;border-radius:24px 24px 0 0}
+.vthumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:none;cursor:pointer}
 .vrow{display:flex;gap:12px;align-items:center;padding:12px 14px;position:relative}
 .vrow+.vrow::before{content:"";position:absolute;top:0;left:14px;right:0;border-top:.5px solid var(--line)}
 .vtop{flex:1;min-width:0;cursor:pointer}
@@ -1039,7 +1041,7 @@ function vWeek(){
   const vbtn=(r,v,cls,ic,lab)=>{const s=scoreFor(myId,w,r.id);return`<button class="${cls}" data-vote="${v}" data-r="${r.id}" aria-pressed="${s===v}" aria-label="${lab}">${ic}</button>`;};
   const oth=r=>others.map(v=>{const x=scoreFor(v,w,r.id);return x==null?'':`<span class="s${x}">${esc(nameOf(v))}: ${x===3?'Unbedingt':x===2?'Ja':'Nein'}</span>`;}).join('');
   const row=r=>{const s=scoreFor(myId,w,r.id),av=recipeAvoid(r),o=oth(r);
-    return`<div class="vrow ${s===0?'voted0':''}"><div class="vtop" data-open="${r.id}"><div class="vt">${hearted(r.id)?'<span class="heart">♥</span> ':''}${esc(r.n)}</div>
+    return`<div class="vrow ${s===0?'voted0':''}">${r.img?`<img class="vthumb" src="${esc(r.img)}" alt="" loading="lazy" data-open="${r.id}" onerror="this.remove()">`:''}<div class="vtop" data-open="${r.id}"><div class="vt">${hearted(r.id)?'<span class="heart">♥</span> ':''}${esc(r.n)}</div>
      <div class="s">${dietTag(r)}${r.min} Min. · ${r0(r.per.k)} kcal · ${r0(r.per.p)} g Protein${!av.ok?' · <span class="warn">mit Ersatz</span>':''}${ingHint(r,w)}</div>${mbar(r)}${o?`<div class="who" style="margin-top:6px">${o}</div>`:''}</div>
      <div class="vmini">${vbtn(r,0,'v0',ICON.no,'Nein')}${vbtn(r,2,'v2',ICON.yes,'Ja')}${vbtn(r,3,'v3',ICON.love,'Unbedingt')}</div></div>`;};
   // Fortschritt
@@ -1052,7 +1054,7 @@ function vWeek(){
     h+=`<div class="empty" style="margin-top:12px"><b style="color:var(--ink)">Ihr habt genug Gerichte!</b><br>Unten kannst du den Plan festlegen.${mineOpen.length?` Du kannst auch noch ${mineOpen.length} weitere bewerten.`:''}</div>`;
   }
   if(r&&!(found>=need&&need>0&&!ui.keepVoting)){const av=recipeAvoid(r),o=oth(r);
-    h+=`<article class="vote" aria-live="polite" style="margin-top:12px"><div class="spread"><div>${dietTag(r)}${r.hp?'<span class="diet">High Protein</span>':''}</div><span class="small" style="opacity:.85">noch ${mineOpen.length}</span></div>
+    h+=`<article class="vote" aria-live="polite" style="margin-top:12px">${r.img?`<img class="vimg" src="${esc(r.img)}" alt="" onerror="this.remove()">`:''}<div class="spread"><div>${dietTag(r)}${r.hp?'<span class="diet">High Protein</span>':''}</div><span class="small" style="opacity:.85">noch ${mineOpen.length}</span></div>
     <div class="name">${esc(r.n)}</div>
     <div class="facts"><div><b>${r.min}</b><span>Minuten</span></div><div><b>${r0(r.per.k)}</b><span>kcal</span></div><div><b>${r0(r.per.p)} g</b><span>Protein</span></div></div>
     ${mbar(r)}
