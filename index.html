@@ -1217,7 +1217,7 @@ const WDL=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonn
 const others1=()=>participants().filter(v=>v!==myId);
 function propText(p){if(!p)return'';const r=p.rid&&R(p.rid);return p.type==='free'?'Tag frei lassen':`→ ${r?esc(r.n):'?'}`;}
 function dayList(w){
-  const W=weekDoc(w),ds=weekDates(w),today=dkey(),open=ui.openDay&&ds.includes(ui.openDay)?ui.openDay:(ds.includes(today)?today:null);
+  const W=weekDoc(w),ds=weekDates(w),today=dkey(),open=ui.openDay==='none'?null:ui.openDay&&ds.includes(ui.openDay)?ui.openDay:(ds.includes(today)?today:null);
   const pend=ds.filter(d=>{const p=W.days[d]&&W.days[d].prop;return p&&p.by!==myId;});
   let h=pend.length?`<div class="panel" style="border:1px solid var(--accent);margin-top:0">${pend.map(d=>{const x=W.days[d],r=x.rid&&R(x.rid);return`<p style="margin:0 0 8px"><b>${esc(nameOf(x.prop.by))}</b> möchte am <b>${WDL[ds.indexOf(d)]}</b> ${r?esc(r.n)+' ':''}${propText(x.prop)}</p><div class="row" style="margin-bottom:6px"><button class="btn basil sm" data-a="propOk" data-d="${d}">Annehmen</button><button class="btn sm" data-a="propNo" data-d="${d}">Ablehnen</button></div>`;}).join('')}</div>`:'';
   h+=`<div class="plan" data-w="${w}">${ds.map((d,i)=>{const x=W.days[d]||{},r=x.rid&&!x.skip&&R(x.rid),isOpen=d===open,past=d<today,isToday=d===today;
@@ -1274,7 +1274,7 @@ function swapPicker(w,d){const W=weekDoc(w),used=new Set(Object.values(W.days||{
 // Lange drücken und ziehen zum Verschieben
 (function(){let st=null;
   const end=()=>{if(!st)return;clearTimeout(st.timer);document.querySelectorAll('.pday.dragging,.pday.dropover').forEach(e=>e.classList.remove('dragging','dropover'));
-    if(st.drag&&st.over&&st.over!==st.d)moveDay(st.w,st.d,st.over);if(st.drag)st.blockClick=Date.now();st=null;window.__dragBlock=Date.now();};
+    const wasDrag=st.drag;if(st.drag&&st.over&&st.over!==st.d)moveDay(st.w,st.d,st.over);st=null;if(wasDrag)window.__dragBlock=Date.now();};
   document.addEventListener('pointerdown',e=>{const el=e.target.closest('.plan .pday');if(!el||e.target.closest('button,a'))return;const plan=el.closest('.plan');
     st={el,d:el.dataset.day,w:plan.dataset.w,x:e.clientX,y:e.clientY,drag:false,over:null};
     st.timer=setTimeout(()=>{if(!st)return;st.drag=true;el.classList.add('dragging');if(navigator.vibrate)navigator.vibrate(15);},380);});
